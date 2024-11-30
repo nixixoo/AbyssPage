@@ -1,1 +1,4 @@
 <router-outlet></router-outlet>
+<app-welcome-animation 
+  [isActive]="(showAnimation$ | async) ?? false"
+></app-welcome-animation>

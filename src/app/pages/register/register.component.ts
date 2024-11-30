@@ -6,6 +6,7 @@ import { Router } from '@angular/router';
 import { AuthService } from '../../services/auth.service';
 import { HeaderComponent } from '../../components/header/header.component';
 import { WelcomeAnimationComponent } from '../../components/welcome-animation/welcome-animation.component';
+import { AnimationService } from '../../services/animation.service';
 
 @Component({
   selector: 'app-register',
@@ -32,7 +33,8 @@ export class RegisterComponent {
 
   constructor(
     private router: Router,
-    private authService: AuthService
+    private authService: AuthService,
+    private animationService: AnimationService
   ) {}
 
   togglePasswordVisibility() {
@@ -65,10 +67,9 @@ export class RegisterComponent {
     this.isLoading = true;
     try {
       await this.authService.register(this.username, this.password);
-      this.showWelcomeAnimation = true;
+      this.animationService.startAnimation();
       
       setTimeout(() => {
-        this.showWelcomeAnimation = false;
         this.router.navigate(['/']);
       }, 7000);
       
@@ -84,9 +85,6 @@ export class RegisterComponent {
   }
 
   testAnimation() {
-    this.showWelcomeAnimation = true;
-    setTimeout(() => {
-      this.showWelcomeAnimation = false;
-    }, 7000);
+    this.animationService.startAnimation();
   }
 }
