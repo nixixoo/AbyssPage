@@ -1,0 +1,10 @@
+<header [ngClass]="{'darkened': darkened}">
+  <div class="header-container">
+    <div class="logo">
+      <img src="assets/logo.svg" alt="Logo" class="logo-image" routerLink="/">
+    </div>
+    <div class="nav-buttons">
+      <button class="login-btn" (click)="navigateToLogin()">Login</button>
+    </div>
+  </div>
+</header>

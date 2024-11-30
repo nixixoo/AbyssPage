@@ -1,1 +1,47 @@
 /* You can add global styles to this file, and also import other style files */
+
+@import url('https://fonts.googleapis.com/css2?family=Noto+Sans:wght@400;500;700&display=swap');
+
+:root {
+    --color-dark: #1B1743;      // Darkest purple
+  --color-purple: #4E3E74;    // Medium purple
+  --color-light: #BDBCF2;     // Light purple
+  --color-accent: #7372BA;    // Blue-purple
+    --color-white: #FFFFFF;     // White
+  --font-primary: 'Noto Sans', sans-serif;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: var(--font-primary);
+  line-height: 1.6;
+  color: var(--color-white);
+}
+
+h1 {
+  font-weight: 700;  // Bold
+  letter-spacing: 0.5px;
+}
+
+h2 {
+  font-weight: 500;  // Medium
+  letter-spacing: 0.3px;
+}
+
+button {
+  font-family: var(--font-primary);
+  border: none;
+  cursor: pointer;
+}
+
+input {
+  font-family: var(--font-primary);
+  border: none;
+  outline: none;
+}
+
