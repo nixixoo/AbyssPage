@@ -5,6 +5,7 @@ import { RouterLink } from '@angular/router';
 import { Router } from '@angular/router';
 import { AuthService } from '../../services/auth.service';
 import { HeaderComponent } from '../../components/header/header.component';
+import { WelcomeAnimationComponent } from '../../components/welcome-animation/welcome-animation.component';
 
 @Component({
   selector: 'app-register',
@@ -13,7 +14,8 @@ import { HeaderComponent } from '../../components/header/header.component';
     CommonModule, 
     FormsModule, 
     RouterLink,
-    HeaderComponent
+    HeaderComponent,
+    WelcomeAnimationComponent
   ],
   templateUrl: './register.component.html',
   styleUrls: ['./register.component.scss']
@@ -26,6 +28,7 @@ export class RegisterComponent {
   passwordError: boolean = false;
   isLoading: boolean = false;
   showPassword: boolean = false;
+  showWelcomeAnimation: boolean = false;
 
   constructor(
     private router: Router,
@@ -62,7 +65,13 @@ export class RegisterComponent {
     this.isLoading = true;
     try {
       await this.authService.register(this.username, this.password);
-      this.router.navigate(['/']);
+      this.showWelcomeAnimation = true;
+      
+      setTimeout(() => {
+        this.showWelcomeAnimation = false;
+        this.router.navigate(['/']);
+      }, 7000);
+      
     } catch (error: any) {
       this.errorMessage = error.message;
     } finally {
@@ -72,5 +81,12 @@ export class RegisterComponent {
 
   navigateToLogin() {
     this.router.navigate(['/login']);
+  }
+
+  testAnimation() {
+    this.showWelcomeAnimation = true;
+    setTimeout(() => {
+      this.showWelcomeAnimation = false;
+    }, 7000);
   }
 }
