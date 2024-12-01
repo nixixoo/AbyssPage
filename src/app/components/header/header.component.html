@@ -4,8 +4,13 @@
       <img src="assets/logo.svg" alt="Logo" class="logo-image" routerLink="/">
     </div>
     <div class="nav-buttons">
-      <button class="login-btn" (click)="navigateToLogin()">Login</button>
-      <button class="characters-btn" (click)="navigateToCharacters()">Characters</button>
+      <ng-container *ngIf="!isLoggedIn">
+        <button class="login-btn" (click)="navigateToLogin()">Login</button>
+      </ng-container>
+      <ng-container *ngIf="isLoggedIn">
+        <button class="characters-btn" (click)="navigateToCharacters()">Characters</button>
+        <button class="logout-btn" (click)="logout()">Log out</button>
+      </ng-container>
     </div>
   </div>
 </header>

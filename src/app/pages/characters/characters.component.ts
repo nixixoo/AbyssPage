@@ -1,9 +1,11 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { HeaderComponent } from '../../components/header/header.component';
 import { Creator } from '../../interfaces/creator.interface';
 import { CreatorService } from '../../services/creator.service';
 import { AuthService } from '../../services/auth.service';
+import { Router } from '@angular/router';
+import { Subject, takeUntil, firstValueFrom, first } from 'rxjs';
 
 @Component({
   selector: 'app-characters',
@@ -12,7 +14,8 @@ import { AuthService } from '../../services/auth.service';
   templateUrl: './characters.component.html',
   styleUrls: ['./characters.component.scss']
 })
-export class CharactersComponent implements OnInit {
+export class CharactersComponent implements OnInit, OnDestroy {
+  private destroy$ = new Subject<void>();
   creator: Creator | null = null;
   characterList: { 
     id: string;
@@ -45,9 +48,10 @@ export class CharactersComponent implements OnInit {
 
   constructor(
     private creatorService: CreatorService,
-    private authService: AuthService
+    private authService: AuthService,
+    private router: Router
   ) {
-    // Initialize complete character list
+    // Initialize character list
     this.characterList = [
       {
         id: 'aether',
@@ -790,55 +794,107 @@ export class CharactersComponent implements OnInit {
   }
 
   async ngOnInit() {
+    console.log('CharactersComponent initializing...');
     try {
-      const currentUser = await this.authService.getCurrentUser();
-      if (currentUser) {
-        const creatorDoc = await this.creatorService.getCreator(currentUser.uid).toPromise();
-        if (creatorDoc?.exists()) {
-          this.creator = creatorDoc.data() as Creator;
-          this.pendingChanges.characters = this.creator.characters 
-            ? Object.keys(this.creator.characters).filter(key => this.creator?.characters[key])
-            : [];
-          this.pendingChanges.constellations = { ...this.characterConstellations };
-        } else {
-          // Initialize new creator with empty characters
-          const newCreator: Creator = {
-            uid: currentUser.uid,
-            username: currentUser.username || '',
-            characters: {},
-          };
-          await this.creatorService.createCreator(newCreator);
-          this.creator = newCreator;
-          this.pendingChanges.characters = [];
+      console.log('Waiting for user data...');
+      const user = await firstValueFrom(this.authService.currentUser$.pipe(first()));
+      console.log('Received user data:', user);
+      
+      if (user) {
+        console.log('User is logged in, setting creator data');
+        this.creator = user;
+        
+        // Debug characters
+        console.log('User characters:', user.characters);
+        this.pendingChanges.characters = user.characters 
+          ? Object.keys(user.characters).filter(key => user.characters[key])
+          : [];
+        console.log('Filtered characters:', this.pendingChanges.characters);
+        
+        // Debug constellations
+        console.log('User constellations:', user.constellations);
+        if (user.constellations) {
+          this.characterConstellations = { ...user.constellations };
+          this.pendingChanges.constellations = { ...user.constellations };
+          console.log('Set constellations:', this.characterConstellations);
         }
+
+        // Subscribe to future updates
+        console.log('Setting up user update subscription');
+        this.authService.currentUser$
+          .pipe(takeUntil(this.destroy$))
+          .subscribe(updatedUser => {
+            console.log('Received user update:', updatedUser);
+            if (updatedUser) {
+              this.creator = updatedUser;
+              this.pendingChanges.characters = updatedUser.characters 
+                ? Object.keys(updatedUser.characters).filter(key => updatedUser.characters[key])
+                : [];
+              console.log('Updated characters:', this.pendingChanges.characters);
+              
+              if (updatedUser.constellations) {
+                this.characterConstellations = { ...updatedUser.constellations };
+                this.pendingChanges.constellations = { ...updatedUser.constellations };
+                console.log('Updated constellations:', this.characterConstellations);
+              }
+            }
+          });
+      } else {
+        console.log('No user data received');
       }
-    } catch (error: any) {
-      this.errorMessage = error.message;
+    } catch (error) {
+      console.error('Error in ngOnInit:', error);
+      this.errorMessage = 'Error loading user data';
     } finally {
+      console.log('Initialization complete. Loading:', this.isLoading);
       this.isLoading = false;
     }
   }
 
+  ngOnDestroy() {
+    this.destroy$.next();
+    this.destroy$.complete();
+  }
+
   isCharacterOwned(characterId: string): boolean {
-    return this.pendingChanges.characters.includes(characterId);
+    const isOwned = this.pendingChanges.characters.includes(characterId);
+    console.log(`Checking if character ${characterId} is owned:`, isOwned);
+    return isOwned;
   }
 
   getCharacterCons(characterId: string): number {
-    return this.characterConstellations[characterId] || 0;
+    const cons = this.pendingChanges.constellations[characterId] || 0;
+    console.log(`Getting constellations for ${characterId}:`, cons);
+    return cons;
   }
 
   toggleCharacter(character: any) {
-    const characterExists = this.pendingChanges.characters.includes(character.id);
+    const card = document.querySelector(`[data-character-id="${character.id}"]`);
+    if (!card || card.classList.contains('toggling')) return; // Prevent double animations
+    
+    const isCurrentlyOwned = this.pendingChanges.characters.includes(character.id);
+    
+    // Remove any existing animation classes first
+    card.classList.remove('to-owned', 'to-locked');
+    
+    // Add new animation classes
+    card.classList.add('toggling');
+    card.classList.add(isCurrentlyOwned ? 'to-locked' : 'to-owned');
 
-    if (characterExists) {
-      // Remove character
-      this.pendingChanges.characters = this.pendingChanges.characters.filter(id => id !== character.id);
-      delete this.pendingChanges.constellations[character.id];
-    } else {
-      // Add character
-      this.pendingChanges.characters.push(character.id);
-      this.pendingChanges.constellations[character.id] = 0;
-    }
+    setTimeout(() => {
+      if (isCurrentlyOwned) {
+        this.pendingChanges.characters = this.pendingChanges.characters.filter(id => id !== character.id);
+        delete this.pendingChanges.constellations[character.id];
+      } else {
+        this.pendingChanges.characters.push(character.id);
+        this.pendingChanges.constellations[character.id] = 0;
+      }
+      
+      // Clean up animation classes
+      requestAnimationFrame(() => {
+        card.classList.remove('toggling', 'to-owned', 'to-locked');
+      });
+    }, 400);
   }
 
   filterByElement(element: string) {
@@ -876,19 +932,31 @@ export class CharactersComponent implements OnInit {
     this.displayedCharacters = filteredList;
   }
 
-  decreaseConsLevel(event: Event, character: any) {
-    event.stopPropagation();
-    const currentCons = this.getCharacterCons(character.id);
-    if (currentCons > 0) {
-      this.updateCharacterCons(character.id, currentCons - 1);
-    }
-  }
-
   increaseConsLevel(event: Event, character: any) {
     event.stopPropagation();
     const currentCons = this.getCharacterCons(character.id);
     if (currentCons < 6) {
       this.updateCharacterCons(character.id, currentCons + 1);
+      this.animateConsNumber(character.id);
+    }
+  }
+
+  decreaseConsLevel(event: Event, character: any) {
+    event.stopPropagation();
+    const currentCons = this.getCharacterCons(character.id);
+    if (currentCons > 0) {
+      this.updateCharacterCons(character.id, currentCons - 1);
+      this.animateConsNumber(character.id);
+    }
+  }
+
+  private animateConsNumber(characterId: string) {
+    const consElement = document.querySelector(`[data-character-id="${characterId}"] .cons-level`) as HTMLElement;
+    if (consElement) {
+      consElement.classList.remove('bounce');
+      // Force a reflow to restart the animation
+      void consElement.offsetWidth;
+      consElement.classList.add('bounce');
     }
   }
 
