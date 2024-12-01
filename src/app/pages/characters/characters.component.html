@@ -21,6 +21,7 @@
                (click)="filterByElement('Pyro')">
             <img src="assets/others/pyro.webp" alt="Pyro">
             <span>Pyro</span>
+            <div class="particle" *ngFor="let i of [].constructor(20)"></div>
           </div>
           <div class="filter-option" 
                [attr.data-element]="'Hydro'"
@@ -28,6 +29,7 @@
                (click)="filterByElement('Hydro')">
             <img src="assets/others/hydro.webp" alt="Hydro">
             <span>Hydro</span>
+            <div class="particle" *ngFor="let i of [].constructor(20)"></div>
           </div>
           <div class="filter-option" 
                [attr.data-element]="'Anemo'"
@@ -35,6 +37,7 @@
                (click)="filterByElement('Anemo')">
             <img src="assets/others/anemo.webp" alt="Anemo">
             <span>Anemo</span>
+            <div class="particle" *ngFor="let i of [].constructor(40)"></div>
           </div>
           <div class="filter-option" 
                [attr.data-element]="'Electro'"
@@ -42,6 +45,7 @@
                (click)="filterByElement('Electro')">
             <img src="assets/others/electro.webp" alt="Electro">
             <span>Electro</span>
+            <div class="particle" *ngFor="let i of [].constructor(100)"></div>
           </div>
           <div class="filter-option" 
                [attr.data-element]="'Dendro'"
@@ -49,6 +53,7 @@
                (click)="filterByElement('Dendro')">
             <img src="assets/others/dendro.webp" alt="Dendro">
             <span>Dendro</span>
+            <div class="particle" *ngFor="let i of [].constructor(100)"></div>
           </div>
           <div class="filter-option" 
                [attr.data-element]="'Cryo'"
@@ -56,6 +61,7 @@
                (click)="filterByElement('Cryo')">
             <img src="assets/others/cryo.webp" alt="Cryo">
             <span>Cryo</span>
+            <div class="particle" *ngFor="let i of [].constructor(50)"></div>
           </div>
           <div class="filter-option" 
                [attr.data-element]="'Geo'"
@@ -63,6 +69,9 @@
                (click)="filterByElement('Geo')">
             <img src="assets/others/geo.webp" alt="Geo">
             <span>Geo</span>
+            <div class="particle"></div>
+            <div class="shard-left"></div>
+            <div class="shard-right"></div>
           </div>
         </div>
       </div>
@@ -115,7 +124,7 @@
 
     <div class="content-wrapper" [class.sidebar-open]="isSidebarOpen">
       <div class="characters-section">
-        <div class="loading-spinner" *ngIf="isLoading" @fadeOut>
+        <div class="loading-spinner" [class.hidden]="!isLoading">
           <img src="assets/logo.png" alt="Loading..." class="spinning-logo">
         </div>
 

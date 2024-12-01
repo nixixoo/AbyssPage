@@ -142,6 +142,7 @@ main {
     margin-bottom: 15px;
     padding-bottom: 5px;
     border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+    font-weight: bold;
   }
 
   .filter-options {
@@ -185,51 +186,422 @@ main {
 
   // Element-specific colors
   &[data-element="Pyro"] {
-    &:hover, &.active {
+    position: relative;
+    overflow: hidden;
+    transition: background-color 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+
+    &::after {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
       background: rgba(255, 102, 71, 0.2);
-      border-color: #FF6647;
+      transform: scaleX(0);
+      transform-origin: left;
+      transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      z-index: 0;
+    }
+
+    &:hover,
+    &.active {
+      &::after {
+        transform: scaleX(1);
+      }
+
+      .particle {
+        content: '';
+        position: absolute;
+        top: 100%;
+        width: #{2 + random(2)}px;
+        height: #{2 + random(2)}px;
+        background: #FF6647;
+        border-radius: 50%;
+        box-shadow: 0 0 4px #FF6647;
+        opacity: #{0.6 + random(4) * 0.1};
+
+        @for $i from 1 through 200 {
+          &:nth-child(#{$i}) {
+            left: #{(($i / 50 * 200) + random(10) - 5) * 1%};
+            animation: fireParticle#{random(3)} #{1.1 + random(4) * 0.1}s ease-out infinite #{random(10) * 0.1}s;
+            background: if(random(3) == 1, #FF6647, if(random(2) == 1, #FFA500, #FFD700));
+          }
+        }
+      }
+    }
+
+    img, span {
+      position: relative;
+      z-index: 1;
+    }
+
+    // Remove any default hover styles that might be causing the gray overlay
+    &:hover {
+      background: transparent;
     }
   }
 
   &[data-element="Hydro"] {
-    &:hover, &.active {
+    position: relative;
+    overflow: hidden;
+    transition: background-color 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+
+    &::after {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
       background: rgba(51, 170, 255, 0.2);
-      border-color: #33AAFF;
+      transform: scaleX(0);
+      transform-origin: left;
+      transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      z-index: 0;
+    }
+
+    &:hover,
+    &.active {
+      &::after {
+        transform: scaleX(1);
+      }
+
+      .particle {
+        content: '';
+        position: absolute;
+        top: 100%;
+        border-radius: 50%;
+        box-shadow: 0 0 4px rgba(51, 170, 255, 0.8);
+        opacity: #{0.6 + random(4) * 0.1};
+
+        @for $i from 1 through 200 {
+          &:nth-child(#{$i}) {
+            left: #{(($i / 50 * 200) + random(10) - 5) * 1%};
+            width: #{3 + random(3)}px;  // Slightly larger for bubbles
+            height: #{3 + random(3)}px;
+            animation: bubbleParticle#{random(3)} #{1.4 + random(4) * 0.1}s ease-out infinite #{random(10) * 0.1}s;
+            background: if(random(3) == 1, #33AAFF, if(random(2) == 1, #66CCFF, #99EEFF));
+          }
+        }
+      }
+    }
+
+    img, span {
+      position: relative;
+      z-index: 1;
+    }
+
+    &:hover {
+      background: transparent;
     }
   }
 
   &[data-element="Anemo"] {
-    &:hover, &.active {
+    position: relative;
+    overflow: hidden;
+    transition: background-color 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+
+    &::after {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
       background: rgba(116, 216, 158, 0.2);
-      border-color: #74D89E;
+      transform: scaleX(0);
+      transform-origin: left;
+      transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      z-index: 0;
+    }
+
+    &:hover,
+    &.active {
+      &::after {
+        transform: scaleX(1);
+      }
+
+      .particle {
+        content: '';
+        position: absolute;
+        top: 100%;
+        opacity: #{0.6 + random(4) * 0.1};
+        width: #{1 + random(2)}px;  // Thinner for wind particles
+        height: #{3 + random(2)}px; // Slightly elongated
+        background: #74D89E;
+        border-radius: 30px; // More elongated shape
+        box-shadow: 0 0 6px rgba(116, 216, 158, 0.8);
+
+        @for $i from 1 through 200 {
+          &:nth-child(#{$i}) {
+            left: #{(($i / 100 * 200) + random(10) - 5) * 1%};
+            animation: windParticle#{random(3)} #{1.2 + random(4) * 0.1}s ease-out infinite #{random(10) * 0.1}s;
+            background: if(random(3) == 1, #74D89E, if(random(2) == 1, #A5E6C0, #D0F2E0));
+            transform: rotate(#{random(60)}deg); // Random initial rotation
+          }
+        }
+      }
+    }
+
+    img, span {
+      position: relative;
+      z-index: 1;
+    }
+
+    &:hover {
+      background: transparent;
     }
   }
 
   &[data-element="Electro"] {
-    &:hover, &.active {
-      background: rgba(178, 127, 255, 0.2);
-      border-color: #B27FFF;
+    position: relative;
+    overflow: hidden;
+    transition: background-color 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+
+    &::after {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(178, 132, 255, 0.2);
+      transform: scaleX(0);
+      transform-origin: left;
+      transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      z-index: 0;
+    }
+
+    &:hover,
+    &.active {
+      &::after {
+        transform: scaleX(1);
+      }
+
+      .particle {
+        content: '';
+        position: absolute;
+        top: 100%;
+        opacity: #{0.7 + random(3) * 0.1};
+        width: #{1 + random(2)}px;
+        height: #{4 + random(3)}px;
+        background: #B284FF;
+        border-radius: 0; // Sharp edges for lightning
+        box-shadow: 0 0 8px rgba(178, 132, 255, 0.8);
+        filter: blur(0.5px); // Slight blur for glow effect
+
+        @for $i from 1 through 200 {
+          &:nth-child(#{$i}) {
+            left: #{(($i / 40 * 200) + random(10) - 5) * 1%};
+            animation: electroParticle#{random(3)} #{0.4 + random(3) * 0.1}s ease-out infinite #{random(10) * 0.1}s;
+            background: if(random(3) == 1, #B284FF, if(random(2) == 1, #C9A6FF, #E5D5FF));
+            transform: rotate(#{-45 + random(90)}deg); // Random angle for lightning
+          }
+        }
+      }
+    }
+
+    img, span {
+      position: relative;
+      z-index: 1;
+    }
+
+    &:hover {
+      background: transparent;
     }
   }
 
   &[data-element="Dendro"] {
-    &:hover, &.active {
-      background: rgba(119, 221, 78, 0.2);
-      border-color: #77DD4E;
+    position: relative;
+    overflow: hidden;
+    transition: background-color 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+
+    &::after {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(83, 177, 117, 0.2);
+      transform: scaleX(0);
+      transform-origin: left;
+      transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      z-index: 0;
+    }
+
+    &:hover,
+    &.active {
+      &::after {
+        transform: scaleX(1);
+      }
+
+      .particle {
+        content: '';
+        position: absolute;
+        top: -10px; // Start above the element
+        opacity: #{0.7 + random(3) * 0.1};
+        width: #{6 + random(4)}px;
+        height: #{6 + random(4)}px;
+        clip-path: polygon(50% 0%, 80% 50%, 50% 100%, 20% 50%); // Leaf shape
+        background: #53B175;
+        box-shadow: 0 0 5px rgba(83, 177, 117, 0.6);
+
+        @for $i from 1 through 200 {
+          &:nth-child(#{$i}) {
+            left: #{(($i / 50 * 200) + random(10) - 5) * 1%};
+            animation: fallingLeaf#{random(3)} #{2 + random(3) * 0.3}s linear infinite #{random(10) * 0.1}s;
+            background: if(random(3) == 1, #53B175, if(random(2) == 1, #7DC497, #A4D7B4));
+          }
+        }
+      }
+    }
+
+    img, span {
+      position: relative;
+      z-index: 1;
+    }
+
+    &:hover {
+      background: transparent;
     }
   }
 
   &[data-element="Cryo"] {
-    &:hover, &.active {
-      background: rgba(153, 238, 255, 0.2);
-      border-color: #99EEFF;
+    position: relative;
+    overflow: hidden;
+    transition: background-color 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+
+    &::after {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(167, 215, 255, 0.2);
+      transform: scaleX(0);
+      transform-origin: left;
+      transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      z-index: 0;
+    }
+
+    &:hover,
+    &.active {
+      &::after {
+        transform: scaleX(1);
+      }
+
+      .particle {
+        content: '';
+        position: absolute;
+        top: -10px;
+        opacity: 0.9;
+        width: #{6 + random(4)}px;
+        height: #{6 + random(4)}px;
+        background: transparent;
+        clip-path: polygon(
+          50% 0%,
+          65% 25%,
+          100% 25%,
+          75% 50%,
+          100% 75%,
+          65% 75%,
+          50% 100%,
+          35% 75%,
+          0% 75%,
+          25% 50%,
+          0% 25%,
+          35% 25%
+        );
+        background: #A7D7FF;
+        box-shadow: 0 0 15px rgba(167, 215, 255, 0.8);
+
+        @for $i from 1 through 150 {
+          &:nth-child(#{$i}) {
+            left: #{(($i / 50 * 150) + random(10) - 5) * 1%};
+            animation: crystalFall#{random(3)} 2s linear infinite #{random(10) * 0.1}s;
+            background: if(random(3) == 1, #A7D7FF, if(random(2) == 1, #D6EBFF, #FFFFFF));
+          }
+        }
+      }
+    }
+
+    img, span {
+      position: relative;
+      z-index: 1;
+    }
+
+    &:hover {
+      background: transparent;
     }
   }
 
   &[data-element="Geo"] {
-    &:hover, &.active {
-      background: rgba(255, 180, 51, 0.2);
-      border-color: #FFB433;
+    position: relative;
+    overflow: hidden;
+    transition: background-color 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+
+    &::after {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(255, 180, 76, 0.2);
+      transform: scaleX(0);
+      transform-origin: left;
+      transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      z-index: 0;
+    }
+
+    &:hover,
+    &.active {
+      &::after {
+        transform: scaleX(1);
+      }
+
+      .particle {
+        content: '';
+        position: absolute;
+        width: 20px;
+        height: 20px;
+        clip-path: polygon(30% 0%, 70% 0%, 100% 30%, 90% 70%, 70% 100%, 30% 100%, 10% 70%, 0% 30%); // Rock shape
+        background: #FFB44C;
+        box-shadow: 0 0 8px rgba(255, 180, 76, 0.6);
+        top: -20px;
+        left: 50%;
+        transform: translateX(-50%);
+        animation: geoImpact 2s ease-in infinite;
+      }
+
+      .shard-left, .shard-right {
+        content: '';
+        position: absolute;
+        width: 10px;
+        height: 10px;
+        background: #FFB44C;
+        clip-path: polygon(30% 0%, 70% 0%, 100% 30%, 90% 70%, 70% 100%, 30% 100%, 10% 70%, 0% 30%); // Same rock shape
+        bottom: 0px;
+        left: 50%;
+        opacity: 0;
+        z-index: 2;
+      }
+
+      .shard-left {
+        animation: shardLeft 2s ease-in infinite;
+      }
+
+      .shard-right {
+        animation: shardRight 2s ease-in infinite;
+      }
+    }
+
+    img, span {
+      position: relative;
+      z-index: 1;
     }
   }
 
@@ -265,13 +637,25 @@ main {
 
 .characters-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
   gap: 20px;
   padding: 20px;
   width: 100%;
   
   &.loading {
     opacity: 0;
+    transition: opacity 0.3s ease-in-out;
+  }
+
+  &:not(.loading) {
+    opacity: 1;
+    transition: opacity 0.3s ease-in-out;
+    animation: fadeIn 0.3s ease-out;
+
+    .character-card {
+      animation: cardAnimation 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      animation-fill-mode: both;
+    }
   }
 }
 
@@ -650,10 +1034,19 @@ main {
   position: absolute;
   top: 50%;
   left: 50%;
-  transform: translate(-50%,  100%);
+  transform: translate(-50%, 100%);
   z-index: 2;
   width: 60px;
   margin: 0 auto;
+  pointer-events: none;
+  opacity: 1;
+  visibility: visible;
+  transition: opacity 0.8s ease-out, visibility 0s linear 0.8s;
+
+  &.hidden {
+    opacity: 0;
+    visibility: hidden;
+  }
 }
 
 .spinning-logo {
@@ -680,6 +1073,529 @@ main {
   width: 100%;
   
   &.loading {
+    opacity: 0;
+    transition: opacity 0.3s ease-in-out;
+  }
+
+  &:not(.loading) {
+    opacity: 1;
+    transition: opacity 0.3s ease-in-out;
+    animation: fadeIn 0.3s ease-out;
+
+    .character-card {
+      animation: cardAnimation 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      animation-fill-mode: both;
+    }
+  }
+}
+
+@keyframes cardAnimation {
+  from {
+    opacity: 0;
+    transform: scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@keyframes fireParticle1 {
+  0% {
+    transform: translateY(0) translateX(0) scale(1);
+    opacity: 1;
+  }
+  50% {
+    transform: translateY(-20px) translateX(5px) scale(0.8);
+    opacity: 0.8;
+  }
+  100% {
+    transform: translateY(-40px) translateX(10px) scale(0);
+    opacity: 0;
+  }
+}
+
+@keyframes fireParticle2 {
+  0% {
+    transform: translateY(0) translateX(0) scale(1);
+    opacity: 1;
+  }
+  50% {
+    transform: translateY(-20px) translateX(-5px) scale(0.8);
+    opacity: 0.8;
+  }
+  100% {
+    transform: translateY(-40px) translateX(-10px) scale(0);
+    opacity: 0;
+  }
+}
+
+@keyframes fireParticle3 {
+  0% {
+    transform: translateY(0) translateX(0) scale(1);
+    opacity: 1;
+  }
+  50% {
+    transform: translateY(-25px) scale(0.8);
+    opacity: 0.8;
+  }
+  100% {
+    transform: translateY(-45px) scale(0);
+    opacity: 0;
+  }
+}
+
+.particles {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 100%;
+  pointer-events: none;
+}
+
+.particle {
+  position: absolute;
+  bottom: 0;
+  border-radius: 50%;
+  pointer-events: none;
+  box-shadow: 0 0 6px currentColor;
+}
+
+@keyframes bubbleParticle1 {
+  0% {
+    transform: translateY(0) translateX(0) scale(1);
+    opacity: 0;
+  }
+  20% {
+    opacity: #{0.6 + random(4) * 0.1};
+  }
+  50% {
+    transform: translateY(-30px) translateX(#{random(10)}px) scale(1.2);
+  }
+  100% {
+    transform: translateY(-60px) translateX(#{random(20)}px) scale(0.8);
+    opacity: 0;
+  }
+}
+
+@keyframes bubbleParticle2 {
+  0% {
+    transform: translateY(0) translateX(0) scale(1);
+    opacity: 0;
+  }
+  20% {
+    opacity: #{0.6 + random(4) * 0.1};
+  }
+  50% {
+    transform: translateY(-25px) translateX(#{-random(10)}px) scale(1.2);
+  }
+  100% {
+    transform: translateY(-50px) translateX(#{-random(20)}px) scale(0.8);
+    opacity: 0;
+  }
+}
+
+@keyframes bubbleParticle3 {
+  0% {
+    transform: translateY(0) translateX(0) scale(1);
+    opacity: 0;
+  }
+  20% {
+    opacity: #{0.6 + random(4) * 0.1};
+  }
+  60% {
+    transform: translateY(-35px) scale(1.2);
+  }
+  100% {
+    transform: translateY(-70px) scale(0.8);
+    opacity: 0;
+  }
+}
+
+@keyframes windParticle1 {
+  0% {
+    transform: translateY(0) translateX(0) rotate(0deg) scale(1);
+    opacity: 0;
+  }
+  20% {
+    opacity: #{0.6 + random(4) * 0.1};
+  }
+  100% {
+    transform: translateY(-50px) translateX(100px) rotate(180deg) scale(0);
+    opacity: 0;
+  }
+}
+
+@keyframes windParticle2 {
+  0% {
+    transform: translateY(0) translateX(0) rotate(0deg) scale(1);
+    opacity: 0;
+  }
+  20% {
+    opacity: #{0.6 + random(4) * 0.1};
+  }
+  100% {
+    transform: translateY(-30px) translateX(80px) rotate(-180deg) scale(0);
+    opacity: 0;
+  }
+}
+
+@keyframes windParticle3 {
+  0% {
+    transform: translateY(0) translateX(0) rotate(0deg) scale(1);
+    opacity: 0;
+  }
+  20% {
+    opacity: #{0.6 + random(4) * 0.1};
+  }
+  100% {
+    transform: translateY(-40px) translateX(90px) rotate(360deg) scale(0);
+    opacity: 0;
+  }
+}
+
+@keyframes lightningFlash {
+  0% {
+    opacity: 0;
+    transform: scale(0.8) rotate(#{60 + random(60)}deg);
+  }
+  5% {
+    opacity: 1;
+    transform: scale(1) rotate(#{60 + random(60)}deg);
+  }
+  10% {
+    opacity: 0;
+    transform: scale(1) rotate(#{60 + random(60)}deg);
+  }
+  15% {
+    opacity: 0.8;
+    transform: scale(1.1) rotate(#{60 + random(60)}deg);
+  }
+  20%, 100% {
+    opacity: 0;
+    transform: scale(0.8) rotate(#{60 + random(60)}deg);
+  }
+}
+
+@keyframes electroParticle1 {
+  0% {
+    transform: translateY(0) translateX(0) rotate(-45deg) scale(1);
+    opacity: 0;
+  }
+  10% {
+    opacity: 1;
+    transform: translateY(-10px) translateX(5px) rotate(-45deg) scale(1.2);
+  }
+  20% {
+    transform: translateY(-15px) translateX(10px) rotate(-40deg) scale(1);
+  }
+  30% {
+    transform: translateY(-25px) translateX(15px) rotate(-50deg) scale(1.2);
+  }
+  100% {
+    transform: translateY(-50px) translateX(20px) rotate(-45deg) scale(0);
+    opacity: 0;
+  }
+}
+
+@keyframes electroParticle2 {
+  0% {
+    transform: translateY(0) translateX(0) rotate(45deg) scale(1);
+    opacity: 0;
+  }
+  10% {
+    opacity: 1;
+    transform: translateY(-10px) translateX(-5px) rotate(45deg) scale(1.2);
+  }
+  20% {
+    transform: translateY(-15px) translateX(-10px) rotate(40deg) scale(1);
+  }
+  30% {
+    transform: translateY(-25px) translateX(-15px) rotate(50deg) scale(1.2);
+  }
+  100% {
+    transform: translateY(-50px) translateX(-20px) rotate(45deg) scale(0);
+    opacity: 0;
+  }
+}
+
+@keyframes electroParticle3 {
+  0% {
+    transform: translateY(0) translateX(0) scale(1);
+    opacity: 0;
+  }
+  10% {
+    opacity: 1;
+    transform: translateY(-15px) scale(1.2);
+  }
+  20% {
+    transform: translateY(-20px) scale(1);
+  }
+  30% {
+    transform: translateY(-30px) scale(1.2);
+  }
+  100% {
+    transform: translateY(-60px) scale(0);
+    opacity: 0;
+  }
+}
+
+@keyframes fallingLeaf1 {
+  0% {
+    transform: translateY(-10px) translateX(0) rotate(0deg);
+    opacity: 0;
+  }
+  10% {
+    opacity: 1;
+  }
+  40% {
+    transform: translateY(20px) translateX(20px) rotate(180deg);
+  }
+  60% {
+    transform: translateY(40px) translateX(-20px) rotate(360deg);
+  }
+  80% {
+    transform: translateY(60px) translateX(10px) rotate(540deg);
+  }
+  100% {
+    transform: translateY(100px) translateX(0) rotate(720deg);
+    opacity: 0;
+  }
+}
+
+@keyframes fallingLeaf2 {
+  0% {
+    transform: translateY(-10px) translateX(0) rotate(0deg);
+    opacity: 0;
+  }
+  10% {
+    opacity: 1;
+  }
+  45% {
+    transform: translateY(25px) translateX(-20px) rotate(-180deg);
+  }
+  65% {
+    transform: translateY(45px) translateX(20px) rotate(-360deg);
+  }
+  85% {
+    transform: translateY(65px) translateX(-10px) rotate(-540deg);
+  }
+  100% {
+    transform: translateY(100px) translateX(0) rotate(-720deg);
+    opacity: 0;
+  }
+}
+
+@keyframes fallingLeaf3 {
+  0% {
+    transform: translateY(-10px) translateX(0) rotate(0deg);
+    opacity: 0;
+  }
+  10% {
+    opacity: 1;
+  }
+  50% {
+    transform: translateY(30px) translateX(15px) rotate(270deg);
+  }
+  75% {
+    transform: translateY(50px) translateX(-15px) rotate(540deg);
+  }
+  100% {
+    transform: translateY(100px) translateX(0) rotate(810deg);
+    opacity: 0;
+  }
+}
+
+@keyframes crystalFall1 {
+  0% {
+    transform: translateY(-10px) translateX(0) rotate(0deg);
+  }
+  100% {
+    transform: translateY(100px) translateX(10px) rotate(360deg);
+  }
+}
+
+@keyframes crystalFall2 {
+  0% {
+    transform: translateY(-10px) translateX(0) rotate(0deg);
+  }
+  100% {
+    transform: translateY(100px) translateX(-10px) rotate(-360deg);
+  }
+}
+
+@keyframes crystalFall3 {
+  0% {
+    transform: translateY(-10px) translateX(0) rotate(0deg);
+  }
+  100% {
+    transform: translateY(100px) translateX(0) rotate(360deg);
+  }
+}
+
+@keyframes geoRise1 {
+  0% {
+    transform: translateY(0) translateX(-5px) rotate(-15deg) scale(0.8);
+  }
+  100% {
+    transform: translateY(-60px) translateX(5px) rotate(15deg) scale(1.2);
+  }
+}
+
+@keyframes geoRise2 {
+  0% {
+    transform: translateY(0) translateX(5px) rotate(15deg) scale(0.8);
+  }
+  100% {
+    transform: translateY(-60px) translateX(-5px) rotate(-15deg) scale(1.2);
+  }
+}
+
+@keyframes geoRise3 {
+  0% {
+    transform: translateY(0) rotate(0deg) scale(0.8);
+  }
+  100% {
+    transform: translateY(-60px) rotate(0deg) scale(1.2);
+  }
+}
+
+@keyframes rockShard {
+  0% {
+    opacity: 0;
+    transform: scale(0) rotate(0deg);
+  }
+  20% {
+    opacity: 1;
+    transform: scale(1) rotate(45deg);
+  }
+  80% {
+    opacity: 1;
+    transform: scale(1) rotate(45deg);
+  }
+  100% {
+    opacity: 0;
+    transform: scale(0) rotate(90deg);
+  }
+}
+
+@keyframes geoBurst {
+  0% {
+    transform: translate(-50%, -50%) scale(0) rotate(0deg);
+    opacity: 1;
+  }
+  100% {
+    transform: translate(
+      #{-50% + random(100) - 50}px,
+      #{-50% + random(100) - 50}px
+    ) scale(1.5) rotate(#{random(360)}deg);
+    opacity: 0;
+  }
+}
+
+@keyframes geoFormAndShatter {
+  0% {
+    transform: scale(0) rotate(0deg);
+    opacity: 0;
+  }
+  20% {
+    transform: scale(1) rotate(0deg);
+    opacity: 1;
+  }
+  60% {
+    transform: scale(1) rotate(0deg);
+    opacity: 1;
+  }
+  80% {
+    transform: scale(0.8) rotate(15deg);
+    opacity: 1;
+  }
+  100% {
+    transform: scale(0) rotate(45deg) translate(10px, 10px);
+    opacity: 0;
+  }
+}
+
+@keyframes geoFall {
+  0% {
+    transform: translateY(0) rotate(0deg);
+    opacity: 1;
+  }
+  40% {
+    transform: translateY(80%) rotate(180deg);
+    opacity: 1;
+  }
+  45% {
+    transform: translateY(80%) rotate(180deg);
+    opacity: 0;
+  }
+  100% {
+    transform: translateY(80%) rotate(180deg);
+    opacity: 0;
+  }
+}
+
+@keyframes geoShatter {
+  0% {
+    transform: translate(0, 0) scale(0) rotate(0deg);
+    opacity: 0;
+  }
+  10% {
+    opacity: 1;
+    transform: translate(0, 0) scale(1) rotate(0deg);
+  }
+  100% {
+    transform: translate(random(20) - 10px, 20px) scale(0.5) rotate(#{random(360)}deg);
+    opacity: 0;
+  }
+}
+
+@keyframes geoImpact {
+  0% {
+    transform: translateX(-50%) translateY(0) rotate(0deg) scale(1);
+    opacity: 1;
+  }
+  40% {
+    transform: translateX(-50%) translateY(40px) rotate(180deg) scale(1);
+    opacity: 1;
+  }
+  45% {
+    transform: translateX(-50%) translateY(40px) rotate(180deg) scale(1.2);
+    opacity: 0;
+  }
+  100% {
+    transform: translateX(-50%) translateY(40px) rotate(180deg) scale(0);
+    opacity: 0;
+  }
+}
+
+@keyframes shardLeft {
+  0%, 40% {
+    transform: translateX(-50%) rotate(0deg);
+    opacity: 0;
+  }
+  45% {
+    transform: translateX(-100%) rotate(-45deg);
+    opacity: 1;
+  }
+  100% {
+    transform: translateX(-150%) translateY(10px) rotate(-90deg);
+    opacity: 0;
+  }
+}
+
+@keyframes shardRight {
+  0%, 40% {
+    transform: translateX(-50%) rotate(0deg);
+    opacity: 0;
+  }
+  45% {
+    transform: translateX(0%) rotate(45deg);
+    opacity: 1;
+  }
+  100% {
+    transform: translateX(50%) translateY(10px) rotate(90deg);
     opacity: 0;
   }
 }

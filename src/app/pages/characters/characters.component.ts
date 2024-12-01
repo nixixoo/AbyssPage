@@ -828,14 +828,17 @@ export class CharactersComponent implements OnInit, OnDestroy {
 
   async ngOnInit() {
     try {
-      await new Promise(resolve => setTimeout(resolve, 1000));
-
+      this.isLoading = true;
+      this.displayedCharacters = []; // Clear displayed characters while loading
+      
+      // Subscribe to user data
       this.authService.currentUser$
         .pipe(
           takeUntil(this.destroy$)
         )
         .subscribe(user => {
           if (user) {
+            // Process user data first
             this.creator = user;
             this.pendingChanges.characters = user.characters 
               ? Object.keys(user.characters).filter(key => user.characters[key])
@@ -845,13 +848,21 @@ export class CharactersComponent implements OnInit, OnDestroy {
               this.characterConstellations = { ...user.constellations };
               this.pendingChanges.constellations = { ...user.constellations };
             }
+
+            // Start fade out
             this.isLoading = false;
+            
+            // Set characters after a delay to allow fade out to complete
+            setTimeout(() => {
+              this.displayedCharacters = this.characterList;
+            }, 800); // Match this with the CSS transition duration
           } else if (!this.isLoading) {
             this.router.navigate(['/login']);
           }
         });
 
     } catch (error) {
+      console.error('Error loading user data:', error);
       this.errorMessage = 'Error loading user data';
       this.isLoading = false;
     }
