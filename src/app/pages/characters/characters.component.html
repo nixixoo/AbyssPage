@@ -1,0 +1,104 @@
+<div class="characters-container">
+  <div class="overlay"></div>
+
+  <app-header></app-header>
+
+  <main>
+    <h1>Your Characters</h1>
+    <h2>Select the characters you own</h2>
+
+    <div class="content-wrapper">
+      <div class="filter-sidebar">
+        <div class="filter-section">
+          <h3>Category</h3>
+          
+          <!-- Element Filter -->
+          <div class="filter-group">
+            <div class="filter-title">
+              <img src="assets/others/all_elements.webp" alt="All Elements">
+              All Elements <span>({{ characterList.length }})</span>
+            </div>
+            <div class="filter-options">
+              <div class="filter-option" *ngFor="let element of elements" (click)="filterByElement(element)">
+                <img [src]="'assets/others/' + element.toLowerCase() + '.webp'" [alt]="element">
+                {{ element }}
+              </div>
+            </div>
+          </div>
+
+          <!-- Weapon Filter -->
+          <div class="filter-group">
+            <div class="filter-title">
+              <img src="assets/others/all_weapons.webp" alt="All Weapons">
+              All Weapons
+            </div>
+            <div class="filter-options">
+              <div class="filter-option" *ngFor="let weapon of weapons" (click)="filterByWeapon(weapon)">
+                <img [src]="'assets/others/' + weapon.toLowerCase() + '.webp'" [alt]="weapon">
+                {{ weapon }}
+              </div>
+            </div>
+          </div>
+
+          <!-- Rarity Filter -->
+          <div class="filter-group">
+            <div class="filter-title">
+              <img src="assets/rarity/star_icon.webp" alt="All Rarities">
+              Rarity
+            </div>
+            <div class="filter-options">
+              <div class="filter-option" *ngFor="let stars of [4, 5]" (click)="filterByRarity(stars)">
+                <div class="rarity-stars" [attr.data-rarity]="stars">
+                  <span *ngFor="let star of [].constructor(stars)">★</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="characters-grid" *ngIf="!isLoading">
+        <div class="character-card" 
+             *ngFor="let character of displayedCharacters"
+             [class.owned]="isCharacterOwned(character.id)"
+             (click)="toggleCharacter(character)">
+          <div class="character-image" [attr.data-rarity]="character.rarity">
+            <img [src]="character.image" [alt]="character.name">
+            <div class="rarity">
+              <span *ngFor="let star of [].constructor(character.rarity)">★</span>
+            </div>
+          </div>
+          <div class="character-info">
+            <h3>{{ character.name }}</h3>
+            <div class="constellation-selector">
+              <button class="cons-btn minus" (click)="decreaseConsLevel($event, character)">-</button>
+              <span class="cons-level">C{{ getCharacterCons(character.id) || '0' }}</span>
+              <button class="cons-btn plus" (click)="increaseConsLevel($event, character)">+</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="action-buttons">
+        <button 
+          class="save-btn" 
+          (click)="saveChanges()"
+          [disabled]="isLoading">
+          {{ isLoading ? 'Saving...' : 'Apply Changes' }}
+        </button>
+        <button 
+          class="discard-btn" 
+          (click)="discardChanges()"
+          [disabled]="isLoading">
+          Discard Changes
+        </button>
+      </div>
+    </div>
+
+    <div class="loading" *ngIf="isLoading">
+      <svg class="spinner" viewBox="0 0 50 50">
+        <circle cx="25" cy="25" r="20" fill="none" stroke-width="5"></circle>
+      </svg>
+    </div>
+  </main>
+</div>

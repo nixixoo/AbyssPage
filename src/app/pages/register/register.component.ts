@@ -24,9 +24,11 @@ import { AnimationService } from '../../services/animation.service';
 export class RegisterComponent {
   username: string = '';
   password: string = '';
+  confirmPassword: string = '';
   errorMessage: string = '';
   usernameError: boolean = false;
   passwordError: boolean = false;
+  confirmPasswordError: boolean = false;
   isLoading: boolean = false;
   showPassword: boolean = false;
   showWelcomeAnimation: boolean = false;
@@ -51,11 +53,19 @@ export class RegisterComponent {
     this.errorMessage = '';
   }
 
+  validateConfirmPassword() {
+    this.confirmPasswordError = this.confirmPassword.length > 0 && 
+      (this.confirmPassword.length < 6 || this.confirmPassword !== this.password);
+    this.errorMessage = '';
+  }
+
   isFormValid(): boolean {
     return this.username.length >= 3 && 
            this.password.length >= 6 && 
+           this.password === this.confirmPassword &&
            !this.usernameError && 
-           !this.passwordError;
+           !this.passwordError &&
+           !this.confirmPasswordError;
   }
 
   async onRegister() {
@@ -70,7 +80,7 @@ export class RegisterComponent {
       this.animationService.startAnimation();
       
       setTimeout(() => {
-        this.router.navigate(['/']);
+        this.router.navigate(['/characters']);
       }, 7000);
       
     } catch (error: any) {

@@ -18,4 +18,8 @@ export class HeaderComponent {
   navigateToLogin() {
     this.router.navigate(['/login']);
   }
+
+  navigateToCharacters() {
+    this.router.navigate(['/characters']);
+  }
 }
