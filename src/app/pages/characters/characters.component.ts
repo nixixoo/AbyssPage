@@ -6,13 +6,27 @@ import { CreatorService } from '../../services/creator.service';
 import { AuthService } from '../../services/auth.service';
 import { Router } from '@angular/router';
 import { Subject, takeUntil, firstValueFrom, first } from 'rxjs';
+import { trigger, transition, style, animate } from '@angular/animations';
 
 @Component({
   selector: 'app-characters',
   standalone: true,
   imports: [CommonModule, HeaderComponent],
   templateUrl: './characters.component.html',
-  styleUrls: ['./characters.component.scss']
+  styleUrls: ['./characters.component.scss'],
+  animations: [
+    trigger('fadeOut', [
+      transition(':leave', [
+        animate('300ms ease-out', style({ opacity: 0 }))
+      ])
+    ]),
+    trigger('fadeIn', [
+      transition(':enter', [
+        style({ opacity: 0 }),
+        animate('300ms ease-in', style({ opacity: 1 }))
+      ])
+    ])
+  ]
 })
 export class CharactersComponent implements OnInit, OnDestroy {
   private destroy$ = new Subject<void>();
@@ -46,12 +60,13 @@ export class CharactersComponent implements OnInit, OnDestroy {
     rarity: null as number | null
   };
 
+  isSidebarOpen = false;
+
   constructor(
     private creatorService: CreatorService,
     private authService: AuthService,
     private router: Router
   ) {
-    // Initialize character list
     this.characterList = [
       {
         id: 'aether',
@@ -795,37 +810,30 @@ export class CharactersComponent implements OnInit, OnDestroy {
 
   async ngOnInit() {
     try {
-      // Wait a bit for Firebase to initialize
       await new Promise(resolve => setTimeout(resolve, 1000));
 
-      // Subscribe to user changes
       this.authService.currentUser$
         .pipe(
           takeUntil(this.destroy$)
         )
         .subscribe(user => {
-          console.log('User data updated:', user?.username);
           if (user) {
             this.creator = user;
-            // Initialize characters from user data
             this.pendingChanges.characters = user.characters 
               ? Object.keys(user.characters).filter(key => user.characters[key])
               : [];
             
-            // Initialize constellations
             if (user.constellations) {
               this.characterConstellations = { ...user.constellations };
               this.pendingChanges.constellations = { ...user.constellations };
             }
             this.isLoading = false;
           } else if (!this.isLoading) {
-            // Only redirect if we're not in the initial loading state
             this.router.navigate(['/login']);
           }
         });
 
     } catch (error) {
-      console.error('Error initializing component:', error);
       this.errorMessage = 'Error loading user data';
       this.isLoading = false;
     }
@@ -838,7 +846,6 @@ export class CharactersComponent implements OnInit, OnDestroy {
 
   isCharacterOwned(characterId: string): boolean {
     const isOwned = this.pendingChanges.characters.includes(characterId);
-    console.log(`Checking if character ${characterId} is owned:`, isOwned);
     return isOwned;
   }
 
@@ -981,5 +988,9 @@ export class CharactersComponent implements OnInit, OnDestroy {
         : [];
       this.pendingChanges.constellations = { ...this.characterConstellations };
     }
+  }
+
+  toggleSidebar() {
+    this.isSidebarOpen = !this.isSidebarOpen;
   }
 }
