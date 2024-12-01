@@ -6,7 +6,7 @@ import { CreatorService } from '../../services/creator.service';
 import { AuthService } from '../../services/auth.service';
 import { Router } from '@angular/router';
 import { Subject, takeUntil, firstValueFrom, first } from 'rxjs';
-import { trigger, transition, style, animate } from '@angular/animations';
+import { trigger, transition, style, animate, query, stagger } from '@angular/animations';
 
 @Component({
   selector: 'app-characters',
@@ -24,6 +24,22 @@ import { trigger, transition, style, animate } from '@angular/animations';
       transition(':enter', [
         style({ opacity: 0 }),
         animate('300ms ease-in', style({ opacity: 1 }))
+      ])
+    ]),
+    trigger('cardAnimation', [
+      transition(':enter', [
+        style({ opacity: 0, transform: 'scale(0.95)' }),
+        animate('0.3s cubic-bezier(0.4, 0, 0.2, 1)', 
+          style({ opacity: 1, transform: 'scale(1)' })
+        )
+      ]),
+      transition(':leave', [
+        animate('0.3s cubic-bezier(0.4, 0, 0.2, 1)', 
+          style({ opacity: 0, transform: 'scale(0.95)' })
+        )
+      ]),
+      transition('* => *', [
+        animate('0.3s cubic-bezier(0.4, 0, 0.2, 1)')
       ])
     ])
   ]
@@ -61,10 +77,8 @@ export class CharactersComponent implements OnInit, OnDestroy {
   };
 
   isSidebarOpen = false;
-  selectedElement: string | null = null;
-  selectedWeapon: string | null = null;
+
   selectedRarity: number | null = null;
-  allCharacters: typeof this.characterList = [];
 
   constructor(
     private creatorService: CreatorService,
@@ -809,7 +823,6 @@ export class CharactersComponent implements OnInit, OnDestroy {
         weaponType: 'Polearm'
       }
     ];
-    this.allCharacters = this.characterList;
     this.displayedCharacters = this.characterList;
   }
 
@@ -887,49 +900,39 @@ export class CharactersComponent implements OnInit, OnDestroy {
     }, 400);
   }
 
-  filterByElement(element: string): void {
-    this.selectedElement = this.selectedElement === element ? null : element;
-    
-    // Apply filters
+  filterByElement(element: string) {
+    this.activeFilters.element = this.activeFilters.element === element ? null : element;
     this.applyFilters();
   }
 
-  filterByWeapon(weapon: string): void {
-    this.selectedWeapon = this.selectedWeapon === weapon ? null : weapon;
+  filterByWeapon(weapon: string) {
+    this.activeFilters.weapon = this.activeFilters.weapon === weapon ? null : weapon;
     this.applyFilters();
   }
 
-  filterByRarity(rarity: number): void {
+  filterByRarity(rarity: number) {
     this.selectedRarity = this.selectedRarity === rarity ? null : rarity;
     this.applyFilters();
   }
 
-  private applyFilters(): void {
-    let filteredCharacters = [...this.allCharacters];
+  private applyFilters() {
+    // Implementation of filter logic
+    let filteredList = [...this.characterList];
 
-    // Apply element filter
-    if (this.selectedElement) {
-      filteredCharacters = filteredCharacters.filter(
-        char => char.element === this.selectedElement
-      );
+    if (this.activeFilters.element) {
+      filteredList = filteredList.filter(char => char.element === this.activeFilters.element);
     }
 
-    // Apply weapon filter
-    if (this.selectedWeapon) {
-      filteredCharacters = filteredCharacters.filter(
-        char => char.weaponType === this.selectedWeapon
-      );
+    if (this.activeFilters.weapon) {
+      filteredList = filteredList.filter(char => char.weaponType === this.activeFilters.weapon);
     }
 
-    // Apply rarity filter
     if (this.selectedRarity) {
-      filteredCharacters = filteredCharacters.filter(
-        char => char.rarity === this.selectedRarity
-      );
+      filteredList = filteredList.filter(char => char.rarity === this.selectedRarity);
     }
 
-    // Update displayed characters
-    this.displayedCharacters = filteredCharacters;
+    // Update your displayed list
+    this.displayedCharacters = filteredList;
   }
 
   increaseConsLevel(event: Event, character: any) {
@@ -1009,15 +1012,15 @@ export class CharactersComponent implements OnInit, OnDestroy {
     this.isSidebarOpen = !this.isSidebarOpen;
   }
 
-  isElementSelected(element: string): boolean {
-    return this.selectedElement === element;
+  isRaritySelected(rarity: number): boolean {
+    return this.selectedRarity === rarity;
   }
 
   isWeaponSelected(weapon: string): boolean {
-    return this.selectedWeapon === weapon;
+    return this.activeFilters.weapon === weapon;
   }
 
-  isRaritySelected(rarity: number): boolean {
-    return this.selectedRarity === rarity;
+  isElementSelected(element: string): boolean {
+    return this.activeFilters.element === element;
   }
 }
