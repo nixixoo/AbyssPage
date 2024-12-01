@@ -794,59 +794,39 @@ export class CharactersComponent implements OnInit, OnDestroy {
   }
 
   async ngOnInit() {
-    console.log('CharactersComponent initializing...');
     try {
-      console.log('Waiting for user data...');
-      const user = await firstValueFrom(this.authService.currentUser$.pipe(first()));
-      console.log('Received user data:', user);
-      
-      if (user) {
-        console.log('User is logged in, setting creator data');
-        this.creator = user;
-        
-        // Debug characters
-        console.log('User characters:', user.characters);
-        this.pendingChanges.characters = user.characters 
-          ? Object.keys(user.characters).filter(key => user.characters[key])
-          : [];
-        console.log('Filtered characters:', this.pendingChanges.characters);
-        
-        // Debug constellations
-        console.log('User constellations:', user.constellations);
-        if (user.constellations) {
-          this.characterConstellations = { ...user.constellations };
-          this.pendingChanges.constellations = { ...user.constellations };
-          console.log('Set constellations:', this.characterConstellations);
-        }
+      // Wait a bit for Firebase to initialize
+      await new Promise(resolve => setTimeout(resolve, 1000));
 
-        // Subscribe to future updates
-        console.log('Setting up user update subscription');
-        this.authService.currentUser$
-          .pipe(takeUntil(this.destroy$))
-          .subscribe(updatedUser => {
-            console.log('Received user update:', updatedUser);
-            if (updatedUser) {
-              this.creator = updatedUser;
-              this.pendingChanges.characters = updatedUser.characters 
-                ? Object.keys(updatedUser.characters).filter(key => updatedUser.characters[key])
-                : [];
-              console.log('Updated characters:', this.pendingChanges.characters);
-              
-              if (updatedUser.constellations) {
-                this.characterConstellations = { ...updatedUser.constellations };
-                this.pendingChanges.constellations = { ...updatedUser.constellations };
-                console.log('Updated constellations:', this.characterConstellations);
-              }
+      // Subscribe to user changes
+      this.authService.currentUser$
+        .pipe(
+          takeUntil(this.destroy$)
+        )
+        .subscribe(user => {
+          console.log('User data updated:', user?.username);
+          if (user) {
+            this.creator = user;
+            // Initialize characters from user data
+            this.pendingChanges.characters = user.characters 
+              ? Object.keys(user.characters).filter(key => user.characters[key])
+              : [];
+            
+            // Initialize constellations
+            if (user.constellations) {
+              this.characterConstellations = { ...user.constellations };
+              this.pendingChanges.constellations = { ...user.constellations };
             }
-          });
-      } else {
-        console.log('No user data received');
-      }
+            this.isLoading = false;
+          } else if (!this.isLoading) {
+            // Only redirect if we're not in the initial loading state
+            this.router.navigate(['/login']);
+          }
+        });
+
     } catch (error) {
-      console.error('Error in ngOnInit:', error);
+      console.error('Error initializing component:', error);
       this.errorMessage = 'Error loading user data';
-    } finally {
-      console.log('Initialization complete. Loading:', this.isLoading);
       this.isLoading = false;
     }
   }
