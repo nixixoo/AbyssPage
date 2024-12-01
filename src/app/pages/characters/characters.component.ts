@@ -61,6 +61,10 @@ export class CharactersComponent implements OnInit, OnDestroy {
   };
 
   isSidebarOpen = false;
+  selectedElement: string | null = null;
+  selectedWeapon: string | null = null;
+  selectedRarity: number | null = null;
+  allCharacters: typeof this.characterList = [];
 
   constructor(
     private creatorService: CreatorService,
@@ -805,6 +809,7 @@ export class CharactersComponent implements OnInit, OnDestroy {
         weaponType: 'Polearm'
       }
     ];
+    this.allCharacters = this.characterList;
     this.displayedCharacters = this.characterList;
   }
 
@@ -882,39 +887,49 @@ export class CharactersComponent implements OnInit, OnDestroy {
     }, 400);
   }
 
-  filterByElement(element: string) {
-    this.activeFilters.element = this.activeFilters.element === element ? null : element;
+  filterByElement(element: string): void {
+    this.selectedElement = this.selectedElement === element ? null : element;
+    
+    // Apply filters
     this.applyFilters();
   }
 
-  filterByWeapon(weapon: string) {
-    this.activeFilters.weapon = this.activeFilters.weapon === weapon ? null : weapon;
+  filterByWeapon(weapon: string): void {
+    this.selectedWeapon = this.selectedWeapon === weapon ? null : weapon;
     this.applyFilters();
   }
 
-  filterByRarity(rarity: number) {
-    this.activeFilters.rarity = this.activeFilters.rarity === rarity ? null : rarity;
+  filterByRarity(rarity: number): void {
+    this.selectedRarity = this.selectedRarity === rarity ? null : rarity;
     this.applyFilters();
   }
 
-  private applyFilters() {
-    // Implementation of filter logic
-    let filteredList = [...this.characterList];
+  private applyFilters(): void {
+    let filteredCharacters = [...this.allCharacters];
 
-    if (this.activeFilters.element) {
-      filteredList = filteredList.filter(char => char.element === this.activeFilters.element);
+    // Apply element filter
+    if (this.selectedElement) {
+      filteredCharacters = filteredCharacters.filter(
+        char => char.element === this.selectedElement
+      );
     }
 
-    if (this.activeFilters.weapon) {
-      filteredList = filteredList.filter(char => char.weaponType === this.activeFilters.weapon);
+    // Apply weapon filter
+    if (this.selectedWeapon) {
+      filteredCharacters = filteredCharacters.filter(
+        char => char.weaponType === this.selectedWeapon
+      );
     }
 
-    if (this.activeFilters.rarity) {
-      filteredList = filteredList.filter(char => char.rarity === this.activeFilters.rarity);
+    // Apply rarity filter
+    if (this.selectedRarity) {
+      filteredCharacters = filteredCharacters.filter(
+        char => char.rarity === this.selectedRarity
+      );
     }
 
-    // Update your displayed list
-    this.displayedCharacters = filteredList;
+    // Update displayed characters
+    this.displayedCharacters = filteredCharacters;
   }
 
   increaseConsLevel(event: Event, character: any) {
@@ -992,5 +1007,17 @@ export class CharactersComponent implements OnInit, OnDestroy {
 
   toggleSidebar() {
     this.isSidebarOpen = !this.isSidebarOpen;
+  }
+
+  isElementSelected(element: string): boolean {
+    return this.selectedElement === element;
+  }
+
+  isWeaponSelected(weapon: string): boolean {
+    return this.selectedWeapon === weapon;
+  }
+
+  isRaritySelected(rarity: number): boolean {
+    return this.selectedRarity === rarity;
   }
 }

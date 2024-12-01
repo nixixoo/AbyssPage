@@ -182,6 +182,85 @@ main {
     color: var(--color-star);
     font-size: 0.9em;
   }
+
+  // Element-specific colors
+  &[data-element="Pyro"] {
+    &:hover, &.active {
+      background: rgba(255, 102, 71, 0.2);
+      border-color: #FF6647;
+    }
+  }
+
+  &[data-element="Hydro"] {
+    &:hover, &.active {
+      background: rgba(51, 170, 255, 0.2);
+      border-color: #33AAFF;
+    }
+  }
+
+  &[data-element="Anemo"] {
+    &:hover, &.active {
+      background: rgba(116, 216, 158, 0.2);
+      border-color: #74D89E;
+    }
+  }
+
+  &[data-element="Electro"] {
+    &:hover, &.active {
+      background: rgba(178, 127, 255, 0.2);
+      border-color: #B27FFF;
+    }
+  }
+
+  &[data-element="Dendro"] {
+    &:hover, &.active {
+      background: rgba(119, 221, 78, 0.2);
+      border-color: #77DD4E;
+    }
+  }
+
+  &[data-element="Cryo"] {
+    &:hover, &.active {
+      background: rgba(153, 238, 255, 0.2);
+      border-color: #99EEFF;
+    }
+  }
+
+  &[data-element="Geo"] {
+    &:hover, &.active {
+      background: rgba(255, 180, 51, 0.2);
+      border-color: #FFB433;
+    }
+  }
+
+  // Weapon hover/active state
+  &[data-weapon] {
+    &:hover, &.active {
+      background: rgba(255, 255, 255, 0.1);
+      border-color: rgba(255, 255, 255, 0.5);
+    }
+  }
+
+  // Rarity-specific colors
+  &[data-rarity="4"] {
+    &:hover, &.active {
+      background: rgba(177, 101, 255, 0.2);
+      border-color: #B165FF;
+      .rarity-stars {
+        color: #B165FF;
+      }
+    }
+  }
+
+  &[data-rarity="5"] {
+    &:hover, &.active {
+      background: rgba(255, 183, 22, 0.2);
+      border-color: #FFB716;
+      .rarity-stars {
+        color: #FFB716;
+      }
+    }
+  }
 }
 
 .characters-grid {
@@ -571,14 +650,17 @@ main {
   position: absolute;
   top: 50%;
   left: 50%;
-  transform: translate(-50%, -50%);
+  transform: translate(-50%,  100%);
   z-index: 2;
+  width: 60px;
+  margin: 0 auto;
 }
 
 .spinning-logo {
   width: 60px;
   height: 60px;
   animation: spin 2s linear infinite;
+  filter: brightness(0) invert(1);
 }
 
 @keyframes spin {

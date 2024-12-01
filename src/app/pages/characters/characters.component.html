@@ -15,31 +15,52 @@
         <div class="filter-title">Element</div>
         <div class="filter-options">
 
-          <div class="filter-option" (click)="filterByElement('Pyro')">
+          <div class="filter-option" 
+               [attr.data-element]="'Pyro'"
+               [class.active]="isElementSelected('Pyro')"
+               (click)="filterByElement('Pyro')">
             <img src="assets/others/pyro.webp" alt="Pyro">
             <span>Pyro</span>
           </div>
-          <div class="filter-option" (click)="filterByElement('Hydro')">
+          <div class="filter-option" 
+               [attr.data-element]="'Hydro'"
+               [class.active]="isElementSelected('Hydro')"
+               (click)="filterByElement('Hydro')">
             <img src="assets/others/hydro.webp" alt="Hydro">
             <span>Hydro</span>
           </div>
-          <div class="filter-option" (click)="filterByElement('Anemo')">
+          <div class="filter-option" 
+               [attr.data-element]="'Anemo'"
+               [class.active]="isElementSelected('Anemo')"
+               (click)="filterByElement('Anemo')">
             <img src="assets/others/anemo.webp" alt="Anemo">
             <span>Anemo</span>
           </div>
-          <div class="filter-option" (click)="filterByElement('Electro')">
+          <div class="filter-option" 
+               [attr.data-element]="'Electro'"
+               [class.active]="isElementSelected('Electro')"
+               (click)="filterByElement('Electro')">
             <img src="assets/others/electro.webp" alt="Electro">
             <span>Electro</span>
           </div>
-          <div class="filter-option" (click)="filterByElement('Dendro')">
+          <div class="filter-option" 
+               [attr.data-element]="'Dendro'"
+               [class.active]="isElementSelected('Dendro')"
+               (click)="filterByElement('Dendro')">
             <img src="assets/others/dendro.webp" alt="Dendro">
             <span>Dendro</span>
           </div>
-          <div class="filter-option" (click)="filterByElement('Cryo')">
+          <div class="filter-option" 
+               [attr.data-element]="'Cryo'"
+               [class.active]="isElementSelected('Cryo')"
+               (click)="filterByElement('Cryo')">
             <img src="assets/others/cryo.webp" alt="Cryo">
             <span>Cryo</span>
           </div>
-          <div class="filter-option" (click)="filterByElement('Geo')">
+          <div class="filter-option" 
+               [attr.data-element]="'Geo'"
+               [class.active]="isElementSelected('Geo')"
+               (click)="filterByElement('Geo')">
             <img src="assets/others/geo.webp" alt="Geo">
             <span>Geo</span>
           </div>
@@ -50,23 +71,23 @@
       <div class="filter-group">
         <div class="filter-title">Weapon</div>
         <div class="filter-options">
-          <div class="filter-option" (click)="filterByWeapon('Sword')">
+          <div class="filter-option" (click)="filterByWeapon('Sword')" [attr.data-weapon]="'Sword'" [class.active]="isWeaponSelected('Sword')">
             <img src="assets/others/sword.webp" alt="Sword">
             <span>Sword</span>
           </div>
-          <div class="filter-option" (click)="filterByWeapon('Claymore')">
+          <div class="filter-option" (click)="filterByWeapon('Claymore')" [attr.data-weapon]="'Claymore'" [class.active]="isWeaponSelected('Claymore')">
             <img src="assets/others/claymore.webp" alt="Claymore">
             <span>Claymore</span>
           </div>
-          <div class="filter-option" (click)="filterByWeapon('Polearm')">
+          <div class="filter-option" (click)="filterByWeapon('Polearm')" [attr.data-weapon]="'Polearm'" [class.active]="isWeaponSelected('Polearm')">
             <img src="assets/others/polearm.webp" alt="Polearm">
             <span>Polearm</span>
           </div>
-          <div class="filter-option" (click)="filterByWeapon('Bow')">
+          <div class="filter-option" (click)="filterByWeapon('Bow')" [attr.data-weapon]="'Bow'" [class.active]="isWeaponSelected('Bow')">
             <img src="assets/others/bow.webp" alt="Bow">
             <span>Bow</span>
           </div>
-          <div class="filter-option" (click)="filterByWeapon('Catalyst')">
+          <div class="filter-option" (click)="filterByWeapon('Catalyst')" [attr.data-weapon]="'Catalyst'" [class.active]="isWeaponSelected('Catalyst')">
             <img src="assets/others/catalyst.webp" alt="Catalyst">
             <span>Catalyst</span>
           </div>
@@ -77,10 +98,10 @@
       <div class="filter-group">
         <div class="filter-title">Rarity</div>
         <div class="filter-options">
-          <div class="filter-option" (click)="filterByRarity(4)">
-            <div class="rarity-stars four-star">★★★★</div>
+          <div class="filter-option" (click)="filterByRarity(4)" [attr.data-rarity]="4" [class.active]="isRaritySelected(4)">
+            <div class="rarity-stars four-star">★★★★</div> 
           </div>
-          <div class="filter-option" (click)="filterByRarity(5)">
+          <div class="filter-option" (click)="filterByRarity(5)" [attr.data-rarity]="5" [class.active]="isRaritySelected(5)">
             <div class="rarity-stars five-star">★★★★★</div>
           </div>
         </div>
