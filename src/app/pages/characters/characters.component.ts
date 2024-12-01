@@ -843,9 +843,7 @@ export class CharactersComponent implements OnInit, OnDestroy {
   }
 
   getCharacterCons(characterId: string): number {
-    const cons = this.pendingChanges.constellations[characterId] || 0;
-    console.log(`Getting constellations for ${characterId}:`, cons);
-    return cons;
+    return this.pendingChanges.constellations[characterId] || 0;
   }
 
   toggleCharacter(character: any) {
@@ -914,18 +912,18 @@ export class CharactersComponent implements OnInit, OnDestroy {
 
   increaseConsLevel(event: Event, character: any) {
     event.stopPropagation();
-    const currentCons = this.getCharacterCons(character.id);
+    const currentCons = this.pendingChanges.constellations[character.id] || 0;
     if (currentCons < 6) {
-      this.updateCharacterCons(character.id, currentCons + 1);
+      this.pendingChanges.constellations[character.id] = currentCons + 1;
       this.animateConsNumber(character.id);
     }
   }
 
   decreaseConsLevel(event: Event, character: any) {
     event.stopPropagation();
-    const currentCons = this.getCharacterCons(character.id);
+    const currentCons = this.pendingChanges.constellations[character.id] || 0;
     if (currentCons > 0) {
-      this.updateCharacterCons(character.id, currentCons - 1);
+      this.pendingChanges.constellations[character.id] = currentCons - 1;
       this.animateConsNumber(character.id);
     }
   }
