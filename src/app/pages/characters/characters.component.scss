@@ -563,39 +563,49 @@ main {
         transform: scaleX(1);
       }
 
-      .particle {
-        content: '';
-        position: absolute;
-        width: 20px;
-        height: 20px;
-        clip-path: polygon(30% 0%, 70% 0%, 100% 30%, 90% 70%, 70% 100%, 30% 100%, 10% 70%, 0% 30%); // Rock shape
-        background: #FFB44C;
-        box-shadow: 0 0 8px rgba(255, 180, 76, 0.6);
-        top: -20px;
-        left: 50%;
-        transform: translateX(-50%);
-        animation: geoImpact 2s ease-in infinite;
-      }
+      @for $i from 1 through 3 {
+        $duration: 2s;
+        
+        $delay: if($i == 2, 0s, if($i == 1, 0.7s, 1.4s));
+        
+        $position: if($i == 1, 20%, if($i == 2, 50%, 80%));
 
-      .shard-left, .shard-right {
-        content: '';
-        position: absolute;
-        width: 10px;
-        height: 10px;
-        background: #FFB44C;
-        clip-path: polygon(30% 0%, 70% 0%, 100% 30%, 90% 70%, 70% 100%, 30% 100%, 10% 70%, 0% 30%); // Same rock shape
-        bottom: 0px;
-        left: 50%;
-        opacity: 0;
-        z-index: 2;
-      }
+        .particle-#{$i} {
+          content: '';
+          position: absolute;
+          width: 20px;
+          height: 20px;
+          clip-path: polygon(30% 0%, 70% 0%, 100% 30%, 90% 70%, 70% 100%, 30% 100%, 10% 70%, 0% 30%);
+          background: #FFB44C;
+          box-shadow: 0 0 8px rgba(255, 180, 76, 0.6);
+          top: -20px;
+          left: $position;
+          animation: geoImpact $duration ease-in infinite;
+          animation-delay: $delay;
+        }
 
-      .shard-left {
-        animation: shardLeft 2s ease-in infinite;
-      }
+        .shard-left-#{$i}, .shard-right-#{$i} {
+          content: '';
+          position: absolute;
+          width: 10px;
+          height: 10px;
+          background: #FFB44C;
+          clip-path: polygon(30% 0%, 70% 0%, 100% 30%, 90% 70%, 70% 100%, 30% 100%, 10% 70%, 0% 30%);
+          bottom: 0;
+          left: $position;
+          opacity: 0;
+          z-index: 2;
+        }
 
-      .shard-right {
-        animation: shardRight 2s ease-in infinite;
+        .shard-left-#{$i} {
+          animation: shardLeft $duration ease-in infinite;
+          animation-delay: $delay;
+        }
+
+        .shard-right-#{$i} {
+          animation: shardRight $duration ease-in infinite;
+          animation-delay: $delay;
+        }
       }
     }
 
