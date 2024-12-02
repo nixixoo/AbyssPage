@@ -992,7 +992,8 @@ export class CharactersComponent implements OnInit, OnDestroy {
 
     const updatedCreator: Creator = {
       ...this.creator,
-      characters: charactersObject
+      characters: charactersObject,
+      constellations: this.pendingChanges.constellations
     };
 
     this.creatorService.updateCreator(updatedCreator).subscribe({
