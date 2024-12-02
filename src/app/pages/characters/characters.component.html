@@ -86,25 +86,48 @@
       <div class="filter-group">
         <div class="filter-title">Weapon</div>
         <div class="filter-options">
-          <div class="filter-option" (click)="filterByWeapon('Sword')" [attr.data-weapon]="'Sword'" [class.active]="isWeaponSelected('Sword')">
+          <div class="filter-option" 
+               [attr.data-weapon]="'Sword'"
+               [class.active]="isWeaponSelected('Sword')"
+               (click)="filterByWeapon('Sword')">
             <img src="assets/others/sword.webp" alt="Sword">
             <span>Sword</span>
+            <div class="slash"></div>
+            <div class="slash"></div>
           </div>
-          <div class="filter-option" (click)="filterByWeapon('Claymore')" [attr.data-weapon]="'Claymore'" [class.active]="isWeaponSelected('Claymore')">
+          <div class="filter-option" 
+               [attr.data-weapon]="'Claymore'"
+               [class.active]="isWeaponSelected('Claymore')"
+               (click)="filterByWeapon('Claymore')">
             <img src="assets/others/claymore.webp" alt="Claymore">
             <span>Claymore</span>
+            <div class="heavy-slash"></div>
           </div>
-          <div class="filter-option" (click)="filterByWeapon('Polearm')" [attr.data-weapon]="'Polearm'" [class.active]="isWeaponSelected('Polearm')">
+          <div class="filter-option" 
+               [attr.data-weapon]="'Polearm'"
+               [class.active]="isWeaponSelected('Polearm')"
+               (click)="filterByWeapon('Polearm')">
             <img src="assets/others/polearm.webp" alt="Polearm">
             <span>Polearm</span>
+            <div class="quick-slash"></div>
+            <div class="quick-slash"></div>
+            <div class="quick-slash"></div>
           </div>
-          <div class="filter-option" (click)="filterByWeapon('Bow')" [attr.data-weapon]="'Bow'" [class.active]="isWeaponSelected('Bow')">
+          <div class="filter-option" 
+               [attr.data-weapon]="'Bow'"
+               [class.active]="isWeaponSelected('Bow')"
+               (click)="filterByWeapon('Bow')">
             <img src="assets/others/bow.webp" alt="Bow">
             <span>Bow</span>
+            <div class="arrow"></div>
           </div>
-          <div class="filter-option" (click)="filterByWeapon('Catalyst')" [attr.data-weapon]="'Catalyst'" [class.active]="isWeaponSelected('Catalyst')">
+          <div class="filter-option" 
+               [attr.data-weapon]="'Catalyst'"
+               [class.active]="isWeaponSelected('Catalyst')"
+               (click)="filterByWeapon('Catalyst')">
             <img src="assets/others/catalyst.webp" alt="Catalyst">
             <span>Catalyst</span>
+            <div class="magic-orb"></div>
           </div>
         </div>
       </div>
