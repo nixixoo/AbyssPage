@@ -185,14 +185,16 @@
       <div class="action-buttons">
         <button 
           class="save-btn" 
+          [class.visible]="!isLoading && hasPendingChanges()"
           (click)="saveChanges()"
-          [disabled]="isLoading">
+          *ngIf="true">
           {{ isLoading ? 'Saving...' : 'Apply Changes' }}
         </button>
         <button 
           class="discard-btn" 
+          [class.visible]="!isLoading && hasPendingChanges()"
           (click)="discardChanges()"
-          [disabled]="isLoading">
+          *ngIf="true">
           Discard Changes
         </button>
       </div>

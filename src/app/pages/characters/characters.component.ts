@@ -41,6 +41,15 @@ import { trigger, transition, style, animate, query, stagger } from '@angular/an
       transition('* => *', [
         animate('0.3s cubic-bezier(0.4, 0, 0.2, 1)')
       ])
+    ]),
+    trigger('buttonAnimation', [
+      transition(':enter', [
+        style({ opacity: 0, transform: 'translateY(100%)' }),
+        animate('300ms ease-out', style({ opacity: 1, transform: 'translateY(0)' }))
+      ]),
+      transition(':leave', [
+        animate('300ms ease-out', style({ opacity: 0, transform: 'translateY(100%)' }))
+      ])
     ])
   ]
 })
@@ -1034,5 +1043,23 @@ export class CharactersComponent implements OnInit, OnDestroy {
 
   isElementSelected(element: string): boolean {
     return this.activeFilters.element === element;
+  }
+
+  // Add this method to check if there are pending changes
+  hasPendingChanges(): boolean {
+    if (!this.creator) return false;
+
+    // Check for character ownership changes
+    const currentCharacters = this.creator.characters ? Object.keys(this.creator.characters) : [];
+    if (currentCharacters.length !== this.pendingChanges.characters.length) return true;
+    
+    // Check for constellation changes
+    for (const charId in this.pendingChanges.constellations) {
+      if (this.pendingChanges.constellations[charId] !== (this.characterConstellations[charId] || 0)) {
+        return true;
+      }
+    }
+
+    return false;
   }
 }

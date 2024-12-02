@@ -117,14 +117,6 @@ main {
       color: var(--color-white);
     }
 
-    .vertical-text {
-      writing-mode: vertical-rl;
-      text-orientation: upright;
-      letter-spacing: 2px;
-      font-size: 12px;
-      font-weight: 500;
-    }
-
     i {
       font-size: 16px;
       transition: transform 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
@@ -949,37 +941,81 @@ main {
   z-index: 100;
 
   button {
-    padding: 12px 24px;
+    padding: 12px 30px;
+    font-size: 1.3rem;
+    min-width: 160px;
+    opacity: 0;
+    transform: translateY(100%);
+    transition: 
+      opacity 0.3s ease-out, 
+      transform 0.3s ease-out,
+      box-shadow 0.3s ease-out;
+    box-shadow: 0 0 0 rgba(0, 0, 0, 0);
     border-radius: 8px;
-    font-weight: 500;
-    cursor: pointer;
-    transition: all 0.2s;
+    
+    &.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
 
-    &:disabled {
-      opacity: 0.7;
-      cursor: not-allowed;
+    &:not(.visible) {
+      opacity: 0;
+      transform: translateY(100%);
+    }
+
+    &.save-btn {
+      background: var(--color-accent);
+      color: white;
+      border: none;
+      transition-delay: 0s;
+      transition: 
+        opacity 0.3s ease-out, 
+        transform 0.3s ease-out,
+        box-shadow 0.3s ease-out;
+
+      &:hover:not(:disabled) {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+      }
+
+      &:not(.visible) {
+        transition-delay: 0s;
+      }
+    }
+
+    &.discard-btn {
+      background: white;
+      color: var(--color-accent);
+      border: 1px solid var(--color-border);
+      transition-delay: 0.1s;
+      transition: 
+        opacity 0.3s ease-out, 
+        transform 0.3s ease-out,
+        background-color 0.3s ease-out,
+        box-shadow 0.3s ease-out;
+      box-shadow: 0 0 0 rgba(0, 0, 0, 0);
+
+      &:hover:not(:disabled) {
+        transform: translateY(-2px);
+        background: #f5f5f5;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+      }
+
+      &:not(.visible) {
+        transition-delay: 0s;
+      }
     }
   }
+}
 
-  .save-btn {
-    background: var(--color-accent);
-    color: white;
-    border: none;
-
-    &:hover:not(:disabled) {
-      transform: translateY(-2px);
-      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
-    }
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
   }
-
-  .discard-btn {
-    background: white;
-    color: var(--color-accent);
-    border: 1px solid var(--color-border);
-
-    &:hover:not(:disabled) {
-      background: #f5f5f5;
-    }
+  to {
+    opacity: 1;
+    transform: translateY(0);
   }
 }
 
@@ -2037,5 +2073,12 @@ main {
     transform: translateY(-50%) translateX(calc(50vw - 20px));
     opacity: 0;
   }
+}
+
+.vertical-text {
+  writing-mode: vertical-rl;
+  text-orientation: upright;
+  letter-spacing: 2px;
+  white-space: nowrap;
 }
 
