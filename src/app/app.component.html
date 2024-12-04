@@ -1,3 +1,4 @@
+<app-profile-button *ngIf="isLoggedIn"></app-profile-button>
 <router-outlet></router-outlet>
 <app-welcome-animation 
   [isActive]="(showAnimation$ | async) ?? false"

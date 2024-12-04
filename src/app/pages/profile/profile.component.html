@@ -1,0 +1,111 @@
+<div class="profile-container">
+  <div class="overlay"></div>
+
+  <app-header></app-header>
+
+  <div class="loading-spinner" [class.hidden]="!isLoading">
+    <img src="assets/logo.png" alt="Loading..." class="spinning-logo">
+  </div>
+
+  <main [class.loaded]="!isLoading" *ngIf="user">
+    <div class="profile-header">
+      <div class="user-info">
+        <img
+          src="assets/images/default-avatar.png"
+          alt="Profile picture"
+          class="profile-avatar"
+        />
+        <h1>{{ user.username }}</h1>
+      </div>
+    </div>
+
+    <div class="content-wrapper">
+      <div class="main-section">
+        <button class="request-team-btn" (click)="requestTeam()">
+          <span class="icon">🎮</span>
+          Request Abyss Team
+        </button>
+      </div>
+
+      <div class="social-card">
+        <h2>Social Media</h2>
+        <div class="social-links">
+          <ng-container *ngFor="let platform of socialPlatforms">
+            <a
+              [href]="getSocialLink(platform.id)"
+              target="_blank"
+              class="social-link {{ platform.id }}"
+              *ngIf="hasSocialLink(platform.id)"
+            >
+              <i class="{{ platform.icon }}"></i>
+              {{ platform.name }}
+              <button 
+                *ngIf="isOwnProfile" 
+                class="delete-btn" 
+                (click)="deleteSocialMedia(platform.id); $event.preventDefault()"
+              >
+                <i class="fas fa-times"></i>
+              </button>
+            </a>
+          </ng-container>
+        </div>
+
+        <!-- Only show add button on own profile -->
+        <div *ngIf="isOwnProfile" class="social-actions">
+          <button
+            *ngIf="!showSocialForm"
+            (click)="toggleSocialForm()"
+            class="add-social-btn"
+          >
+            <i class="fas fa-plus"></i> Add Social Media
+          </button>
+
+          <!-- Social Media Form -->
+          <div *ngIf="showSocialForm" class="social-form">
+            <select
+              [(ngModel)]="newSocialMedia.platform"
+              class="platform-select"
+            >
+              <option value="">Select Platform</option>
+              <option
+                *ngFor="let platform of socialPlatforms"
+                [value]="platform.id"
+                [disabled]="isPlatformDisabled(platform.id)"
+              >
+                {{ platform.name }}
+              </option>
+            </select>
+
+            <input
+              type="url"
+              [(ngModel)]="newSocialMedia.url"
+              placeholder="Enter URL"
+              class="url-input"
+            />
+
+            <div class="form-actions">
+              <button
+                (click)="addSocialMedia()"
+                [disabled]="!newSocialMedia.platform || !newSocialMedia.url"
+                class="save-btn"
+              >
+                Save
+              </button>
+              <button (click)="toggleSocialForm()" class="cancel-btn">
+                Cancel
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+</div>
+
+<ng-template #loading>
+  <div class="loading-container">
+    <div class="loading-spinner">
+      <img src="assets/logo.png" alt="Loading..." class="spinning-logo">
+    </div>
+  </div>
+</ng-template>

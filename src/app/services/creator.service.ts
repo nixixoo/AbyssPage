@@ -14,36 +14,54 @@ export class CreatorService {
     private auth: Auth
   ) {}
 
-  // Create a new creator profile
+  // Create a new creator profile with username validation
   async createCreator(creator: Creator) {
+    // Check if username is already taken
+    const exists = await this.isUsernameTaken(creator.username);
+    if (exists) {
+      throw new Error('Username already taken');
+    }
+
     const creatorsRef = collection(this.firestore, 'creators');
     return setDoc(doc(creatorsRef, creator.uid), creator);
   }
 
-  // Update character ownership and constellations
-  async updateCharacter(creatorId: string, characterId: string, owned: boolean, cons: number) {
-    const creatorRef = doc(this.firestore, 'creators', creatorId);
-    return setDoc(creatorRef, {
-      characters: {
-        [characterId]: { owned, cons }
-      }
-    }, { merge: true });
-  }
-
-  // Get creator by ID
-  getCreator(creatorId: string): Observable<any> {
-    const creatorRef = doc(this.firestore, 'creators', creatorId);
-    return from(getDoc(creatorRef));
-  }
-
-  // Search creators by username
-  async searchCreators(searchTerm: string) {
+  // Check if username is taken
+  async isUsernameTaken(username: string): Promise<boolean> {
     const creatorsRef = collection(this.firestore, 'creators');
-    const q = query(creatorsRef, where('username', '>=', searchTerm));
+    const q = query(creatorsRef, where('username', '==', username));
     const querySnapshot = await getDocs(q);
-    return querySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+    return !querySnapshot.empty;
   }
 
+  // Get creator by username
+  getCreatorByUsername(username: string): Observable<Creator | null> {
+    const creatorsRef = collection(this.firestore, 'creators');
+    return from(
+      getDocs(query(creatorsRef, where('username', '==', username)))
+    ).pipe(
+      map(querySnapshot => {
+        if (querySnapshot.empty) return null;
+        const doc = querySnapshot.docs[0];
+        return { ...doc.data(), uid: doc.id } as Creator;
+      })
+    );
+  }
+
+  // Get creator by ID (keep this for internal use)
+  getCreator(creatorId: string): Observable<Creator | null> {
+    const creatorRef = doc(this.firestore, 'creators', creatorId);
+    return from(getDoc(creatorRef)).pipe(
+      map(doc => {
+        if (doc.exists()) {
+          return { ...doc.data(), uid: doc.id } as Creator;
+        }
+        return null;
+      })
+    );
+  }
+
+  // Update the profile component to use username
   updateCreator(creator: Creator): Observable<Creator> {
     const user = this.auth.currentUser;
     if (!user) {
@@ -59,5 +77,29 @@ export class CreatorService {
         return throwError(() => new Error('Failed to update creator'));
       })
     );
+  }
+
+  // Validate username format
+  validateUsername(username: string): boolean {
+    // Only allow letters, numbers, and underscores, 3-20 characters
+    const usernameRegex = /^[a-zA-Z0-9_]{3,20}$/;
+    return usernameRegex.test(username);
+  }
+
+  // Search creators by username
+  async searchCreators(searchTerm: string): Promise<Creator[]> {
+    const creatorsRef = collection(this.firestore, 'creators');
+    // Search for usernames that start with the search term
+    const q = query(
+      creatorsRef, 
+      where('username', '>=', searchTerm),
+      where('username', '<=', searchTerm + '\uf8ff')
+    );
+    
+    const querySnapshot = await getDocs(q);
+    return querySnapshot.docs.map(doc => ({ 
+      ...doc.data(), 
+      uid: doc.id 
+    } as Creator));
   }
 }
