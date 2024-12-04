@@ -146,6 +146,28 @@ main {
     .social-link {
       position: relative;
       padding-right: 2.5rem;
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      padding: 1rem;
+      border-radius: 0.5rem;
+      color: var(--color-white);
+      text-decoration: none;
+      transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+      
+      opacity: 1;
+      transform: translateY(0);
+      max-height: 100px;
+      margin-bottom: 0;
+      
+      &.deleting {
+        opacity: 0;
+        transform: translateY(-20px);
+        max-height: 0;
+        margin-bottom: -1rem;
+        padding-top: 0;
+        padding-bottom: 0;
+      }
 
       .delete-btn {
         position: absolute;
@@ -172,15 +194,6 @@ main {
           font-size: 0.9rem;
         }
       }
-
-      display: flex;
-      align-items: center;
-      gap: 1rem;
-      padding: 1rem;
-      border-radius: 0.5rem;
-      color: var(--color-white);
-      text-decoration: none;
-      transition: all 0.3s ease;
 
       i {
         font-size: 1.5rem;
@@ -249,14 +262,20 @@ main {
   transform: translateY(-20px);
   transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
   margin-top: 0;
-  overflow: visible !important;
-  position: relative;
+  visibility: hidden;
+  pointer-events: none;
+  position: absolute;
+  z-index: -1;
 
   &.show {
+    position: relative;
     max-height: 300px;
     opacity: 1;
     transform: translateY(0);
     margin-top: 1rem;
+    visibility: visible;
+    pointer-events: auto;
+    z-index: 1;
   }
 
   select, input, .form-actions {
@@ -554,6 +573,96 @@ main {
     transform: translateY(0);
     pointer-events: all;
     max-height: 300px;
+  }
+}
+
+.dropdown-portal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  pointer-events: none;
+  z-index: 9999;
+
+  .options-container {
+    position: absolute;
+    background: #1a1a1a;
+    border-radius: 0.5rem;
+    overflow: hidden;
+    pointer-events: auto;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+
+    .option {
+      padding: 0.8rem 1rem;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 0.8rem;
+      transition: all 0.2s ease;
+      background: #1a1a1a;
+      position: relative;
+      color: white;
+
+      > * {
+        position: relative;
+        z-index: 2;
+      }
+
+      &:has(.fa-youtube):hover {
+        background: #ff0000;
+      }
+
+      &:has(.fa-twitch):hover {
+        background: #6441a5;
+      }
+
+      &:has(.fa-twitter):hover {
+        background: #1DA1F2;
+      }
+
+      &:has(.fa-instagram) {
+        position: relative;
+        z-index: 1;
+        
+        &::before {
+          content: '';
+          position: absolute;
+          inset: 0;
+          background: linear-gradient(45deg, #f09433 0%, #e6683c 25%, #dc2743 50%, #cc2366 75%, #bc1888 100%);
+          opacity: 0;
+          transition: opacity 0.2s ease;
+          z-index: -1;
+        }
+
+        &:hover::before {
+          opacity: 1;
+        }
+
+        i, span {
+          position: relative;
+          z-index: 2;
+        }
+      }
+
+      &.disabled {
+        opacity: 0.5;
+        cursor: not-allowed;
+        
+        &:hover {
+          background: #1a1a1a;
+        }
+
+        &:hover::before {
+          opacity: 0;
+        }
+      }
+
+      i {
+        font-size: 1.2rem;
+      }
+    }
   }
 }
 

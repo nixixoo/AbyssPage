@@ -63,7 +63,7 @@
           <!-- Social Media Form -->
           <div class="social-form" [class.show]="showSocialForm">
             <div class="custom-select" [class.open]="isSelectOpen">
-              <div class="select-header" (click)="toggleSelect()">
+              <div class="select-header" (click)="toggleSelect($event)">
                 <span>{{ newSocialMedia.platform ? getPlatformName(newSocialMedia.platform) : 'Select Platform' }}</span>
                 <i class="fas fa-chevron-down" [class.rotate]="isSelectOpen"></i>
               </div>
@@ -113,3 +113,22 @@
     </div>
   </div>
 </ng-template>
+
+<div class="dropdown-portal" *ngIf="isSelectOpen">
+  <div 
+    class="options-container"
+    [style.top.px]="dropdownPosition?.top"
+    [style.left.px]="dropdownPosition?.left"
+    [style.width.px]="dropdownPosition?.width"
+  >
+    <div 
+      *ngFor="let platform of socialPlatforms" 
+      class="option"
+      [class.disabled]="isPlatformDisabled(platform.id)"
+      (click)="selectPlatform(platform.id)"
+    >
+      <i [class]="platform.icon"></i>
+      {{ platform.name }}
+    </div>
+  </div>
+</div>

@@ -40,6 +40,7 @@ export class ProfileComponent implements OnInit, OnDestroy {
     url: ''
   };
   isSelectOpen = false;
+  dropdownPosition: { top: number; left: number; width: number } | null = null;
 
   socialPlatforms = [
     { id: 'youtube', name: 'YouTube', icon: 'fab fa-youtube' },
@@ -189,6 +190,14 @@ export class ProfileComponent implements OnInit, OnDestroy {
   async deleteSocialMedia(platformId: string) {
     if (!this.user) return;
 
+    const linkElement = document.querySelector(`.social-link.${platformId}`);
+    if (linkElement) {
+      linkElement.classList.add('deleting');
+      
+      // Wait for animation to complete (increased to 500ms to match CSS)
+      await new Promise(resolve => setTimeout(resolve, 500));
+    }
+
     const updatedSocialLinks = { ...this.user.socialLinks };
     delete updatedSocialLinks[platformId];
 
@@ -214,8 +223,20 @@ export class ProfileComponent implements OnInit, OnDestroy {
     }
   }
 
-  toggleSelect() {
+  toggleSelect(event: MouseEvent) {
     this.isSelectOpen = !this.isSelectOpen;
+    
+    if (this.isSelectOpen) {
+      const selectElement = (event.target as HTMLElement).closest('.select-header');
+      if (selectElement) {
+        const rect = selectElement.getBoundingClientRect();
+        this.dropdownPosition = {
+          top: rect.bottom + window.scrollY + 5,
+          left: rect.left + window.scrollX,
+          width: rect.width
+        };
+      }
+    }
   }
 
   selectPlatform(platformId: string) {
