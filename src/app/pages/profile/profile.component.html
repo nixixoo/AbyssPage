@@ -8,7 +8,7 @@
   </div>
 
   <main [class.loaded]="!isLoading" *ngIf="user">
-    <div class="profile-header">
+    <div class="profile-header fade-in">
       <div class="user-info">
         <img
           src="assets/images/default-avatar.png"
@@ -19,7 +19,7 @@
       </div>
     </div>
 
-    <div class="content-wrapper">
+    <div class="content-wrapper fade-in">
       <div class="main-section">
         <button class="request-team-btn" (click)="requestTeam()">
           <i class="fas fa-users"></i>

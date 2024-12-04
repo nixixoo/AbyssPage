@@ -31,41 +31,45 @@ main {
   }
 }
 
-.profile-header {
-  width: 100%;
-  padding: 1rem;
-  margin-bottom: 2rem;
-  background: rgba(0, 0, 0, 0.2);
-  backdrop-filter: blur(10px);
-  border-radius: 1rem;
+  .profile-header {
+    width: 100%;
+    padding: 1rem;
+    margin-bottom: 2rem;
+    background: rgba(0, 0, 0, 0.2);
+    backdrop-filter: blur(10px);
+    border-radius: 1rem;
+    opacity: 0;
+    animation: fadeInUp 0.8s ease-out forwards;
 
-  .user-info {
-    display: flex;
-    align-items: center;
-    gap: 1rem;
+    .user-info {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
 
-    .profile-avatar {
-      width: 80px;
-      height: 80px;
-      border-radius: 50%;
-      border: 2px solid rgba(255, 255, 255, 0.2);
-    }
+      .profile-avatar {
+        width: 80px;
+        height: 80px;
+        border-radius: 50%;
+        border: 2px solid rgba(255, 255, 255, 0.2);
+      }
 
-    h1 {
-      color: var(--color-white);
-      margin: 0;
-      font-size: 2rem;
+      h1 {
+        color: var(--color-white);
+        margin: 0;
+        font-size: 2rem;
+      }
     }
   }
-}
 
-.content-wrapper {
-  display: grid;
-  grid-template-columns: 1fr 300px;
-  gap: 2rem;
-  margin-top: 2rem;
-  align-items: start;
-  overflow: visible !important;
+  .content-wrapper {
+    display: grid;
+    grid-template-columns: 1fr 300px;
+    gap: 2rem;
+    margin-top: 2rem;
+    align-items: start;
+    overflow: visible !important;
+    opacity: 0;
+    animation: fadeInUp 0.8s ease-out 0.3s forwards;
 }
 
 .main-section {
@@ -404,7 +408,7 @@ main {
   z-index: 1000;
 
   &.hidden {
-    opacity: 0 !important;
+    opacity: 0;
   }
 
   .spinning-logo {
@@ -423,7 +427,6 @@ main {
     transform: rotate(360deg);
   }
 }
-
 .custom-select {
   position: relative;
   width: 100%;
@@ -553,3 +556,5 @@ main {
     max-height: 300px;
   }
 }
+
+
