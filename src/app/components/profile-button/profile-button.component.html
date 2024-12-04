@@ -1,3 +1,16 @@
-<button class="floating-profile-btn" (click)="navigateToProfile()">
-  <img src="assets/images/default-avatar.png" alt="Profile">
-</button>
+<div class="profile-button-wrapper">
+  <button class="floating-profile-btn">
+    <img src="assets/images/default-avatar.png" alt="Profile">
+  </button>
+
+  <div class="profile-menu">
+    <div class="menu-item" (click)="navigateToProfile()">
+      <i class="fas fa-user"></i>
+      Profile
+    </div>
+    <div class="menu-item logout">
+      <i class="fas fa-sign-out-alt"></i>
+      Logout
+    </div>
+  </div>
+</div>

@@ -142,6 +142,12 @@ export class ProfileComponent implements OnInit, OnDestroy {
   toggleSocialForm() {
     this.showSocialForm = !this.showSocialForm;
     this.newSocialMedia = { platform: '', url: '' };
+    
+    // Remove the hiding class when opening the form
+    const formElement = document.querySelector('.social-form');
+    if (formElement) {
+      formElement.classList.remove('hiding');
+    }
   }
 
   async addSocialMedia() {
@@ -153,6 +159,14 @@ export class ProfileComponent implements OnInit, OnDestroy {
     };
 
     try {
+      // Add hiding class first
+      const formElement = document.querySelector('.social-form');
+      if (formElement) {
+        formElement.classList.add('hiding');
+        // Wait for animation
+        await new Promise(resolve => setTimeout(resolve, 500));
+      }
+
       this.creatorService.updateCreator({
         ...this.user,
         socialLinks: updatedSocialLinks

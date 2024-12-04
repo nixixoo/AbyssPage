@@ -1,7 +1,35 @@
-.floating-profile-btn {
+.profile-button-wrapper {
   position: fixed;
   top: 20px;
   right: 20px;
+  z-index: 1000;
+  
+  &::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 60px;
+    height: 50px;
+    z-index: 1;
+    pointer-events: auto;
+    border-radius: 50%;
+    right: 10%;
+  }
+
+  &:hover {
+    .profile-menu {
+      width: 200px;
+      opacity: 1;
+      transform: scaleX(1);
+      pointer-events: all;
+      animation: expandHeight 0.3s cubic-bezier(0.4, 0, 0.2, 1) 0.3s forwards;
+    }
+  }
+}
+
+.floating-profile-btn {
+  position: relative;
   width: 50px;
   height: 50px;
   border-radius: 50%;
@@ -9,10 +37,10 @@
   backdrop-filter: blur(10px);
   border: 2px solid rgba(255, 255, 255, 0.2);
   cursor: pointer;
-  z-index: 1000;
   padding: 0;
   overflow: hidden;
   transition: all 0.3s ease;
+  z-index: 3;
 
   img {
     width: 100%;
@@ -28,5 +56,75 @@
 
   &:active {
     transform: scale(0.95);
+  }
+}
+
+.profile-menu {
+  position: absolute;
+  top: 0;
+  right: 60px;
+  background: rgba(0, 0, 0, 0.2);
+  backdrop-filter: blur(10px);
+  padding: 1rem;
+  min-width: 200px;
+  overflow: hidden;
+  pointer-events: auto;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+  transform-origin: right center;
+  border-radius: 1rem;
+  z-index: 2;
+  
+  // Initial state
+  width: 0;
+  height: 20px;
+  opacity: 0;
+  transform: scaleX(0);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+
+  .menu-item {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding: 0.75rem;
+    color: var(--color-white);
+    border-radius: 0.5rem;
+    cursor: pointer;
+    transition: all 0.2s ease;
+
+    i {
+      font-size: 1.2rem;
+      width: 24px;
+      text-align: center;
+      color: var(--color-accent);
+    }
+
+    &:hover {
+      background: rgba(255, 255, 255, 0.1);
+    }
+
+    &.logout {
+      margin-top: 0.5rem;
+      border-top: 1px solid rgba(255, 255, 255, 0.1);
+      padding-top: 1rem;
+      color: #ff4444;
+
+      i {
+        color: #ff4444;
+      }
+
+      &:hover {
+        background: rgba(255, 68, 68, 0.1);
+      }
+    }
+  }
+}
+
+@keyframes expandHeight {
+  from {
+    height: 20px;
+  }
+  to {
+    height: 160px;
   }
 }

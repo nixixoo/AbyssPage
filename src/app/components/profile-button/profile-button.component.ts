@@ -10,6 +10,8 @@ import { Router } from '@angular/router';
   styleUrls: ['./profile-button.component.scss']
 })
 export class ProfileButtonComponent {
+  showMenu = false;
+
   constructor(private router: Router) {}
 
   navigateToProfile() {
