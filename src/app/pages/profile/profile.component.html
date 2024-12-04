@@ -22,7 +22,7 @@
     <div class="content-wrapper">
       <div class="main-section">
         <button class="request-team-btn" (click)="requestTeam()">
-          <span class="icon">🎮</span>
+          <i class="fas fa-users"></i>
           Request Abyss Team
         </button>
       </div>
@@ -61,20 +61,24 @@
           </button>
 
           <!-- Social Media Form -->
-          <div *ngIf="showSocialForm" class="social-form">
-            <select
-              [(ngModel)]="newSocialMedia.platform"
-              class="platform-select"
-            >
-              <option value="">Select Platform</option>
-              <option
-                *ngFor="let platform of socialPlatforms"
-                [value]="platform.id"
-                [disabled]="isPlatformDisabled(platform.id)"
-              >
-                {{ platform.name }}
-              </option>
-            </select>
+          <div class="social-form" [class.show]="showSocialForm">
+            <div class="custom-select" [class.open]="isSelectOpen">
+              <div class="select-header" (click)="toggleSelect()">
+                <span>{{ newSocialMedia.platform ? getPlatformName(newSocialMedia.platform) : 'Select Platform' }}</span>
+                <i class="fas fa-chevron-down" [class.rotate]="isSelectOpen"></i>
+              </div>
+              <div class="options-container">
+                <div 
+                  *ngFor="let platform of socialPlatforms" 
+                  class="option"
+                  [class.disabled]="isPlatformDisabled(platform.id)"
+                  (click)="selectPlatform(platform.id)"
+                >
+                  <i [class]="platform.icon"></i>
+                  {{ platform.name }}
+                </div>
+              </div>
+            </div>
 
             <input
               type="url"

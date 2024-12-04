@@ -39,6 +39,7 @@ export class ProfileComponent implements OnInit, OnDestroy {
     platform: '',
     url: ''
   };
+  isSelectOpen = false;
 
   socialPlatforms = [
     { id: 'youtube', name: 'YouTube', icon: 'fab fa-youtube' },
@@ -211,5 +212,21 @@ export class ProfileComponent implements OnInit, OnDestroy {
     } catch (error) {
       console.error('Error deleting social media:', error);
     }
+  }
+
+  toggleSelect() {
+    this.isSelectOpen = !this.isSelectOpen;
+  }
+
+  selectPlatform(platformId: string) {
+    if (!this.isPlatformDisabled(platformId)) {
+      this.newSocialMedia.platform = platformId;
+      this.isSelectOpen = false;
+    }
+  }
+
+  getPlatformName(platformId: string): string {
+    const platform = this.socialPlatforms.find(p => p.id === platformId);
+    return platform ? platform.name : 'Select Platform';
   }
 }
