@@ -50,6 +50,18 @@ import { trigger, transition, style, animate, query, stagger } from '@angular/an
       transition(':leave', [
         animate('300ms ease-out', style({ opacity: 0, transform: 'translateY(100%)' }))
       ])
+    ]),
+    trigger('fadeInOut', [
+      transition(':enter', [
+        style({ opacity: 0 }),
+        animate('300ms ease-in', style({ opacity: 1 }))
+      ]),
+      transition(':leave', [
+        animate('800ms ease-out', style({ 
+          opacity: 0,
+          transform: 'scale(0.95)'
+        }))
+      ])
     ])
   ]
 })
@@ -89,10 +101,13 @@ export class CharactersComponent implements OnInit, OnDestroy {
 
   selectedRarity: number | null = null;
 
+  authChecked = false;
+  isAuthenticated = false;
+
   constructor(
     private creatorService: CreatorService,
     private authService: AuthService,
-    private router: Router
+    public router: Router
   ) {
     this.characterList = [
       {
@@ -838,42 +853,60 @@ export class CharactersComponent implements OnInit, OnDestroy {
   async ngOnInit() {
     try {
       this.isLoading = true;
-      this.displayedCharacters = []; // Clear displayed characters while loading
+      this.displayedCharacters = [];
       
-      // Subscribe to user data
-      this.authService.currentUser$
+      // Force minimum 2 seconds loading time
+      const minimumLoadingTime = new Promise(resolve => setTimeout(resolve, 2000));
+      
+      this.authService.isAuthenticated$
         .pipe(
           takeUntil(this.destroy$)
         )
-        .subscribe(user => {
-          if (user) {
-            // Process user data first
-            this.creator = user;
-            this.pendingChanges.characters = user.characters 
-              ? Object.keys(user.characters).filter(key => user.characters[key])
-              : [];
-            
-            if (user.constellations) {
-              this.characterConstellations = { ...user.constellations };
-              this.pendingChanges.constellations = { ...user.constellations };
-            }
+        .subscribe(async (isAuthenticated) => {
+          this.isAuthenticated = isAuthenticated;
+          
+          if (isAuthenticated) {
+            // Process user data
+            const userSubscription = this.authService.currentUser$
+              .pipe(
+                takeUntil(this.destroy$)
+              )
+              .subscribe(user => {
+                if (user) {
+                  this.creator = user;
+                  this.pendingChanges.characters = user.characters 
+                    ? Object.keys(user.characters).filter(key => user.characters[key])
+                    : [];
+                  
+                  if (user.constellations) {
+                    this.characterConstellations = { ...user.constellations };
+                    this.pendingChanges.constellations = { ...user.constellations };
+                  }
+                }
+              });
+          }
 
-            // Start fade out
+          // Wait for minimum loading time
+          await minimumLoadingTime;
+          
+          // Set authChecked after a small delay to allow animations to complete
+          setTimeout(() => {
+            this.authChecked = true;
             this.isLoading = false;
             
-            // Set characters after a delay to allow fade out to complete
-            setTimeout(() => {
-              this.displayedCharacters = this.characterList;
-            }, 800); // Match this with the CSS transition duration
-          } else if (!this.isLoading) {
-            this.router.navigate(['/login']);
-          }
+            if (isAuthenticated) {
+              setTimeout(() => {
+                this.displayedCharacters = this.characterList;
+              }, 300);
+            }
+          }, 100); // Small delay before changing authChecked
         });
 
     } catch (error) {
       console.error('Error loading user data:', error);
       this.errorMessage = 'Error loading user data';
       this.isLoading = false;
+      this.authChecked = true;
     }
   }
 
@@ -1061,5 +1094,9 @@ export class CharactersComponent implements OnInit, OnDestroy {
     }
 
     return false;
+  }
+
+  public navigateToLogin(): void {
+    this.router.navigate(['/login']);
   }
 }

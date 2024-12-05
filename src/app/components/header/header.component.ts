@@ -43,13 +43,4 @@ export class HeaderComponent implements OnInit, OnDestroy {
   navigateToCharacters() {
     this.router.navigate(['/characters']);
   }
-
-  async logout() {
-    try {
-      await this.authService.logout();
-      this.router.navigate(['/login']);
-    } catch (error) {
-      console.error('Error logging out:', error);
-    }
-  }
 }

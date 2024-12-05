@@ -2,6 +2,7 @@ import { Component, ElementRef, ViewChild, AfterViewInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
 import { AuthService } from '../../services/auth.service';
+import { take } from 'rxjs/operators';
 
 interface AvatarOption {
   url: string;
@@ -33,9 +34,11 @@ export class ProfileButtonComponent implements AfterViewInit {
     private router: Router,
     private authService: AuthService
   ) {
+    console.log('ProfileButton: Initializing...');
     // Subscribe to auth state changes
     this.authService.isAuthenticated$.subscribe(
       (isAuthenticated) => {
+        console.log('ProfileButton: Auth state changed:', isAuthenticated);
         this.isLoggedIn = isAuthenticated;
       }
     );
@@ -66,7 +69,26 @@ export class ProfileButtonComponent implements AfterViewInit {
   }
 
   navigateToProfile() {
-    this.router.navigate(['/profile/me']);
+    console.log('ProfileButton: Attempting to navigate to profile...');
+    // First check if user is authenticated
+    this.authService.isAuthenticated$.pipe(take(1)).subscribe(
+      isAuthenticated => {
+        console.log('ProfileButton: Current auth state:', isAuthenticated);
+        console.log('ProfileButton: Component isLoggedIn state:', this.isLoggedIn);
+        
+        if (isAuthenticated) {
+          console.log('ProfileButton: User is authenticated, navigating to profile...');
+          this.router.navigate(['profile', 'me']).then(
+            success => console.log('ProfileButton: Navigation result:', success),
+            error => console.error('ProfileButton: Navigation error:', error)
+          );
+        } else {
+          console.log('ProfileButton: User not authenticated, redirecting to login...');
+          this.router.navigate(['/login']);
+        }
+      },
+      error => console.error('ProfileButton: Error checking auth state:', error)
+    );
   }
 
   openAvatarSelector() {

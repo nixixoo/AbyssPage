@@ -13,10 +13,24 @@ export const routes: Routes = [
   { path: 'login', component: LoginComponent },
   { path: 'characters', component: CharactersComponent },
   {
-    path: 'profile/me',
-    loadComponent: () => import('./pages/profile/profile.component').then(m => m.ProfileComponent),
-    canActivate: [AuthGuard]
-  },
-  { path: 'profile/:username', component: ProfileComponent },
-  { path: 'profile', redirectTo: 'profile/me', pathMatch: 'full' },
+    path: 'profile',
+    children: [
+      {
+        path: 'me',
+        component: ProfileComponent,
+        canActivate: [AuthGuard],
+        data: { type: 'self' }
+      },
+      {
+        path: ':username',
+        component: ProfileComponent,
+        data: { type: 'other' }
+      },
+      {
+        path: '',
+        redirectTo: 'me',
+        pathMatch: 'full'
+      }
+    ]
+  }
 ];

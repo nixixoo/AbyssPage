@@ -41,6 +41,8 @@ export class ProfileComponent implements OnInit, OnDestroy {
   };
   isSelectOpen = false;
   dropdownPosition: { top: number; left: number; width: number } | null = null;
+  authChecked = false;
+  isAuthenticated = false;
 
   socialPlatforms = [
     { id: 'youtube', name: 'YouTube', icon: 'fab fa-youtube' },
@@ -58,81 +60,121 @@ export class ProfileComponent implements OnInit, OnDestroy {
 
   ngOnInit() {
     try {
+      console.log('1. Profile Init Started');
       this.isLoading = true;
       
-      this.route.params.subscribe(params => {
-        const username = params['username'];
-        
-        // If it's the "me" route, we need authentication
-        if (username === 'me') {
-          this.authService.currentUser$
-            .pipe(takeUntil(this.destroy$))
-            .subscribe(currentUser => {
-              if (currentUser) {
-                this.isOwnProfile = true;
-                this.loadUserData(currentUser.uid);
+      const minimumLoadingTime = new Promise(resolve => setTimeout(resolve, 2000));
+
+      this.authService.isAuthenticated$
+        .pipe(
+          takeUntil(this.destroy$),
+          take(1)
+        )
+        .subscribe(async (isAuthenticated) => {
+          console.log('2. Auth state:', isAuthenticated);
+          this.isAuthenticated = isAuthenticated;
+
+          if (isAuthenticated) {
+            this.route.paramMap.subscribe(params => {
+              console.log('3. Full route:', this.router.url);
+              console.log('3.1 ParamMap:', params);
+              
+              const username = params.get('username') || 'me';
+              console.log('4. Resolved username:', username);
+              
+              if (username === 'me') {
+                console.log('5. Handling "me" route');
+                this.authService.currentUser$
+                  .pipe(
+                    takeUntil(this.destroy$),
+                    take(1)
+                  )
+                  .subscribe({
+                    next: (currentUser) => {
+                      console.log('6. Current User Data:', currentUser);
+                      if (currentUser) {
+                        this.user = currentUser;
+                        this.isOwnProfile = true;
+                        console.log('7. Setting initial user data:', this.user);
+                        
+                        console.log('8. Loading full user data for uid:', currentUser.uid);
+                        this.loadUserData(currentUser.uid);
+                      } else {
+                        console.log('5a. No current user, redirecting to login');
+                        this.router.navigate(['/login']);
+                      }
+                    },
+                    error: (error) => {
+                      console.error('5b. Error getting current user:', error);
+                      this.isLoading = false;
+                      this.router.navigate(['/login']);
+                    }
+                  });
               } else {
-                this.router.navigate(['/login']);
+                this.creatorService.getCreatorByUsername(username).subscribe({
+                  next: (userData) => {
+                    if (userData) {
+                      this.user = userData;
+                      
+                      this.authService.currentUser$.pipe(take(1)).subscribe(currentUser => {
+                        this.isOwnProfile = currentUser?.uid === userData.uid;
+                      });
+                      
+                      this.isLoading = false;
+                      
+                      setTimeout(() => {
+                        const mainElement = document.querySelector('main');
+                        if (mainElement) {
+                          mainElement.classList.add('loaded');
+                        }
+                      }, 800);
+                    } else {
+                      console.error('User not found');
+                      this.isLoading = false;
+                    }
+                  },
+                  error: (error) => {
+                    console.error('Error loading profile:', error);
+                    this.isLoading = false;
+                  }
+                });
               }
             });
-        } else {
-          // For other profiles, load directly without requiring authentication
-          this.creatorService.getCreatorByUsername(username).subscribe({
-            next: (userData) => {
-              if (userData) {
-                this.user = userData;
-                
-                // Check if it's the current user's profile
-                this.authService.currentUser$.pipe(take(1)).subscribe(currentUser => {
-                  this.isOwnProfile = currentUser?.uid === userData.uid;
-                });
-                
-                // Start fade out
-                this.isLoading = false;
-                
-                setTimeout(() => {
-                  const mainElement = document.querySelector('main');
-                  if (mainElement) {
-                    mainElement.classList.add('loaded');
-                  }
-                }, 800);
-              } else {
-                // Handle user not found
-                console.error('User not found');
-                this.isLoading = false;
-              }
-            },
-            error: (error) => {
-              console.error('Error loading profile:', error);
-              this.isLoading = false;
-            }
-          });
-        }
-      });
+          }
+
+          await minimumLoadingTime;
+          this.authChecked = true;
+          this.isLoading = false;
+        });
 
     } catch (error) {
       console.error('Error in profile initialization:', error);
       this.isLoading = false;
+      this.authChecked = true;
     }
   }
 
   private loadUserData(uid: string) {
+    console.log('7. loadUserData called with uid:', uid);
     this.creatorService.getCreator(uid).subscribe({
       next: (userData) => {
+        console.log('8. Received user data:', userData);
         if (userData) {
           this.user = userData;
           this.isLoading = false;
+          console.log('9. Updated user data:', this.user);
           
           setTimeout(() => {
             const mainElement = document.querySelector('main');
             if (mainElement) {
               mainElement.classList.add('loaded');
+              console.log('10. Added loaded class to main element');
             }
           }, 800);
         }
       },
       error: (error) => {
-        console.error('Error loading user data:', error);
+        console.error('8a. Error loading user data:', error);
         this.isLoading = false;
       }
     });
@@ -153,7 +195,6 @@ export class ProfileComponent implements OnInit, OnDestroy {
     this.showSocialForm = !this.showSocialForm;
     this.newSocialMedia = { platform: '', url: '' };
     
-    // Remove the hiding class when opening the form
     const formElement = document.querySelector('.social-form');
     if (formElement) {
       formElement.classList.remove('hiding');
@@ -169,11 +210,9 @@ export class ProfileComponent implements OnInit, OnDestroy {
     };
 
     try {
-      // Add hiding class first
       const formElement = document.querySelector('.social-form');
       if (formElement) {
         formElement.classList.add('hiding');
-        // Wait for animation
         await new Promise(resolve => setTimeout(resolve, 500));
       }
 
@@ -218,7 +257,6 @@ export class ProfileComponent implements OnInit, OnDestroy {
     if (linkElement) {
       linkElement.classList.add('deleting');
       
-      // Wait for animation to complete (increased to 500ms to match CSS)
       await new Promise(resolve => setTimeout(resolve, 500));
     }
 
@@ -273,5 +311,9 @@ export class ProfileComponent implements OnInit, OnDestroy {
   getPlatformName(platformId: string): string {
     const platform = this.socialPlatforms.find(p => p.id === platformId);
     return platform ? platform.name : 'Select Platform';
+  }
+
+  public navigateToLogin(): void {
+    this.router.navigate(['/login']);
   }
 }
