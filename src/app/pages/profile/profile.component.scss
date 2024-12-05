@@ -734,6 +734,15 @@ main {
   }
 }
 
+@keyframes fadeOut {
+  from {
+    opacity: 1;
+  }
+  to {
+    opacity: 0;
+  }
+}
+
 .login-message {
   position: fixed;
   top: 50%;

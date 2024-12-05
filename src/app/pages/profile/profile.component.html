@@ -4,7 +4,7 @@
   <app-header></app-header>
 
   <!-- Show loading state -->
-  <div class="loading-state" *ngIf="!authChecked">
+  <div class="loading-state" [class.hidden]="!showLoading">
     <div class="loading-spinner">
       <img src="assets/logo.png" alt="Loading..." class="spinning-logo">
     </div>

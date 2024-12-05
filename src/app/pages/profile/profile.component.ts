@@ -43,6 +43,7 @@ export class ProfileComponent implements OnInit, OnDestroy {
     platform: '',
     url: ''
   };
+  showLoading = true;
 
   socialPlatforms = [
     { id: 'youtube', name: 'YouTube', icon: 'fab fa-youtube' },
@@ -103,10 +104,27 @@ export class ProfileComponent implements OnInit, OnDestroy {
             this.isOwnProfile = await this.checkIfOwnProfile(userData.uid);
           }
           
-          // Always set these states after minimum delay
-          await new Promise(resolve => setTimeout(resolve, 2000));
+          // First set authChecked
           this.authChecked = true;
-          this.isLoading = false;
+          
+          // Wait for minimum loading time
+          await new Promise(resolve => setTimeout(resolve, 2000));
+          
+          // Then handle the loading states in sequence
+          this.isLoading = false;  // Set this first to trigger content load
+          
+          // Small delay before hiding the loading spinner
+          setTimeout(() => {
+            this.showLoading = false;  // This triggers the fade-out
+            
+            // Remove the element after transition
+            setTimeout(() => {
+              const loadingState = document.querySelector('.loading-state');
+              if (loadingState) {
+                loadingState.remove();
+              }
+            }, 400); // Match the transition duration
+          }, 100); // Small delay to ensure content is ready
         },
         error: (error) => {
           console.error('Error:', error);
