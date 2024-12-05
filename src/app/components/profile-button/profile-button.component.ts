@@ -27,10 +27,19 @@ export class ProfileButtonComponent implements AfterViewInit {
     // Añade más avatares según necesites
   ];
 
+  isLoggedIn = false;
+
   constructor(
     private router: Router,
     private authService: AuthService
-  ) {}
+  ) {
+    // Subscribe to auth state changes
+    this.authService.isAuthenticated$.subscribe(
+      (isAuthenticated) => {
+        this.isLoggedIn = isAuthenticated;
+      }
+    );
+  }
 
   ngAfterViewInit() {
     this.calculateMenuHeight();

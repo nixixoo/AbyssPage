@@ -11,6 +11,8 @@ import { BehaviorSubject, Observable } from 'rxjs';
 export class AuthService {
   private currentUserSubject = new BehaviorSubject<Creator | null>(null);
   public currentUser$: Observable<Creator | null> = this.currentUserSubject.asObservable();
+  private isAuthenticatedSubject = new BehaviorSubject<boolean>(false);
+  isAuthenticated$ = this.isAuthenticatedSubject.asObservable();
 
   constructor(
     private auth: Auth,
@@ -27,11 +29,14 @@ export class AuthService {
           const userDoc = await getDoc(doc(this.firestore, 'creators', user.uid));
           if (userDoc.exists()) {
             this.currentUserSubject.next(userDoc.data() as Creator);
+            this.isAuthenticatedSubject.next(true);
           } else {
             this.currentUserSubject.next(null);
+            this.isAuthenticatedSubject.next(false);
           }
         } else {
           this.currentUserSubject.next(null);
+          this.isAuthenticatedSubject.next(false);
         }
       });
     }
@@ -69,6 +74,7 @@ export class AuthService {
       
       const userData = userDoc.data() as Creator;
       this.currentUserSubject.next(userData);
+      this.isAuthenticatedSubject.next(true);
       return userData;
 
     } catch (error: any) {
@@ -110,6 +116,10 @@ export class AuthService {
       await signOut(this.auth);
       this.forgetUser();
       this.currentUserSubject.next(null);
+      this.isAuthenticatedSubject.next(false);
+      if (isPlatformBrowser(this.platformId)) {
+        localStorage.removeItem('token');
+      }
     } catch (error: any) {
       throw new Error('Error logging out');
     }
