@@ -1,7 +1,8 @@
 import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
 import { AuthService } from '../services/auth.service';
-import { map, take, tap } from 'rxjs/operators';
+import { map, take, tap, first, switchMap } from 'rxjs/operators';
+import { from, of } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
@@ -13,18 +14,20 @@ export class AuthGuard {
   ) {}
 
   canActivate() {
-    console.log('Auth Guard: Checking authentication...');
-    return this.authService.isAuthenticated$.pipe(
-      take(1),
-      tap(isAuthenticated => console.log('Auth Guard: Is authenticated?', isAuthenticated)),
-      map(isAuthenticated => {
-        if (!isAuthenticated) {
-          console.log('Auth Guard: Not authenticated, redirecting to login');
+    console.log('Auth Guard: Starting guard check...', {
+      url: this.router.url,
+      currentRoute: this.router.routerState.snapshot.url
+    });
+    return from(this.authService.isFirebaseReady()).pipe(
+      tap(initialAuth => console.log('Auth Guard: Initial auth state:', initialAuth)),
+      switchMap(initialAuth => {
+        if (!initialAuth) {
+          console.log('Auth Guard: Not authenticated after initialization');
           this.router.navigate(['/login']);
-          return false;
+          return of(false);
         }
-        console.log('Auth Guard: Authentication successful');
-        return true;
+        console.log('Auth Guard: User is authenticated, allowing navigation');
+        return of(true);
       })
     );
   }

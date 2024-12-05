@@ -6,7 +6,7 @@ import { HeaderComponent } from '../../components/header/header.component';
 import { AuthService } from '../../services/auth.service';
 import { CreatorService } from '../../services/creator.service';
 import { Creator } from '../../interfaces/creator.interface';
-import { Subject, takeUntil, take } from 'rxjs';
+import { Subject, takeUntil, take, switchMap, of, firstValueFrom, tap } from 'rxjs';
 import { trigger, transition, style, animate } from '@angular/animations';
 
 @Component({
@@ -35,14 +35,14 @@ export class ProfileComponent implements OnInit, OnDestroy {
   isOwnProfile: boolean = false;
   showSocialForm: boolean = false;
   isLoading: boolean = true;
+  authChecked = false;
+  isAuthenticated = false;
+  isSelectOpen = false;
+  dropdownPosition: { top: number; left: number; width: number } | null = null;
   newSocialMedia = {
     platform: '',
     url: ''
   };
-  isSelectOpen = false;
-  dropdownPosition: { top: number; left: number; width: number } | null = null;
-  authChecked = false;
-  isAuthenticated = false;
 
   socialPlatforms = [
     { id: 'youtube', name: 'YouTube', icon: 'fab fa-youtube' },
@@ -61,123 +61,67 @@ export class ProfileComponent implements OnInit, OnDestroy {
   ngOnInit() {
     try {
       console.log('1. Profile Init Started');
-      this.isLoading = true;
       
-      const minimumLoadingTime = new Promise(resolve => setTimeout(resolve, 2000));
-
-      this.authService.isAuthenticated$
-        .pipe(
-          takeUntil(this.destroy$),
-          take(1)
-        )
-        .subscribe(async (isAuthenticated) => {
-          console.log('2. Auth state:', isAuthenticated);
+      // Combine auth check and data loading into a single stream
+      this.authService.isAuthenticated$.pipe(
+        take(1),
+        tap(isAuthenticated => {
+          console.log('2. Initial auth state:', isAuthenticated);
           this.isAuthenticated = isAuthenticated;
-
-          if (isAuthenticated) {
-            this.route.paramMap.subscribe(params => {
-              console.log('3. Full route:', this.router.url);
-              console.log('3.1 ParamMap:', params);
-              
+        }),
+        switchMap(isAuthenticated => {
+          if (!isAuthenticated) {
+            return of(null);
+          }
+          
+          return this.route.paramMap.pipe(
+            switchMap(params => {
               const username = params.get('username') || 'me';
-              console.log('4. Resolved username:', username);
               
               if (username === 'me') {
-                console.log('5. Handling "me" route');
-                this.authService.currentUser$
-                  .pipe(
-                    takeUntil(this.destroy$),
-                    take(1)
-                  )
-                  .subscribe({
-                    next: (currentUser) => {
-                      console.log('6. Current User Data:', currentUser);
-                      if (currentUser) {
-                        this.user = currentUser;
-                        this.isOwnProfile = true;
-                        console.log('7. Setting initial user data:', this.user);
-                        
-                        console.log('8. Loading full user data for uid:', currentUser.uid);
-                        this.loadUserData(currentUser.uid);
-                      } else {
-                        console.log('5a. No current user, redirecting to login');
-                        this.router.navigate(['/login']);
-                      }
-                    },
-                    error: (error) => {
-                      console.error('5b. Error getting current user:', error);
-                      this.isLoading = false;
-                      this.router.navigate(['/login']);
-                    }
-                  });
-              } else {
-                this.creatorService.getCreatorByUsername(username).subscribe({
-                  next: (userData) => {
-                    if (userData) {
-                      this.user = userData;
-                      
-                      this.authService.currentUser$.pipe(take(1)).subscribe(currentUser => {
-                        this.isOwnProfile = currentUser?.uid === userData.uid;
-                      });
-                      
-                      this.isLoading = false;
-                      
-                      setTimeout(() => {
-                        const mainElement = document.querySelector('main');
-                        if (mainElement) {
-                          mainElement.classList.add('loaded');
-                        }
-                      }, 800);
-                    } else {
-                      console.error('User not found');
-                      this.isLoading = false;
-                    }
-                  },
-                  error: (error) => {
-                    console.error('Error loading profile:', error);
-                    this.isLoading = false;
-                  }
-                });
+                return this.authService.currentUser$.pipe(
+                  take(1),
+                  switchMap(currentUser => {
+                    if (!currentUser) return of(null);
+                    return this.creatorService.getCreator(currentUser.uid);
+                  })
+                );
               }
-            });
+              return this.creatorService.getCreatorByUsername(username);
+            })
+          );
+        }),
+        takeUntil(this.destroy$)
+      ).subscribe({
+        next: async (userData) => {
+          if (userData) {
+            console.log('3. User data loaded:', userData);
+            this.user = userData;
+            this.isOwnProfile = await this.checkIfOwnProfile(userData.uid);
           }
-
-          await minimumLoadingTime;
+          
+          // Always set these states after minimum delay
+          await new Promise(resolve => setTimeout(resolve, 2000));
           this.authChecked = true;
           this.isLoading = false;
-        });
+        },
+        error: (error) => {
+          console.error('Error:', error);
+          this.authChecked = true;
+          this.isLoading = false;
+        }
+      });
 
     } catch (error) {
       console.error('Error in profile initialization:', error);
-      this.isLoading = false;
       this.authChecked = true;
+      this.isLoading = false;
     }
   }
 
-  private loadUserData(uid: string) {
-    console.log('7. loadUserData called with uid:', uid);
-    this.creatorService.getCreator(uid).subscribe({
-      next: (userData) => {
-        console.log('8. Received user data:', userData);
-        if (userData) {
-          this.user = userData;
-          this.isLoading = false;
-          console.log('9. Updated user data:', this.user);
-          
-          setTimeout(() => {
-            const mainElement = document.querySelector('main');
-            if (mainElement) {
-              mainElement.classList.add('loaded');
-              console.log('10. Added loaded class to main element');
-            }
-          }, 800);
-        }
-      },
-      error: (error) => {
-        console.error('8a. Error loading user data:', error);
-        this.isLoading = false;
-      }
-    });
+  private async checkIfOwnProfile(profileUid: string): Promise<boolean> {
+    const currentUser = await firstValueFrom(this.authService.currentUser$.pipe(take(1)));
+    return currentUser?.uid === profileUid;
   }
 
   ngOnDestroy() {

@@ -13,33 +13,47 @@ export class AuthService {
   public currentUser$: Observable<Creator | null> = this.currentUserSubject.asObservable();
   private isAuthenticatedSubject = new BehaviorSubject<boolean>(false);
   isAuthenticated$ = this.isAuthenticatedSubject.asObservable();
+  
+  private firebaseReady: Promise<boolean>;
 
   constructor(
     private auth: Auth,
     private firestore: Firestore,
     @Inject(PLATFORM_ID) private platformId: Object
   ) {
-    if (isPlatformBrowser(this.platformId)) {
-      // Set persistence to LOCAL
-      setPersistence(this.auth, browserLocalPersistence);
-      
-      // Listen to auth state changes
-      onAuthStateChanged(this.auth, async (user) => {
-        if (user) {
-          const userDoc = await getDoc(doc(this.firestore, 'creators', user.uid));
-          if (userDoc.exists()) {
-            this.currentUserSubject.next(userDoc.data() as Creator);
-            this.isAuthenticatedSubject.next(true);
+    console.log('AuthService: Initializing...');
+    
+    this.firebaseReady = new Promise<boolean>((resolve) => {
+      if (isPlatformBrowser(this.platformId)) {
+        console.log('AuthService: Setting up Firebase auth...');
+        setPersistence(this.auth, browserLocalPersistence);
+        
+        onAuthStateChanged(this.auth, async (user) => {
+          console.log('AuthService: Auth state changed:', !!user);
+          if (user) {
+            const userDoc = await getDoc(doc(this.firestore, 'creators', user.uid));
+            if (userDoc.exists()) {
+              console.log('AuthService: User data found, setting authenticated');
+              this.currentUserSubject.next(userDoc.data() as Creator);
+              this.isAuthenticatedSubject.next(true);
+              resolve(true);
+            } else {
+              console.log('AuthService: No user data found');
+              this.currentUserSubject.next(null);
+              this.isAuthenticatedSubject.next(false);
+              resolve(false);
+            }
           } else {
+            console.log('AuthService: No user, setting not authenticated');
             this.currentUserSubject.next(null);
             this.isAuthenticatedSubject.next(false);
+            resolve(false);
           }
-        } else {
-          this.currentUserSubject.next(null);
-          this.isAuthenticatedSubject.next(false);
-        }
-      });
-    }
+        });
+      } else {
+        resolve(false);
+      }
+    });
   }
 
   private getUserEmail(username: string): string {
@@ -153,5 +167,12 @@ export class AuthService {
       return userDoc.data() as Creator;
     }
     return null;
+  }
+
+  async isFirebaseReady() {
+    console.log('AuthService: Waiting for Firebase and auth state...');
+    const isAuthenticated = await this.firebaseReady;
+    console.log('AuthService: Firebase ready, authenticated:', isAuthenticated);
+    return isAuthenticated;
   }
 }
