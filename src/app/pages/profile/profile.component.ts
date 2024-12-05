@@ -62,23 +62,23 @@ export class ProfileComponent implements OnInit, OnDestroy {
     try {
       console.log('1. Profile Init Started');
       
-      // Combine auth check and data loading into a single stream
-      this.authService.isAuthenticated$.pipe(
+      // First get the username parameter
+      this.route.paramMap.pipe(
         take(1),
-        tap(isAuthenticated => {
-          console.log('2. Initial auth state:', isAuthenticated);
-          this.isAuthenticated = isAuthenticated;
-        }),
-        switchMap(isAuthenticated => {
-          if (!isAuthenticated) {
-            return of(null);
-          }
-          
-          return this.route.paramMap.pipe(
-            switchMap(params => {
-              const username = params.get('username') || 'me';
-              
-              if (username === 'me') {
+        switchMap(params => {
+          const username = params.get('username') || 'me';
+          console.log('2. Route username:', username);
+
+          // Only check auth for 'me' route
+          if (username === 'me') {
+            return this.authService.isAuthenticated$.pipe(
+              take(1),
+              tap(isAuthenticated => {
+                console.log('3. Auth check for "me" route:', isAuthenticated);
+                this.isAuthenticated = isAuthenticated;
+              }),
+              switchMap(isAuthenticated => {
+                if (!isAuthenticated) return of(null);
                 return this.authService.currentUser$.pipe(
                   take(1),
                   switchMap(currentUser => {
@@ -86,16 +86,19 @@ export class ProfileComponent implements OnInit, OnDestroy {
                     return this.creatorService.getCreator(currentUser.uid);
                   })
                 );
-              }
-              return this.creatorService.getCreatorByUsername(username);
-            })
-          );
+              })
+            );
+          } else {
+            // For other usernames, don't require auth
+            this.isAuthenticated = true; // Always set to true for public profiles
+            return this.creatorService.getCreatorByUsername(username);
+          }
         }),
         takeUntil(this.destroy$)
       ).subscribe({
         next: async (userData) => {
           if (userData) {
-            console.log('3. User data loaded:', userData);
+            console.log('4. User data loaded:', userData);
             this.user = userData;
             this.isOwnProfile = await this.checkIfOwnProfile(userData.uid);
           }
