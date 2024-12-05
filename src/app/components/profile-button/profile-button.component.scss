@@ -269,7 +269,6 @@
 
       &:hover {
         color: var(--color-accent);
-        background: rgba(255, 255, 255, 0.1);
         transform: rotate(90deg);
       }
     }
@@ -336,6 +335,42 @@
         object-fit: cover;
         transition: transform 0.3s ease;
       }
+    }
+  }
+}
+
+.search-bar {
+  margin-bottom: 1.5rem;
+  position: relative;
+  
+  i {
+    position: absolute;
+    left: 1rem;
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--color-light);
+    pointer-events: none;
+  }
+
+  input {
+    width: 100%;
+    padding: 0.8rem 1rem 0.8rem 2.8rem;
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 0.5rem;
+    color: var(--color-white);
+    font-size: 1rem;
+    transition: all 0.3s ease;
+
+    &::placeholder {
+      color: rgba(255, 255, 255, 0.5);
+    }
+
+    &:focus {
+      outline: none;
+      border-color: var(--color-accent);
+      background: rgba(255, 255, 255, 0.15);
+      box-shadow: 0 0 15px rgba(var(--color-accent-rgb), 0.1);
     }
   }
 }

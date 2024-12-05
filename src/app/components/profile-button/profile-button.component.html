@@ -28,8 +28,22 @@
         <i class="fas fa-times"></i>
       </button>
     </div>
+
+    <!-- Add search bar -->
+    <div class="search-bar">
+      <i class="fas fa-search"></i>
+      <input 
+        type="text" 
+        [(ngModel)]="searchQuery" 
+        placeholder="Search avatars..."
+        (input)="onSearch($event)"
+      >
+    </div>
+
     <div class="avatars-grid">
-      <div class="avatar-option" *ngFor="let avatar of avatarOptions" (click)="selectAvatar(avatar)">
+      <div class="avatar-option" 
+           *ngFor="let avatar of filteredAvatars" 
+           (click)="selectAvatar(avatar)">
         <img [src]="avatar.url" [alt]="avatar.name">
       </div>
     </div>
