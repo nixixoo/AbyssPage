@@ -6,7 +6,7 @@ import { HeaderComponent } from '../../components/header/header.component';
 import { AuthService } from '../../services/auth.service';
 import { CreatorService } from '../../services/creator.service';
 import { Creator } from '../../interfaces/creator.interface';
-import { Subject, takeUntil } from 'rxjs';
+import { Subject, takeUntil, take } from 'rxjs';
 import { trigger, transition, style, animate } from '@angular/animations';
 
 @Component({
@@ -63,69 +63,79 @@ export class ProfileComponent implements OnInit, OnDestroy {
       this.route.params.subscribe(params => {
         const username = params['username'];
         
-        this.authService.currentUser$
-          .pipe(takeUntil(this.destroy$))
-          .subscribe(currentUser => {
-            if (currentUser) {
-              if (username === 'me') {
+        // If it's the "me" route, we need authentication
+        if (username === 'me') {
+          this.authService.currentUser$
+            .pipe(takeUntil(this.destroy$))
+            .subscribe(currentUser => {
+              if (currentUser) {
                 this.isOwnProfile = true;
-                this.creatorService.getCreator(currentUser.uid).subscribe({
-                  next: (userData) => {
-                    if (userData) {
-                      this.user = userData;
-                      
-                      // Start fade out
-                      this.isLoading = false;
-                      
-                      // Set user after a delay to allow fade out to complete
-                      setTimeout(() => {
-                        const mainElement = document.querySelector('main');
-                        if (mainElement) {
-                          mainElement.classList.add('loaded');
-                        }
-                      }, 800); // Match this with the CSS transition duration
-                    }
-                  },
-                  error: (error) => {
-                    console.error('Error loading user data:', error);
-                    this.isLoading = false;
-                  }
-                });
+                this.loadUserData(currentUser.uid);
               } else {
-                this.creatorService.getCreatorByUsername(username).subscribe({
-                  next: (userData) => {
-                    if (userData) {
-                      this.user = userData;
-                      this.isOwnProfile = currentUser.uid === userData.uid;
-                      
-                      // Start fade out
-                      this.isLoading = false;
-                      
-                      // Set user after a delay to allow fade out to complete
-                      setTimeout(() => {
-                        const mainElement = document.querySelector('main');
-                        if (mainElement) {
-                          mainElement.classList.add('loaded');
-                        }
-                      }, 800); // Match this with the CSS transition duration
-                    }
-                  },
-                  error: (error) => {
-                    console.error('Error loading profile:', error);
-                    this.isLoading = false;
-                  }
-                });
+                this.router.navigate(['/login']);
               }
-            } else if (!this.isLoading) {
-              this.router.navigate(['/login']);
+            });
+        } else {
+          // For other profiles, load directly without requiring authentication
+          this.creatorService.getCreatorByUsername(username).subscribe({
+            next: (userData) => {
+              if (userData) {
+                this.user = userData;
+                
+                // Check if it's the current user's profile
+                this.authService.currentUser$.pipe(take(1)).subscribe(currentUser => {
+                  this.isOwnProfile = currentUser?.uid === userData.uid;
+                });
+                
+                // Start fade out
+                this.isLoading = false;
+                
+                setTimeout(() => {
+                  const mainElement = document.querySelector('main');
+                  if (mainElement) {
+                    mainElement.classList.add('loaded');
+                  }
+                }, 800);
+              } else {
+                // Handle user not found
+                console.error('User not found');
+                this.isLoading = false;
+              }
+            },
+            error: (error) => {
+              console.error('Error loading profile:', error);
+              this.isLoading = false;
             }
           });
+        }
       });
 
     } catch (error) {
       console.error('Error in profile initialization:', error);
       this.isLoading = false;
     }
+  }
+
+  private loadUserData(uid: string) {
+    this.creatorService.getCreator(uid).subscribe({
+      next: (userData) => {
+        if (userData) {
+          this.user = userData;
+          this.isLoading = false;
+          
+          setTimeout(() => {
+            const mainElement = document.querySelector('main');
+            if (mainElement) {
+              mainElement.classList.add('loaded');
+            }
+          }, 800);
+        }
+      },
+      error: (error) => {
+        console.error('Error loading user data:', error);
+        this.isLoading = false;
+      }
+    });
   }
 
   ngOnDestroy() {
