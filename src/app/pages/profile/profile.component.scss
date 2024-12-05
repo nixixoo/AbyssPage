@@ -153,7 +153,7 @@ main {
       border-radius: 0.5rem;
       color: var(--color-white);
       text-decoration: none;
-      transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
       
       opacity: 1;
       transform: translateY(0);
@@ -196,24 +196,47 @@ main {
           font-size: 0.9rem;
         }
       }
+      
+      &:hover {
+        transform: scale(1.03);
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+
+        i:not(.fa-times) {
+          transform: scale(1.1);
+        }
+      }
 
       i {
         font-size: 1.5rem;
+        transition: transform 0.3s ease;
       }
 
       &.youtube {
         background: rgba(255, 0, 0, 0.2);
-        &:hover { background: rgba(255, 0, 0, 0.4); }
+        &:hover { 
+          background: rgba(255, 0, 0, 0.4);
+        }
       }
 
       &.twitch {
         background: rgba(145, 70, 255, 0.2);
-        &:hover { background: rgba(145, 70, 255, 0.4); }
+        &:hover { 
+          background: rgba(145, 70, 255, 0.4);
+        }
       }
 
       &.twitter {
         background: rgba(29, 161, 242, 0.2);
-        &:hover { background: rgba(29, 161, 242, 0.4); }
+        &:hover { 
+          background: rgba(29, 161, 242, 0.4);
+        }
+      }
+
+      &.instagram {
+        background: rgba(225, 48, 108, 0.2);
+        &:hover { 
+          background: rgba(225, 48, 108, 0.4);
+        }
       }
     }
   }

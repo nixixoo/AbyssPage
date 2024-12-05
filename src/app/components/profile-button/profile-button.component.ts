@@ -22,10 +22,18 @@ export class ProfileButtonComponent implements AfterViewInit {
   menuHeight = 0;
   
   avatarOptions: AvatarOption[] = [
-    { url: 'assets/images/avatars/avatar1.png', name: 'Avatar 1' },
-    { url: 'assets/images/avatars/avatar2.png', name: 'Avatar 2' },
-    { url: 'assets/images/avatars/avatar3.png', name: 'Avatar 3' },
-    // Añade más avatares según necesites
+    { url: 'assets/character_profile/kuki_shinobu_avatar.png', name: 'Kuki Shinobu' },
+    { url: 'assets/character_profile/klee_blossoming.webp', name: 'Klee' },
+    { url: 'assets/character_profile/layla_avatar.png', name: 'Layla' },
+    { url: 'assets/character_profile/lisa_avatar.png', name: 'Lisa' },
+    { url: 'assets/character_profile/lisa_sobriquet.webp', name: 'Lisa Sobriquet' },
+    { url: 'assets/character_profile/lynette_avatar.png', name: 'Lynette' },
+    { url: 'assets/character_profile/lyney_avatar.png', name: 'Lyney' },
+    { url: 'assets/character_profile/mika_avatar.png', name: 'Mika' },
+    { url: 'assets/character_profile/mona_avatar.png', name: 'Mona' },
+    { url: 'assets/character_profile/ningguang_avatar.png', name: 'Ningguang' },
+    { url: 'assets/character_profile/nilou_avatar.png', name: 'Nilou' },
+    { url: 'assets/character_profile/nilou_breeze.webp', name: 'Nilou Breeze' }
   ];
 
   isLoggedIn = false;
@@ -99,8 +107,7 @@ export class ProfileButtonComponent implements AfterViewInit {
     this.showAvatarSelector = false;
   }
 
-  selectAvatar(avatar: any) {
-    // Implement avatar selection logic here
+  selectAvatar(avatar: AvatarOption) {
     console.log('Selected avatar:', avatar);
     this.closeAvatarSelector();
   }
