@@ -14,56 +14,7 @@ import { trigger, transition, style, animate, query, stagger } from '@angular/an
   imports: [CommonModule, HeaderComponent],
   templateUrl: './characters.component.html',
   styleUrls: ['./characters.component.scss'],
-  animations: [
-    trigger('fadeOut', [
-      transition(':leave', [
-        animate('300ms ease-out', style({ opacity: 0 }))
-      ])
-    ]),
-    trigger('fadeIn', [
-      transition(':enter', [
-        style({ opacity: 0 }),
-        animate('300ms ease-in', style({ opacity: 1 }))
-      ])
-    ]),
-    trigger('cardAnimation', [
-      transition(':enter', [
-        style({ opacity: 0, transform: 'scale(0.95)' }),
-        animate('0.3s cubic-bezier(0.4, 0, 0.2, 1)', 
-          style({ opacity: 1, transform: 'scale(1)' })
-        )
-      ]),
-      transition(':leave', [
-        animate('0.3s cubic-bezier(0.4, 0, 0.2, 1)', 
-          style({ opacity: 0, transform: 'scale(0.95)' })
-        )
-      ]),
-      transition('* => *', [
-        animate('0.3s cubic-bezier(0.4, 0, 0.2, 1)')
-      ])
-    ]),
-    trigger('buttonAnimation', [
-      transition(':enter', [
-        style({ opacity: 0, transform: 'translateY(100%)' }),
-        animate('300ms ease-out', style({ opacity: 1, transform: 'translateY(0)' }))
-      ]),
-      transition(':leave', [
-        animate('300ms ease-out', style({ opacity: 0, transform: 'translateY(100%)' }))
-      ])
-    ]),
-    trigger('fadeInOut', [
-      transition(':enter', [
-        style({ opacity: 0 }),
-        animate('300ms ease-in', style({ opacity: 1 }))
-      ]),
-      transition(':leave', [
-        animate('800ms ease-out', style({ 
-          opacity: 0,
-          transform: 'scale(0.95)'
-        }))
-      ])
-    ])
-  ]
+
 })
 export class CharactersComponent implements OnInit, OnDestroy {
   private destroy$ = new Subject<void>();

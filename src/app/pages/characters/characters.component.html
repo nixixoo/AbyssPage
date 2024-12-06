@@ -11,7 +11,7 @@
   </div>
 
   <!-- Show login message if not authenticated -->
-  <div class="login-message" *ngIf="authChecked && !isAuthenticated" @fadeIn>
+  <div class="login-message" *ngIf="authChecked && !isAuthenticated">
     <h2>Authentication Required</h2>
     <p>Please log in to view and manage your characters.</p>
     <button class="login-btn" (click)="navigateToLogin()">
@@ -178,7 +178,7 @@
             <img src="assets/logo.png" alt="Loading..." class="spinning-logo">
           </div>
 
-          <div class="characters-grid" [class.loading]="isLoading" @fadeIn>
+          <div class="characters-grid" [class.loading]="isLoading">
             <div class="character-card" 
                  *ngFor="let character of displayedCharacters"
                  [class.owned]="isCharacterOwned(character.id)"

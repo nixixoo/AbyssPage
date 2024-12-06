@@ -4,6 +4,7 @@ import { Router } from '@angular/router';
 import { AuthService } from '../../services/auth.service';
 import { take } from 'rxjs/operators';
 import { FormsModule } from '@angular/forms';
+import { trigger, transition, style, animate } from '@angular/animations';
 
 interface AvatarOption {
   url: string;
@@ -16,7 +17,22 @@ interface AvatarOption {
   standalone: true,
   imports: [CommonModule, FormsModule],
   templateUrl: './profile-button.component.html',
-  styleUrls: ['./profile-button.component.scss']
+  styleUrls: ['./profile-button.component.scss'],
+  animations: [
+    trigger('fadeInOut', [
+      transition(':enter', [
+        style({ opacity: 0, transform: 'scale(0.8)' }),
+        animate('300ms cubic-bezier(0.4, 0, 0.2, 1)', 
+          style({ opacity: 1, transform: 'scale(1)' })
+        )
+      ]),
+      transition(':leave', [
+        animate('300ms cubic-bezier(0.4, 0, 0.2, 1)', 
+          style({ opacity: 0, transform: 'scale(0.8)' })
+        )
+      ])
+    ])
+  ]
 })
 export class ProfileButtonComponent implements AfterViewInit {
   @ViewChild('menuContent') menuContent!: ElementRef;

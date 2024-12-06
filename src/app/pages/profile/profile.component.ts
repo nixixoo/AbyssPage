@@ -15,19 +15,7 @@ import { trigger, transition, style, animate } from '@angular/animations';
   imports: [CommonModule, FormsModule, HeaderComponent],
   templateUrl: './profile.component.html',
   styleUrls: ['./profile.component.scss'],
-  animations: [
-    trigger('fadeOut', [
-      transition(':leave', [
-        animate('300ms ease-out', style({ opacity: 0 }))
-      ])
-    ]),
-    trigger('fadeIn', [
-      transition(':enter', [
-        style({ opacity: 0 }),
-        animate('300ms ease-in', style({ opacity: 1 }))
-      ])
-    ])
-  ]
+
 })
 export class ProfileComponent implements OnInit, OnDestroy {
   private destroy$ = new Subject<void>();

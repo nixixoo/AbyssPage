@@ -335,7 +335,30 @@
         object-fit: cover;
         transition: transform 0.3s ease;
       }
+
+      // Add these properties for smooth transitions
+      opacity: 1;
+      transform: scale(1);
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      animation: fadeIn 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+
+      &.ng-leave {
+        opacity: 0;
+        transform: scale(0.8);
+      }
     }
+  }
+}
+
+// Add keyframes for the initial fade in
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: scale(0.8);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
   }
 }
 

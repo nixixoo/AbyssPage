@@ -43,6 +43,7 @@
     <div class="avatars-grid">
       <div class="avatar-option" 
            *ngFor="let avatar of filteredAvatars" 
+           [@fadeInOut]
            (click)="selectAvatar(avatar)">
         <img [src]="avatar.url" [alt]="avatar.name">
       </div>
