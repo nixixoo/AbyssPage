@@ -42,7 +42,7 @@ export class WelcomeAnimationComponent {
     } else if (this.wasActive) {
       setTimeout(() => {
         this.wasActive = false;
-      }, 6600);
+      }, 3000);
     }
   }
 }

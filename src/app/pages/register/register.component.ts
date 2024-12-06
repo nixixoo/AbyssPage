@@ -81,7 +81,7 @@ export class RegisterComponent {
       
       setTimeout(() => {
         this.router.navigate(['/characters']);
-      }, 7000);
+      }, 3500);
       
     } catch (error: any) {
       this.errorMessage = error.message;
@@ -92,9 +92,5 @@ export class RegisterComponent {
 
   navigateToLogin() {
     this.router.navigate(['/login']);
-  }
-
-  testAnimation() {
-    this.animationService.startAnimation();
   }
 }
