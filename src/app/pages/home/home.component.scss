@@ -9,6 +9,17 @@
   }
 }
 
+@keyframes fadeOutDown {
+  from {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  to {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+}
+
 :root {
   --z-base: 1;
   --z-overlay-bg: 2;    // For the dark background overlay
@@ -252,26 +263,28 @@ main {
   background: var(--color-white) !important;
   border-radius: 20px;
   padding: 20px;
-  opacity: 0;
-  transform: translateY(10px);
-  animation: fadeInUp 0.3s ease-out forwards;
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
   width: 100%;
   overflow: hidden;
 
   .results-container {
     max-height: 50vh;
-    overflow-y: auto;
+    overflow-y: scroll;
     overflow-x: hidden;
     background: var(--color-white) !important;
     padding-right: 10px;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+    
+    &::-webkit-scrollbar {
+      display: none;
+    }
   }
 
   .no-results {
     text-align: center;
     color: var(--color-dark);
     padding: 20px;
-    opacity: 0.7;
   }
 
   .user-result {
@@ -280,7 +293,6 @@ main {
     padding: 12px;
     border-radius: 10px;
     cursor: pointer;
-    transition: all 0.2s ease;
     width: 100%;
     margin: 0;
 

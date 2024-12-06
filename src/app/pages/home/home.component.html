@@ -31,16 +31,17 @@
       </div>
 
       <!-- Search Results Container -->
-      <div class="search-results" *ngIf="isSearchActive" (click)="$event.stopPropagation()">
+      <div class="search-results" *ngIf="isSearchActive" [@searchResults] (click)="$event.stopPropagation()">
         <div class="results-container">
-          <div class="no-results" *ngIf="!searchQuery">
+          <div class="no-results" *ngIf="!searchQuery" [@resultItem]>
             Start typing to search...
           </div>
-          <div class="no-results" *ngIf="searchQuery && searchResults.length === 0">
+          <div class="no-results" *ngIf="searchQuery && searchResults.length === 0" [@resultItem]>
             No users found...
           </div>
           <div class="user-result" 
                *ngFor="let user of searchResults"
+               [@resultItem]
                (click)="navigateToProfile(user.username)">
             <img [src]="user.avatar || 'assets/images/default-avatar.png'" 
                  [alt]="user.username" 
