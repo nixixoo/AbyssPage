@@ -1,11 +1,13 @@
-import { Component, ElementRef, ViewChild, AfterViewInit } from '@angular/core';
+import { Component, ElementRef, ViewChild, AfterViewInit, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
 import { AuthService } from '../../services/auth.service';
-import { take } from 'rxjs/operators';
+import { take, takeUntil } from 'rxjs/operators';
 import { FormsModule } from '@angular/forms';
 import { trigger, transition, style, animate, state } from '@angular/animations';
 import { Firestore, doc, updateDoc } from '@angular/fire/firestore';
+import { UiService } from '../../services/ui.service';
+import { Subject } from 'rxjs';
 
 interface AvatarOption {
   url: string;
@@ -48,13 +50,15 @@ interface AvatarOption {
     ])
   ]
 })
-export class ProfileButtonComponent implements AfterViewInit {
+export class ProfileButtonComponent implements AfterViewInit, OnDestroy {
   @ViewChild('menuContent') menuContent!: ElementRef;
+  private destroy$ = new Subject<void>();
   showAvatarSelector = false;
   menuHeight = 0;
   searchQuery: string = '';
   isLoggedIn = false;
   currentAvatar: string = 'assets/images/default-avatar.png';
+  isDarkened = false;
   
   avatarOptions: AvatarOption[] = [
     { url: 'assets/character_profile/albedo_avatar.png', name: 'Albedo', type: 'character' },
@@ -189,11 +193,14 @@ export class ProfileButtonComponent implements AfterViewInit {
   constructor(
     private router: Router,
     private authService: AuthService,
-    private firestore: Firestore
+    private firestore: Firestore,
+    private uiService: UiService
   ) {
     console.log('ProfileButton: Initializing...');
     // Subscribe to auth state changes
-    this.authService.isAuthenticated$.subscribe(
+    this.authService.isAuthenticated$.pipe(
+      takeUntil(this.destroy$)
+    ).subscribe(
       (isAuthenticated) => {
         console.log('ProfileButton: Auth state changed:', isAuthenticated);
         this.isLoggedIn = isAuthenticated;
@@ -202,6 +209,21 @@ export class ProfileButtonComponent implements AfterViewInit {
         }
       }
     );
+
+    // Subscribe to darkened state
+    this.uiService.isDarkened$.pipe(
+      takeUntil(this.destroy$)
+    ).subscribe(
+      (isDarkened: boolean) => {
+        console.log('Profile button darkened state:', isDarkened);
+        this.isDarkened = isDarkened;
+      }
+    );
+  }
+
+  ngOnDestroy() {
+    this.destroy$.next();
+    this.destroy$.complete();
   }
 
   private async loadUserAvatar() {

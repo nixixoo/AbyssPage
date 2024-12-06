@@ -25,17 +25,27 @@
           placeholder="Search user..."
           class="search-input"
           (focus)="toggleSearch(true)"
-          (blur)="toggleSearch(false)"
+          (input)="onSearch()"
+          #searchInput
         >
       </div>
 
       <!-- Search Results Container -->
-      <div class="search-results" *ngIf="isSearchActive">
-        <!-- Results will go here -->
+      <div class="search-results" *ngIf="isSearchActive" (click)="$event.stopPropagation()">
         <div class="results-container">
-          <!-- Example results -->
           <div class="no-results" *ngIf="!searchQuery">
             Start typing to search...
+          </div>
+          <div class="no-results" *ngIf="searchQuery && searchResults.length === 0">
+            No users found...
+          </div>
+          <div class="user-result" 
+               *ngFor="let user of searchResults"
+               (click)="navigateToProfile(user.username)">
+            <img [src]="user.avatar || 'assets/images/default-avatar.png'" 
+                 [alt]="user.username" 
+                 class="user-avatar">
+            <span class="username">{{ user.username }}</span>
           </div>
         </div>
       </div>

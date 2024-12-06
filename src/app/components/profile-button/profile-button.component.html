@@ -1,9 +1,9 @@
-<div class="profile-button-wrapper" *ngIf="isLoggedIn" [@slideIn]>
-  <button class="floating-profile-btn">
+<div class="profile-button-wrapper" *ngIf="isLoggedIn" [@slideIn] [class.darkened]="isDarkened">
+  <button class="floating-profile-btn" [class.darkened]="isDarkened">
     <img [src]="currentAvatar" alt="Profile">
   </button>
 
-  <div class="profile-menu">
+  <div class="profile-menu" [class.darkened]="isDarkened">
     <div class="menu-item" (click)="navigateToProfile()">
       <i class="fas fa-user"></i>
       Profile

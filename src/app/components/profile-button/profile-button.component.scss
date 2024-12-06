@@ -3,7 +3,23 @@
   top: 20px;
   right: 20px;
   z-index: 1000;
+  transition: opacity 0.6s cubic-bezier(0.19, 1, 0.22, 1);
   
+  &.darkened {
+    opacity: 0.3 !important;
+    pointer-events: none;
+
+    .floating-profile-btn {
+      pointer-events: none;
+      opacity: 0.3;
+    }
+
+    .profile-menu {
+      pointer-events: none;
+      opacity: 0;
+    }
+  }
+
   &::before {
     content: '';
     position: absolute;
