@@ -69,7 +69,9 @@ export class LoginComponent {
     this.isLoading = true;
     try {
       await this.authService.login(this.username, this.password, this.rememberMe);
-      this.router.navigate(['/']);
+      this.router.navigate(['/']).then(() => {
+        window.location.reload();
+      });
     } catch (error: any) {
       this.errorMessage = error.message;
     } finally {

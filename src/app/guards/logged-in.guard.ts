@@ -1,7 +1,8 @@
 import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
 import { AuthService } from '../services/auth.service';
-import { map, take } from 'rxjs/operators';
+import { map, take, tap, switchMap } from 'rxjs/operators';
+import { from, of } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
@@ -13,15 +14,17 @@ export class LoggedInGuard {
   ) {}
 
   canActivate() {
-    return this.authService.currentUser$.pipe(
-      take(1),
-      map(user => {
-        if (user) {
-          // If user is logged in, redirect to characters page
-          this.router.navigate(['/characters']);
+    console.log('LoggedIn Guard: Starting check...');
+    return from(this.authService.isFirebaseReady()).pipe(
+      switchMap(() => this.authService.isAuthenticated$),
+      map(isAuthenticated => {
+        console.log('LoggedIn Guard: Auth state:', isAuthenticated);
+        if (isAuthenticated) {
+          console.log('LoggedIn Guard: User is authenticated, redirecting to home');
+          this.router.navigate(['/']);
           return false;
         }
-        // If user is not logged in, allow access to login/register
+        console.log('LoggedIn Guard: User is not authenticated, allowing access');
         return true;
       })
     );
