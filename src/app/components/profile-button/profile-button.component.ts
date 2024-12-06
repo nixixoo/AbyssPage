@@ -4,7 +4,8 @@ import { Router } from '@angular/router';
 import { AuthService } from '../../services/auth.service';
 import { take } from 'rxjs/operators';
 import { FormsModule } from '@angular/forms';
-import { trigger, transition, style, animate } from '@angular/animations';
+import { trigger, transition, style, animate, state } from '@angular/animations';
+import { Firestore, doc, updateDoc } from '@angular/fire/firestore';
 
 interface AvatarOption {
   url: string;
@@ -31,6 +32,19 @@ interface AvatarOption {
           style({ opacity: 0, transform: 'scale(0.8)' })
         )
       ])
+    ]),
+    trigger('slideIn', [
+      state('void', style({
+        transform: 'translateX(100%)',
+        opacity: 0
+      })),
+      state('*', style({
+        transform: 'translateX(0)',
+        opacity: 1
+      })),
+      transition('void => *', [
+        animate('500ms cubic-bezier(0.4, 0, 0.2, 1)')
+      ])
     ])
   ]
 })
@@ -39,6 +53,8 @@ export class ProfileButtonComponent implements AfterViewInit {
   showAvatarSelector = false;
   menuHeight = 0;
   searchQuery: string = '';
+  isLoggedIn = false;
+  currentAvatar: string = 'assets/images/default-avatar.png';
   
   avatarOptions: AvatarOption[] = [
     { url: 'assets/character_profile/albedo_avatar.png', name: 'Albedo', type: 'character' },
@@ -170,11 +186,10 @@ export class ProfileButtonComponent implements AfterViewInit {
     { url: 'assets/character_profile/Zhiqiongs_Signature_Avatar.webp', name: 'Zhiqiong\'s Signature', type: 'special' }
   ];
 
-  isLoggedIn = false;
-
   constructor(
     private router: Router,
-    private authService: AuthService
+    private authService: AuthService,
+    private firestore: Firestore
   ) {
     console.log('ProfileButton: Initializing...');
     // Subscribe to auth state changes
@@ -182,8 +197,18 @@ export class ProfileButtonComponent implements AfterViewInit {
       (isAuthenticated) => {
         console.log('ProfileButton: Auth state changed:', isAuthenticated);
         this.isLoggedIn = isAuthenticated;
+        if (isAuthenticated) {
+          this.loadUserAvatar();
+        }
       }
     );
+  }
+
+  private async loadUserAvatar() {
+    const user = await this.authService.getCurrentUser();
+    if (user && user.avatar) {
+      this.currentAvatar = user.avatar;
+    }
   }
 
   ngAfterViewInit() {
@@ -241,9 +266,28 @@ export class ProfileButtonComponent implements AfterViewInit {
     this.showAvatarSelector = false;
   }
 
-  selectAvatar(avatar: AvatarOption) {
-    console.log('Selected avatar:', avatar);
-    this.closeAvatarSelector();
+  async selectAvatar(avatar: AvatarOption) {
+    try {
+      const currentUser = await this.authService.getCurrentUser();
+      if (!currentUser) {
+        console.error('No user found');
+        return;
+      }
+
+      // Update Firestore document
+      const userRef = doc(this.firestore, 'creators', currentUser.uid);
+      await updateDoc(userRef, {
+        avatar: avatar.url
+      });
+
+      // Update the current avatar immediately
+      this.currentAvatar = avatar.url;
+
+      console.log('Avatar updated successfully:', avatar.url);
+      this.closeAvatarSelector();
+    } catch (error) {
+      console.error('Error updating avatar:', error);
+    }
   }
 
   async logout() {

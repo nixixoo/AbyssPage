@@ -25,7 +25,7 @@
       <div class="profile-header fade-in">
         <div class="user-info">
           <img
-            src="assets/images/default-avatar.png"
+            [src]="user.avatar || 'assets/images/default-avatar.png'"
             alt="Profile picture"
             class="profile-avatar"
           />

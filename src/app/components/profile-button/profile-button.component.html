@@ -1,6 +1,6 @@
-<div class="profile-button-wrapper" *ngIf="isLoggedIn">
+<div class="profile-button-wrapper" *ngIf="isLoggedIn" [@slideIn]>
   <button class="floating-profile-btn">
-    <img src="assets/images/default-avatar.png" alt="Profile">
+    <img [src]="currentAvatar" alt="Profile">
   </button>
 
   <div class="profile-menu">
