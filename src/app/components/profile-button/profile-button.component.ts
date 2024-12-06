@@ -59,6 +59,7 @@ export class ProfileButtonComponent implements AfterViewInit, OnDestroy {
   isLoggedIn = false;
   currentAvatar: string = 'assets/images/default-avatar.png';
   isDarkened = false;
+  avatarLoaded: boolean = false;
   
   avatarOptions: AvatarOption[] = [
     { url: 'assets/character_profile/albedo_avatar.png', name: 'Albedo', type: 'character' },
