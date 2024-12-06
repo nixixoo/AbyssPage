@@ -14,7 +14,6 @@ import { AnimationService } from '../../services/animation.service';
   imports: [
     CommonModule, 
     FormsModule, 
-    RouterLink,
     HeaderComponent,
     WelcomeAnimationComponent
   ],
