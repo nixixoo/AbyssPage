@@ -75,10 +75,12 @@ export class AuthService {
 
       const userCredential = await signInWithEmailAndPassword(this.auth, email, password);
       
-      if (rememberMe) {
-        this.rememberUser(username);
-      } else {
-        this.forgetUser();
+      if (isPlatformBrowser(this.platformId)) {
+        if (rememberMe) {
+          localStorage.setItem('rememberedUsername', username);
+        } else {
+          localStorage.removeItem('rememberedUsername');
+        }
       }
 
       const userDoc = await getDoc(doc(this.firestore, 'creators', userCredential.user.uid));
@@ -128,7 +130,6 @@ export class AuthService {
   async logout() {
     try {
       await signOut(this.auth);
-      this.forgetUser();
       this.currentUserSubject.next(null);
       this.isAuthenticatedSubject.next(false);
       if (isPlatformBrowser(this.platformId)) {
@@ -136,18 +137,6 @@ export class AuthService {
       }
     } catch (error: any) {
       throw new Error('Error logging out');
-    }
-  }
-
-  private rememberUser(username: string) {
-    if (isPlatformBrowser(this.platformId)) {
-      localStorage.setItem('rememberedUsername', username);
-    }
-  }
-
-  private forgetUser() {
-    if (isPlatformBrowser(this.platformId)) {
-      localStorage.removeItem('rememberedUsername');
     }
   }
 

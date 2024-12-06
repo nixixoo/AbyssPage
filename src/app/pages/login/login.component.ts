@@ -12,7 +12,6 @@ import { HeaderComponent } from '../../components/header/header.component';
   imports: [
     CommonModule, 
     FormsModule, 
-    RouterLink,
     HeaderComponent
   ],
   templateUrl: './login.component.html',
