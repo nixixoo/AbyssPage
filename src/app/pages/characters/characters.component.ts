@@ -70,6 +70,14 @@ export class CharactersComponent implements OnInit, OnDestroy {
         weaponType: 'Sword'
       },
       {
+        id: 'lumine',
+        name: 'Lumine',
+        element: 'Anemo',
+        rarity: 5,
+        image: 'assets/character_icons/lumine_icon.webp',
+        weaponType: 'Sword'
+      },
+      {
         id: 'albedo',
         name: 'Albedo',
         element: 'Geo',
@@ -452,14 +460,6 @@ export class CharactersComponent implements OnInit, OnDestroy {
         rarity: 4,
         image: 'assets/character_icons/lisa_icon.webp',
         weaponType: 'Catalyst'
-      },
-      {
-        id: 'lumine',
-        name: 'Lumine',
-        element: 'Anemo',
-        rarity: 5,
-        image: 'assets/character_icons/lumine_icon.webp',
-        weaponType: 'Sword'
       },
       {
         id: 'lynette',
@@ -920,11 +920,19 @@ export class CharactersComponent implements OnInit, OnDestroy {
   }
 
   private applyFilters() {
-    // Implementation of filter logic
     let filteredList = [...this.characterList];
 
     if (this.activeFilters.element) {
-      filteredList = filteredList.filter(char => char.element === this.activeFilters.element);
+      filteredList = filteredList.filter(char => {
+        // Special handling for Travelers
+        if (char.id === 'aether' || char.id === 'lumine') {
+          // Show Travelers for any element except Cryo
+          const travelerElements = ['Anemo', 'Geo', 'Electro', 'Dendro', 'Hydro', 'Pyro'];
+          return travelerElements.includes(this.activeFilters.element!);
+        }
+        // Normal filtering for other characters
+        return char.element === this.activeFilters.element;
+      });
     }
 
     if (this.activeFilters.weapon) {
@@ -935,7 +943,6 @@ export class CharactersComponent implements OnInit, OnDestroy {
       filteredList = filteredList.filter(char => char.rarity === this.selectedRarity);
     }
 
-    // Update your displayed list
     this.displayedCharacters = filteredList;
   }
 
