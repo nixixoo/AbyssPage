@@ -155,6 +155,7 @@
                   <div class="character-card" 
                        *ngFor="let character of availableCharacters"
                        [class.selected]="selectedCharacters.includes(character.id)"
+                       [attr.data-character-id]="character.id"
                        (click)="selectCharacter(character.id)">
                     <div class="constellation-level">
                       C{{ getConstellationLevel(character.id) }}

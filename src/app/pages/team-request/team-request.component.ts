@@ -111,9 +111,18 @@ export class TeamRequestComponent implements OnInit {
             const ownedCharacterIds = Object.keys(this.targetUser.characters || {})
               .filter(id => this.targetUser?.characters[id]);
             
-            // Store in both arrays
+            // Store in both arrays with sorting
             this.originalCharacters = characterList
-              .filter(char => ownedCharacterIds.includes(char.id));
+              .filter(char => ownedCharacterIds.includes(char.id))
+              .sort((a, b) => {
+                // First sort by rarity (descending)
+                if (b.rarity !== a.rarity) {
+                  return b.rarity - a.rarity;
+                }
+                // Then sort alphabetically by name
+                return a.name.localeCompare(b.name);
+              });
+
             this.availableCharacters = [...this.originalCharacters];
           } else {
             this.errorMessage = 'User not found';
@@ -220,41 +229,37 @@ export class TeamRequestComponent implements OnInit {
   }
 
   private applyFilters() {
-    // Start with the original list
-    let filteredList = [...this.originalCharacters];
+    const hasActiveFilters = 
+      this.selectedElements.length > 0 || 
+      this.selectedWeapons.length > 0 || 
+      this.selectedRarities.length > 0;
 
-    // If no filters are selected, restore original list
-    if (this.selectedElements.length === 0 && 
-        this.selectedWeapons.length === 0 && 
-        this.selectedRarities.length === 0) {
-      this.availableCharacters = [...this.originalCharacters];
-      return;
-    }
+    this.availableCharacters.forEach(char => {
+      const element = document.querySelector(`[data-character-id="${char.id}"]`);
+      if (!element) return;
 
-    // Rest of the filtering logic remains the same
-    if (this.selectedElements.length > 0) {
-      filteredList = filteredList.filter(char => {
-        if (char.id === 'aether' || char.id === 'lumine') {
-          const travelerElements = ['Anemo', 'Geo', 'Electro', 'Dendro', 'Hydro', 'Pyro'];
-          return this.selectedElements.some(element => travelerElements.includes(element));
-        }
-        return this.selectedElements.includes(char.element);
-      });
-    }
+      if (!hasActiveFilters) {
+        element.classList.remove('filtered-out');
+        return;
+      }
 
-    if (this.selectedWeapons.length > 0) {
-      filteredList = filteredList.filter(char => 
-        this.selectedWeapons.includes(char.weaponType)
-      );
-    }
+      const matchesElement = this.selectedElements.length === 0 || 
+        (char.id === 'aether' || char.id === 'lumine')
+          ? this.selectedElements.some(element => ['Anemo', 'Geo', 'Electro', 'Dendro', 'Hydro', 'Pyro'].includes(element))
+          : this.selectedElements.includes(char.element);
 
-    if (this.selectedRarities.length > 0) {
-      filteredList = filteredList.filter(char => 
-        this.selectedRarities.includes(char.rarity)
-      );
-    }
+      const matchesWeapon = this.selectedWeapons.length === 0 || 
+        this.selectedWeapons.includes(char.weaponType);
 
-    this.availableCharacters = filteredList;
+      const matchesRarity = this.selectedRarities.length === 0 || 
+        this.selectedRarities.includes(char.rarity);
+
+      if (matchesElement && matchesWeapon && matchesRarity) {
+        element.classList.remove('filtered-out');
+      } else {
+        element.classList.add('filtered-out');
+      }
+    });
   }
 
   toggleSidebar() {

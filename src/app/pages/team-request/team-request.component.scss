@@ -98,10 +98,18 @@ main {
 
   .character-card {
     opacity: 1;
-    transition: opacity 0.3s ease-out;
+    visibility: visible;
+    transform: scale(1);
+    transition: all 0.3s ease-in-out;
     
     &.filtered-out {
       opacity: 0;
+      visibility: hidden;
+      transform: scale(0.8);
+      position: absolute;
+      pointer-events: none;
+      width: 0;
+      height: 0;
     }
   }
 }
@@ -112,10 +120,9 @@ main {
   overflow: hidden;
   background: var(--color-background);
   border: 1px solid var(--color-border);
-  transform: translateY(0) !important;
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+  transition: all 0.3s ease-in-out !important;
   cursor: pointer;
-  animation-fill-mode: none !important;
+  will-change: transform, opacity;
 
   &:hover {
     transform: translateY(-8px) !important;
@@ -2109,5 +2116,27 @@ main {
   animation: slideDown 0.3s ease-out forwards;
   backdrop-filter: blur(4px);
   box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes cardAnimation {
+  from {
+    opacity: 0;
+    transform: scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
 }
  

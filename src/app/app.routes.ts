@@ -11,7 +11,7 @@ import { TeamRequestComponent } from './pages/team-request/team-request.componen
 
 export const routes: Routes = [
   { path: '', component: HomeComponent },
-  { path: 'team-request', component: TeamRequestComponent },  
+  { path: 'team-request', redirectTo: '/', pathMatch: 'full' },
   { 
     path: 'register', 
     component: RegisterComponent,
@@ -46,7 +46,7 @@ export const routes: Routes = [
   },
   {
     path: 'team-request/:userId',
-    component: TeamRequestComponent,
-    title: 'Team Request'
+    loadComponent: () => import('./pages/team-request/team-request.component')
+      .then(m => m.TeamRequestComponent)
   }
 ];
