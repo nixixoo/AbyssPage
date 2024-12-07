@@ -43,4 +43,9 @@ export class HeaderComponent implements OnInit, OnDestroy {
   navigateToCharacters() {
     this.router.navigate(['/characters']);
   }
+
+  navigateToTeamSee() {
+    this.router.navigate(['/team-see']);
+  }
 }
+

@@ -54,4 +54,10 @@ export class TeamRequestService {
     const requestRef = doc(this.firestore, 'teamRequests', requestId);
     await deleteDoc(requestRef);
   }
+
+  // Add this method to your service
+  async updateRequest(requestId: string, updates: Partial<TeamRequest>): Promise<void> {
+    const requestRef = doc(this.firestore, 'teamRequests', requestId);
+    await updateDoc(requestRef, updates);
+  }
 } 

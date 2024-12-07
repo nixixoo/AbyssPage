@@ -1,0 +1,135 @@
+<div class="team-see-container">
+  <div class="overlay"></div>
+
+  <!-- Add the header here -->
+  <app-header></app-header>
+
+  <!-- Error Message -->
+  <div class="error-message" *ngIf="errorMessage">
+    {{ errorMessage }}
+  </div>
+
+  <!-- Main Content -->
+  <main>
+    <div class="content-wrapper">
+      <h1>Team Requests</h1>
+      <h2>View and manage your received team requests</h2>
+
+      <div class="requests-container">
+        @if (pendingRequests.length === 0 && approvedRequests.length === 0) {
+          <div class="no-requests">
+            <h3>No Requests</h3>
+            <p>You don't have any team requests at the moment</p>
+          </div>
+        } @else {
+          <div class="requests-split">
+            <!-- Pending Requests -->
+            <div class="requests-section">
+              <h3 class="section-title">Pending Requests</h3>
+              @if (pendingRequests.length === 0) {
+                <div class="no-requests-message">
+                  <p>No pending requests</p>
+                </div>
+              } @else {
+                <div class="requests-grid">
+                  @for (request of pendingRequests; track request.id) {
+                    <div class="request-card" 
+                         @cardAnimation
+                         [class.removing]="removingRequests.has(request.id!)">
+                      <div class="request-header">
+                        <h3>
+                          @if (request.isAnonymous) {
+                            Anonymous Request
+                          } @else {
+                            Request from {{ request.fromUsername }}
+                          }
+                        </h3>
+                      </div>
+
+                      <div class="characters-preview">
+                        @for (charId of request.characters; track charId) {
+                          @if (getCharacterDetails(charId); as char) {
+                            <div class="character-preview">
+                              <img [src]="char.image" [alt]="char.name">
+                              <div class="character-name">{{ char.name }}</div>
+                            </div>
+                          }
+                        }
+                      </div>
+
+                      @if (request.message) {
+                        <div class="request-message">
+                          <p>"{{ request.message }}"</p>
+                        </div>
+                      }
+
+                      <div class="request-actions">
+                        <button class="accept-btn" (click)="acceptRequest(request.id!)">
+                          Accept
+                        </button>
+                        <button class="reject-btn" (click)="rejectRequest(request.id!)">
+                          Reject
+                        </button>
+                      </div>
+                    </div>
+                  }
+                </div>
+              }
+            </div>
+
+            <!-- Approved Requests -->
+            <div class="requests-section">
+              <h3 class="section-title">Approved Requests</h3>
+              @if (approvedRequests.length === 0) {
+                <div class="no-requests-message">
+                  <p>No approved requests</p>
+                </div>
+              } @else {
+                <div class="requests-grid">
+                  @for (request of approvedRequests; track request.id) {
+                    <div class="request-card approved" 
+                         @cardAnimation
+                         [class.removing]="removingRequests.has(request.id!)">
+                      <div class="request-header">
+                        <h3>
+                          @if (request.isAnonymous) {
+                            Anonymous Request
+                          } @else {
+                            Request from {{ request.fromUsername }}
+                          }
+                        </h3>
+                      </div>
+
+                      <div class="characters-preview">
+                        @for (charId of request.characters; track charId) {
+                          @if (getCharacterDetails(charId); as char) {
+                            <div class="character-preview">
+                              <img [src]="char.image" [alt]="char.name">
+                              <div class="character-name">{{ char.name }}</div>
+                            </div>
+                          }
+                        }
+                      </div>
+
+                      @if (request.message) {
+                        <div class="request-message">
+                          <p>"{{ request.message }}"</p>
+                        </div>
+                      }
+
+                      <div class="request-actions">
+                        <button class="ready-btn" (click)="markAsReady(request.id!)">
+                          Ready
+                        </button>
+                      </div>
+                    </div>
+                  }
+                </div>
+              }
+            </div>
+          </div>
+        }
+      </div>
+    </div>
+  </main>
+</div>

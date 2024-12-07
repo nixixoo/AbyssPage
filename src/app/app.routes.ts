@@ -8,10 +8,9 @@ import { LoginComponent } from './pages/login/login.component';
 import { CharactersComponent } from './pages/characters/characters.component';
 import { ProfileComponent } from './pages/profile/profile.component';
 import { TeamRequestComponent } from './pages/team-request/team-request.component';
-
+import { TeamSeeComponent } from './pages/team-see/team-see.component';
 export const routes: Routes = [
   { path: '', component: HomeComponent },
-  { path: 'team-request', redirectTo: '/', pathMatch: 'full' },
   { 
     path: 'register', 
     component: RegisterComponent,
@@ -46,7 +45,11 @@ export const routes: Routes = [
   },
   {
     path: 'team-request/:userId',
-    loadComponent: () => import('./pages/team-request/team-request.component')
-      .then(m => m.TeamRequestComponent)
+    component: TeamRequestComponent
+  },
+  {
+    path: 'team-see',
+    component: TeamSeeComponent,
+    canActivate: [AuthGuard]
   }
 ];

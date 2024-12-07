@@ -6,4 +6,5 @@ export interface TeamRequest {
   characters: string[];
   message?: string;
   isAnonymous: boolean;
+  approved?: boolean;
 } 

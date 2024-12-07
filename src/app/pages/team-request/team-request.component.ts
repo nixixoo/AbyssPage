@@ -26,17 +26,10 @@ import { trigger, transition, style, animate } from '@angular/animations';
       ])
     ]),
     trigger('cardAnimation', [
-      // Entry animation
       transition(':enter', [
         style({ transform: 'scale(0.8)', opacity: 0 }),
         animate('0.3s cubic-bezier(0.34, 1.56, 0.64, 1)', 
           style({ transform: 'scale(1)', opacity: 1 }))
-      ]),
-      // Exit animation
-      transition(':leave', [
-        style({ transform: 'scale(1)', opacity: 1 }),
-        animate('0.3s cubic-bezier(0.34, 1.56, 0.64, 1)', 
-          style({ transform: 'scale(0.8)', opacity: 0 }))
       ])
     ])
   ]
