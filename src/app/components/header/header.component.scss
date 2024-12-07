@@ -160,3 +160,24 @@ header {
   }
 }
 
+@media (max-width: 768px) {
+  .header-container {
+    padding: 0.5rem;
+
+    .logo {
+      font-size: 1.5rem;
+    }
+
+    nav {
+      .nav-links {
+        gap: 0.5rem;
+
+        a {
+          padding: 0.5rem;
+          font-size: 0.9rem;
+        }
+      }
+    }
+  }
+}
+
