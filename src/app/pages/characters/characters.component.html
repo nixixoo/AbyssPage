@@ -4,7 +4,7 @@
   <app-header></app-header>
 
   <!-- Show loading state -->
-  <div class="loading-state" *ngIf="!authChecked">
+  <div class="loading-state" *ngIf="isLoading" @fadeOut>
     <div class="loading-spinner">
       <img src="assets/logo.png" alt="Loading..." class="spinning-logo">
     </div>
@@ -174,10 +174,6 @@
 
       <div class="content-wrapper" [class.sidebar-open]="isSidebarOpen">
         <div class="characters-section">
-          <div class="loading-spinner" [class.hidden]="!isLoading">
-            <img src="assets/logo.png" alt="Loading..." class="spinning-logo">
-          </div>
-
           <div class="characters-grid" [class.loading]="isLoading">
             <div class="character-card" 
                  *ngFor="let character of displayedCharacters"

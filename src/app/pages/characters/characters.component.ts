@@ -6,7 +6,7 @@ import { CreatorService } from '../../services/creator.service';
 import { AuthService } from '../../services/auth.service';
 import { Router } from '@angular/router';
 import { Subject, takeUntil, firstValueFrom, first } from 'rxjs';
-import { trigger, transition, style, animate, query, stagger } from '@angular/animations';
+import { trigger, transition, style, animate } from '@angular/animations';
 import { characterList } from '../../constants/character-list';
 
 @Component({
@@ -15,7 +15,14 @@ import { characterList } from '../../constants/character-list';
   imports: [CommonModule, HeaderComponent],
   templateUrl: './characters.component.html',
   styleUrls: ['./characters.component.scss'],
-
+  animations: [
+    trigger('fadeOut', [
+      transition(':leave', [
+        style({ opacity: 1 }),
+        animate('0.5s ease-out', style({ opacity: 0 }))
+      ])
+    ])
+  ]
 })
 export class CharactersComponent implements OnInit, OnDestroy {
   private destroy$ = new Subject<void>();
