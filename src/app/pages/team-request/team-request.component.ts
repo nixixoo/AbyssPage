@@ -24,6 +24,20 @@ import { trigger, transition, style, animate } from '@angular/animations';
         style({ opacity: 1 }),
         animate('0.5s ease-out', style({ opacity: 0 }))
       ])
+    ]),
+    trigger('cardAnimation', [
+      // Entry animation
+      transition(':enter', [
+        style({ transform: 'scale(0.8)', opacity: 0 }),
+        animate('0.3s cubic-bezier(0.34, 1.56, 0.64, 1)', 
+          style({ transform: 'scale(1)', opacity: 1 }))
+      ]),
+      // Exit animation
+      transition(':leave', [
+        style({ transform: 'scale(1)', opacity: 1 }),
+        animate('0.3s cubic-bezier(0.34, 1.56, 0.64, 1)', 
+          style({ transform: 'scale(0.8)', opacity: 0 }))
+      ])
     ])
   ]
 })
@@ -55,6 +69,12 @@ export class TeamRequestComponent implements OnInit {
 
   // Add this property to store the original list
   private originalCharacters: Character[] = [];
+
+  // Add this property
+  isSubmitting: boolean = false;
+
+  // Add this property
+  successMessage: string = '';
 
   constructor(
     private authService: AuthService,
@@ -121,6 +141,8 @@ export class TeamRequestComponent implements OnInit {
       return;
     }
 
+    this.isSubmitting = true;  // Start loading
+
     try {
       const currentUser = await firstValueFrom(this.authService.currentUser$);
 
@@ -129,22 +151,26 @@ export class TeamRequestComponent implements OnInit {
         fromUsername: currentUser?.username,
         toUserId: this.targetUser!.uid,
         characters: this.selectedCharacters,
-        message: this.message || undefined,
+        ...(this.message?.trim() ? { message: this.message.trim() } : {}),
         isAnonymous: !currentUser
       };
 
       await this.teamRequestService.createTeamRequest(teamRequest);
       
       // Show success message
-      // TODO: Add a proper success message UI
-      alert('Team request sent successfully!');
-      
-      // Navigate back to profile
-      this.router.navigate(['/profile', this.targetUser!.username]);
+      this.successMessage = 'Team request sent successfully!';
+      // Clear success message after 3 seconds
+      setTimeout(() => {
+        this.successMessage = '';
+        // Navigate back to profile
+        this.router.navigate(['/profile', this.targetUser!.username]);
+      }, 3000);
       
     } catch (error) {
       console.error('Error sending team request:', error);
       this.errorMessage = 'Error sending team request. Please try again.';
+    } finally {
+      this.isSubmitting = false;  // Stop loading regardless of outcome
     }
   }
 
@@ -239,5 +265,21 @@ export class TeamRequestComponent implements OnInit {
 
   isElementSelected(element: string): boolean {
     return this.selectedElements.includes(element);
+  }
+
+  getCharacterById(id: string): Character | undefined {
+    const character = this.availableCharacters.find(char => char.id === id);
+    console.log('Getting character:', id, character);
+    return character;
+  }
+
+  removeCharacter(index: number) {
+    if (index >= 0 && index < this.selectedCharacters.length) {
+      this.selectedCharacters.splice(index, 1);
+    }
+  }
+
+  handleImageError(event: any) {
+    event.target.src = 'assets/default-character.png';
   }
 } 

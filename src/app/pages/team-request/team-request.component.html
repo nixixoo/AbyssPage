@@ -134,6 +134,11 @@
     {{ errorMessage }}
   </div>
 
+  <!-- Success Message -->
+  <div class="success-message" *ngIf="successMessage">
+    {{ successMessage }}
+  </div>
+
   <!-- Main Content - Remove authentication check -->
   <ng-container *ngIf="!isLoading && targetUser">
     <main>
@@ -142,50 +147,84 @@
         <h2>Request a team to {{ targetUser.username }}</h2>
 
         <div class="team-request-form">
-          <!-- Character Selection -->
-          <div class="character-selection">
-            <h3>Select 4 Characters ({{ selectedCharacters.length }}/4)</h3>
-            <div class="characters-grid">
-              <div class="character-card" 
-                   *ngFor="let character of availableCharacters"
-                   [class.selected]="selectedCharacters.includes(character.id)"
-                   (click)="selectCharacter(character.id)">
-                <div class="constellation-level">
-                  C{{ getConstellationLevel(character.id) }}
-                </div>
-                
-                <div class="character-image" [attr.data-rarity]="character.rarity">
-                  <img [src]="character.image" [alt]="character.name">
-                  <div class="rarity">
-                    <span *ngFor="let star of [].constructor(character.rarity)">★</span>
+          <div class="two-column-layout">
+            <!-- Left Column - Characters -->
+            <div class="left-column">
+              <div class="character-selection">
+                <div class="characters-grid">
+                  <div class="character-card" 
+                       *ngFor="let character of availableCharacters"
+                       [class.selected]="selectedCharacters.includes(character.id)"
+                       (click)="selectCharacter(character.id)">
+                    <div class="constellation-level">
+                      C{{ getConstellationLevel(character.id) }}
+                    </div>
+                    <div class="character-image" [attr.data-rarity]="character.rarity">
+                      <img [src]="character.image" [alt]="character.name">
+                      <div class="rarity">
+                        <span *ngFor="let star of [].constructor(character.rarity)">★</span>
+                      </div>
+                    </div>
+                    <div class="character-info">
+                      <h3>{{ character.name }}</h3>
+                    </div>
                   </div>
-                </div>
-                <div class="character-info">
-                  <h3>{{ character.name }}</h3>
                 </div>
               </div>
             </div>
-          </div>
 
-          <!-- Message Input -->
-          <div class="message-input">
-            <textarea 
-              [(ngModel)]="message" 
-              placeholder="Add a message to your request (optional)"
-              rows="4">
-            </textarea>
-          </div>
+            <!-- Right Column - Message & Submit -->
+            <div class="right-column">
+              <div class="selected-count">
+                {{ selectedCharacters.length }}/4 Characters Selected
+              </div>
 
-          <!-- Submit Button -->
-          <button 
-            class="submit-btn" 
-            [disabled]="selectedCharacters.length !== 4"
-            (click)="submitRequest()">
-            <span *ngIf="selectedCharacters.length === 4">Send Team Request</span>
-            <span *ngIf="selectedCharacters.length !== 4">
-              Select {{ 4 - selectedCharacters.length }} more character{{ 4 - selectedCharacters.length === 1 ? '' : 's' }}
-            </span>
-          </button>
+              <div class="selected-preview">
+                <div class="preview-slots">
+                  <div class="preview-slot" *ngFor="let i of [0,1,2,3]">
+                    <div class="preview-card" 
+                         *ngIf="selectedCharacters[i]" 
+                         (click)="removeCharacter(i)"
+                         [@cardAnimation]>
+                      <div class="preview-image">
+                        <img [src]="getCharacterById(selectedCharacters[i])?.image || ''" 
+                             [alt]="getCharacterById(selectedCharacters[i])?.name || ''"
+                             (error)="handleImageError($event)">
+                      </div>
+                      <div class="preview-name">
+                        {{ getCharacterById(selectedCharacters[i])?.name || 'Unknown Character' }}
+                      </div>
+                    </div>
+                    <div class="empty-slot" *ngIf="!selectedCharacters[i]">
+                      <i class="fas fa-plus"></i>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="message-input">
+                <textarea 
+                  [(ngModel)]="message" 
+                  placeholder="Add a message to your request (optional)"
+                  rows="4">
+                </textarea>
+              </div>
+              <button 
+                class="submit-btn" 
+                [disabled]="selectedCharacters.length !== 4 || isSubmitting"
+                (click)="submitRequest()">
+                <span *ngIf="selectedCharacters.length === 4">
+                  Send Team Request
+                  <div class="loading-spinner" *ngIf="isSubmitting">
+                    <div class="spinner"></div>
+                  </div>
+                </span>
+                <span *ngIf="selectedCharacters.length !== 4">
+                  Select {{ 4 - selectedCharacters.length }} more character{{ 4 - selectedCharacters.length === 1 ? '' : 's' }}
+                </span>
+              </button>
+            </div>
+          </div>
         </div>
       </div>
     </main>
