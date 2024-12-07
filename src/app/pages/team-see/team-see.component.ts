@@ -18,13 +18,9 @@ import { trigger, transition, style, animate } from '@angular/animations';
   animations: [
     trigger('fadeOut', [
       transition(':leave', [
-        style({ opacity: 1, transform: 'scale(1)' }),
-        animate('0.3s ease-out', style({ 
-          opacity: 0, 
-          transform: 'scale(0.8)',
-          height: 0,
-          margin: 0,
-          padding: 0
+        style({ opacity: 1 }),
+        animate('0.5s ease-out', style({ 
+          opacity: 0
         }))
       ])
     ]),
@@ -49,6 +45,7 @@ export class TeamSeeComponent implements OnInit {
   isLoading: boolean = true;
   errorMessage: string = '';
   removingRequests: Set<string> = new Set();
+  displayContent: boolean = false;
 
   constructor(
     private teamRequestService: TeamRequestService,
@@ -61,6 +58,11 @@ export class TeamSeeComponent implements OnInit {
 
   loadRequests() {
     this.isLoading = true;
+    this.displayContent = false;
+
+    // Force minimum 1.5 seconds loading time to match characters page
+    const minimumLoadingTime = new Promise(resolve => setTimeout(resolve, 1000));
+    
     this.authService.currentUser$.pipe(
       switchMap(user => {
         if (user?.uid) {
@@ -69,15 +71,24 @@ export class TeamSeeComponent implements OnInit {
         return of([]);
       })
     ).subscribe({
-      next: (requests) => {
+      next: async (requests) => {
+        // Wait for minimum loading time
+        await minimumLoadingTime;
+        
         this.pendingRequests = requests.filter(req => !req.approved);
         this.approvedRequests = requests.filter(req => req.approved);
         this.isLoading = false;
+
+        // Show content after a small delay
+        setTimeout(() => {
+          this.displayContent = true;
+        }, 300);
       },
       error: (error) => {
         console.error('Error loading requests:', error);
         this.errorMessage = 'Error loading team requests. Please try again.';
         this.isLoading = false;
+        this.displayContent = true;
       }
     });
   }

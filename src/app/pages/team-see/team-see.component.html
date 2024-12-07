@@ -4,13 +4,20 @@
   <!-- Add the header here -->
   <app-header></app-header>
 
+  <!-- Add back the loading spinner -->
+  <div class="loading-state" *ngIf="isLoading" @fadeOut>
+    <div class="loading-spinner">
+      <img src="assets/logo.png" alt="Loading..." class="spinning-logo">
+    </div>
+  </div>
+
   <!-- Error Message -->
   <div class="error-message" *ngIf="errorMessage">
     {{ errorMessage }}
   </div>
 
   <!-- Main Content -->
-  <main>
+  <main [class.visible]="displayContent">
     <div class="content-wrapper">
       <h1>Team Requests</h1>
       <h2>View and manage your received team requests</h2>

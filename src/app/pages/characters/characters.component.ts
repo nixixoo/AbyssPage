@@ -43,15 +43,11 @@ export class CharactersComponent implements OnInit, OnDestroy {
   elements = ['Pyro', 'Hydro', 'Anemo', 'Electro', 'Dendro', 'Cryo', 'Geo'];
   weapons = ['Sword', 'Claymore', 'Polearm', 'Bow', 'Catalyst'];
   
-  activeFilters = {
-    element: null as string | null,
-    weapon: null as string | null,
-    rarity: null as number | null
-  };
+  selectedElements: string[] = [];
+  selectedWeapons: string[] = [];
+  selectedRarities: number[] = [];
 
   isSidebarOpen = false;
-
-  selectedRarity: number | null = null;
 
   authChecked = false;
   isAuthenticated = false;
@@ -75,8 +71,8 @@ export class CharactersComponent implements OnInit, OnDestroy {
       this.isLoading = true;
       this.displayedCharacters = [];
       
-      // Force minimum 2 seconds loading time
-      const minimumLoadingTime = new Promise(resolve => setTimeout(resolve, 2000));
+      // Change the loading time here (e.g., 1000ms = 1 second)
+      const minimumLoadingTime = new Promise(resolve => setTimeout(resolve, 1500));
       
       this.authService.isAuthenticated$
         .pipe(
@@ -173,39 +169,58 @@ export class CharactersComponent implements OnInit, OnDestroy {
   }
 
   filterByElement(element: string) {
-    this.activeFilters.element = this.activeFilters.element === element ? null : element;
+    const index = this.selectedElements.indexOf(element);
+    if (index === -1) {
+      this.selectedElements.push(element);
+    } else {
+      this.selectedElements.splice(index, 1);
+    }
     this.applyFilters();
   }
 
   filterByWeapon(weapon: string) {
-    this.activeFilters.weapon = this.activeFilters.weapon === weapon ? null : weapon;
+    const index = this.selectedWeapons.indexOf(weapon);
+    if (index === -1) {
+      this.selectedWeapons.push(weapon);
+    } else {
+      this.selectedWeapons.splice(index, 1);
+    }
     this.applyFilters();
   }
 
   filterByRarity(rarity: number) {
-    this.selectedRarity = this.selectedRarity === rarity ? null : rarity;
+    const index = this.selectedRarities.indexOf(rarity);
+    if (index === -1) {
+      this.selectedRarities.push(rarity);
+    } else {
+      this.selectedRarities.splice(index, 1);
+    }
     this.applyFilters();
   }
 
   private applyFilters() {
     let filteredList = [...this.characterList];
 
-    if (this.activeFilters.element) {
+    if (this.selectedElements.length > 0) {
       filteredList = filteredList.filter(char => {
         if (char.id === 'aether' || char.id === 'lumine') {
           const travelerElements = ['Anemo', 'Geo', 'Electro', 'Dendro', 'Hydro', 'Pyro'];
-          return travelerElements.includes(this.activeFilters.element!);
+          return this.selectedElements.some(element => travelerElements.includes(element));
         }
-        return char.element === this.activeFilters.element;
+        return this.selectedElements.includes(char.element);
       });
     }
 
-    if (this.activeFilters.weapon) {
-      filteredList = filteredList.filter(char => char.weaponType === this.activeFilters.weapon);
+    if (this.selectedWeapons.length > 0) {
+      filteredList = filteredList.filter(char => 
+        this.selectedWeapons.includes(char.weaponType)
+      );
     }
 
-    if (this.selectedRarity) {
-      filteredList = filteredList.filter(char => char.rarity === this.selectedRarity);
+    if (this.selectedRarities.length > 0) {
+      filteredList = filteredList.filter(char => 
+        this.selectedRarities.includes(char.rarity)
+      );
     }
 
     this.displayedCharacters = filteredList;
@@ -289,15 +304,15 @@ export class CharactersComponent implements OnInit, OnDestroy {
   }
 
   isRaritySelected(rarity: number): boolean {
-    return this.selectedRarity === rarity;
+    return this.selectedRarities.includes(rarity);
   }
 
   isWeaponSelected(weapon: string): boolean {
-    return this.activeFilters.weapon === weapon;
+    return this.selectedWeapons.includes(weapon);
   }
 
   isElementSelected(element: string): boolean {
-    return this.activeFilters.element === element;
+    return this.selectedElements.includes(element);
   }
 
   // Add this method to check if there are pending changes

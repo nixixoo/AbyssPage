@@ -92,7 +92,7 @@ export class ProfileComponent implements OnInit, OnDestroy {
           this.authChecked = true;
           
           // Wait for minimum loading time
-          await new Promise(resolve => setTimeout(resolve, 2000));
+          await new Promise(resolve => setTimeout(resolve, 1000));
           
           // Then handle the loading states in sequence
           this.isLoading = false;  // Set this first to trigger content load

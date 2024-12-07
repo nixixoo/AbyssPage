@@ -24,6 +24,15 @@ main {
   z-index: var(--z-content);
   padding-top: 5vh;
   min-height: 100vh;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.3s ease-out, visibility 0s linear 0.3s;
+
+  &.visible {
+    opacity: 1;
+    visibility: visible;
+    transition: opacity 0.3s ease-out;
+  }
 }
 
 .content-wrapper {
