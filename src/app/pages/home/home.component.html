@@ -1,10 +1,11 @@
 <div class="home-container">
+  <div class="overlay"></div>
+  <app-header></app-header>
+
   <div class="search-overlay" 
        [class.active]="isSearchActive"
        (click)="toggleSearch(false)">
   </div>
-
-  <app-header [darkened]="isSearchActive"></app-header>
 
   <main>
     <h1 [class.darkened]="isSearchActive">Genshin Impact</h1>
@@ -50,6 +51,12 @@
           </div>
         </div>
       </div>
+    </div>
+
+    <!-- Add the info message here -->
+    <div class="info-message" [class.darkened]="isSearchActive">
+      <i class="fas fa-info-circle"></i>
+      No login required! You can send team requests as an anonymous user.
     </div>
   </main>
 </div>
