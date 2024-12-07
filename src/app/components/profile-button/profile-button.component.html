@@ -45,8 +45,13 @@
       <div class="avatar-option" 
            *ngFor="let avatar of filteredAvatars" 
            [@fadeInOut]
-           (click)="selectAvatar(avatar)">
+           (click)="selectAvatar(avatar)"
+           [class.loading]="isChangingAvatar">
         <img [src]="avatar.url" [alt]="avatar.name">
+        <!-- Add loading overlay -->
+        <div class="loading-overlay" *ngIf="isChangingAvatar">
+          <div class="spinner"></div>
+        </div>
       </div>
     </div>
   </div>

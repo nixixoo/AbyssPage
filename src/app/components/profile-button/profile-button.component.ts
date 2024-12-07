@@ -71,6 +71,7 @@ export class ProfileButtonComponent implements AfterViewInit, OnDestroy {
   currentAvatar: string = 'assets/images/default-avatar.png';
   isDarkened = false;
   avatarLoaded: boolean = false;
+  isChangingAvatar: boolean = false;
   
   avatarOptions: AvatarOption[] = [
     { url: 'assets/character_profile/albedo_avatar.png', name: 'Albedo', type: 'character' },
@@ -279,6 +280,9 @@ export class ProfileButtonComponent implements AfterViewInit, OnDestroy {
   }
 
   async selectAvatar(avatar: AvatarOption) {
+    if (this.isChangingAvatar) return;
+    
+    this.isChangingAvatar = true;
     try {
       const currentUser = await this.authService.getCurrentUser();
       if (!currentUser) {
@@ -294,10 +298,11 @@ export class ProfileButtonComponent implements AfterViewInit, OnDestroy {
 
       // Update the current avatar immediately
       this.currentAvatar = avatar.url;
-
       this.closeAvatarSelector();
     } catch (error) {
       console.error('Error updating avatar:', error);
+    } finally {
+      this.isChangingAvatar = false;
     }
   }
 
