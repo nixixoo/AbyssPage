@@ -10,13 +10,22 @@ import { firstValueFrom } from 'rxjs';
 import { characterList, Character } from '../../constants/character-list';
 import { TeamRequest } from '../../interfaces/team-request.interface';
 import { TeamRequestService } from '../../services/team-request.service';
+import { trigger, transition, style, animate } from '@angular/animations';
 
 @Component({
   selector: 'app-team-request',
   standalone: true,
   imports: [CommonModule, HeaderComponent, FormsModule],
   templateUrl: './team-request.component.html',
-  styleUrls: ['./team-request.component.scss']
+  styleUrls: ['./team-request.component.scss'],
+  animations: [
+    trigger('fadeOut', [
+      transition(':leave', [
+        style({ opacity: 1 }),
+        animate('0.5s ease-out', style({ opacity: 0 }))
+      ])
+    ])
+  ]
 })
 export class TeamRequestComponent implements OnInit {
   isLoading: boolean = true;

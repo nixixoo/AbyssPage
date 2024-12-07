@@ -123,7 +123,7 @@
   <app-header></app-header>
 
   <!-- Loading State -->
-  <div class="loading-state" *ngIf="isLoading">
+  <div class="loading-state" *ngIf="isLoading" @fadeOut>
     <div class="loading-spinner">
       <img src="assets/logo.png" alt="Loading..." class="spinning-logo">
     </div>

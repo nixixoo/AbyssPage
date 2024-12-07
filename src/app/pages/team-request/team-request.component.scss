@@ -111,34 +111,24 @@ main {
   overflow: hidden;
   background: var(--color-background);
   border: 1px solid var(--color-border);
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  transform: translateY(0) !important;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
   cursor: pointer;
-  transform: translateY(0);
+  animation-fill-mode: none !important;
 
   &:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+    transform: translateY(-8px) !important;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2) !important;
   }
 
   &.selected {
     border-color: var(--color-accent);
     box-shadow: 0 0 15px rgba(var(--color-accent-rgb), 0.3);
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
 
-    &::after {
-      content: '✓';
-      position: absolute;
-      top: 8px;
-      right: 8px;
-      background: var(--color-accent);
-      color: white;
-      width: 20px;
-      height: 20px;
-      border-radius: 50%;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      animation: scaleIn 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
-      font-size: 0.8rem;
+    &:hover {
+      transform: translateY(-8px) !important;
+      box-shadow: 0 4px 12px rgba(var(--color-accent-rgb), 0.3) !important;
     }
   }
 
