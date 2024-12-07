@@ -36,16 +36,27 @@ interface AvatarOption {
       ])
     ]),
     trigger('slideIn', [
-      state('void', style({
-        transform: 'translateX(100%)',
-        opacity: 0
-      })),
-      state('*', style({
-        transform: 'translateX(0)',
-        opacity: 1
-      })),
+      // Entry animation
       transition('void => *', [
-        animate('500ms cubic-bezier(0.4, 0, 0.2, 1)')
+        style({
+          transform: 'translateX(100%)',
+          opacity: 0
+        }),
+        animate('500ms cubic-bezier(0.4, 0, 0.2, 1)', style({
+          transform: 'translateX(0)',
+          opacity: 1
+        }))
+      ]),
+      // Exit animation
+      transition('* => void', [
+        style({
+          transform: 'translateX(0)',
+          opacity: 1
+        }),
+        animate('500ms cubic-bezier(0.4, 0, 0.2, 1)', style({
+          transform: 'translateX(100%)',
+          opacity: 0
+        }))
       ])
     ])
   ]
