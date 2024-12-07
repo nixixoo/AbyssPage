@@ -295,10 +295,14 @@ main {
     cursor: pointer;
     width: 100%;
     margin: 0;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    background: transparent;
+    transform: translateX(0);
 
     &:hover {
       background: rgba(0, 0, 0, 0.05);
       transform: translateX(5px);
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
     }
 
     .user-avatar {
@@ -309,6 +313,7 @@ main {
       margin-right: 15px;
       object-fit: cover;
       border: 2px solid var(--color-accent);
+      transition: transform 0.3s ease;
     }
 
     .username {
@@ -318,6 +323,17 @@ main {
       white-space: nowrap;
       overflow: hidden;
       text-overflow: ellipsis;
+      transition: color 0.3s ease;
+    }
+
+    &:hover {
+      .user-avatar {
+        transform: scale(1.05);
+      }
+      
+      .username {
+        color: var(--color-accent);
+      }
     }
   }
 }
