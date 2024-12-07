@@ -140,7 +140,7 @@ export class ProfileComponent implements OnInit, OnDestroy {
 
   requestTeam() {
     if (this.user) {
-      console.log('Team requested for user:', this.user.uid);
+      this.router.navigate(['/team-request', this.user.uid]);
     }
   }
 

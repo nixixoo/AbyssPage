@@ -7,6 +7,7 @@ import { AuthService } from '../../services/auth.service';
 import { Router } from '@angular/router';
 import { Subject, takeUntil, firstValueFrom, first } from 'rxjs';
 import { trigger, transition, style, animate, query, stagger } from '@angular/animations';
+import { characterList } from '../../constants/character-list';
 
 @Component({
   selector: 'app-characters',
@@ -19,14 +20,7 @@ import { trigger, transition, style, animate, query, stagger } from '@angular/an
 export class CharactersComponent implements OnInit, OnDestroy {
   private destroy$ = new Subject<void>();
   creator: Creator | null = null;
-  characterList: { 
-    id: string;
-    name: string;
-    element: string;
-    rarity: number;
-    image: string;
-    weaponType: string;
-  }[] = [];
+  characterList = characterList;
   displayedCharacters: typeof this.characterList = [];
   isLoading: boolean = true;
   errorMessage: string = '';

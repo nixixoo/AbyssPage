@@ -7,9 +7,11 @@ import { RegisterComponent } from './pages/register/register.component';
 import { LoginComponent } from './pages/login/login.component';
 import { CharactersComponent } from './pages/characters/characters.component';
 import { ProfileComponent } from './pages/profile/profile.component';
+import { TeamRequestComponent } from './pages/team-request/team-request.component';
 
 export const routes: Routes = [
   { path: '', component: HomeComponent },
+  { path: 'team-request', component: TeamRequestComponent },  
   { 
     path: 'register', 
     component: RegisterComponent,
@@ -41,5 +43,10 @@ export const routes: Routes = [
         pathMatch: 'full'
       }
     ]
+  },
+  {
+    path: 'team-request/:userId',
+    component: TeamRequestComponent,
+    title: 'Team Request'
   }
 ];
