@@ -72,6 +72,7 @@ export class TeamRequestComponent implements OnInit {
 
   // Add this property
   isSubmitting: boolean = false;
+  requestSent: boolean = false;
 
   // Add this property
   successMessage: string = '';
@@ -141,36 +142,41 @@ export class TeamRequestComponent implements OnInit {
       return;
     }
 
-    this.isSubmitting = true;  // Start loading
+    if (this.requestSent) {
+      return;
+    }
+
+    this.isSubmitting = true;
 
     try {
       const currentUser = await firstValueFrom(this.authService.currentUser$);
 
       const teamRequest: TeamRequest = {
-        fromUserId: currentUser?.uid || null,
-        fromUsername: currentUser?.username,
+        fromUserId: currentUser?.uid || 'anonymous',
         toUserId: this.targetUser!.uid,
         characters: this.selectedCharacters,
-        ...(this.message?.trim() ? { message: this.message.trim() } : {}),
-        isAnonymous: !currentUser
+        isAnonymous: !currentUser,
+        message: this.message?.trim() || ''
       };
+
+      if (currentUser?.username) {
+        teamRequest.fromUsername = currentUser.username;
+      }
 
       await this.teamRequestService.createTeamRequest(teamRequest);
       
-      // Show success message
+      this.requestSent = true;
       this.successMessage = 'Team request sent successfully!';
-      // Clear success message after 3 seconds
       setTimeout(() => {
         this.successMessage = '';
-        // Navigate back to profile
         this.router.navigate(['/profile', this.targetUser!.username]);
       }, 3000);
       
     } catch (error) {
-      console.error('Error sending team request:', error);
       this.errorMessage = 'Error sending team request. Please try again.';
+      this.requestSent = false;
     } finally {
-      this.isSubmitting = false;  // Stop loading regardless of outcome
+      this.isSubmitting = false;
     }
   }
 

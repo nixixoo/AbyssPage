@@ -211,13 +211,18 @@
               </div>
               <button 
                 class="submit-btn" 
-                [disabled]="selectedCharacters.length !== 4 || isSubmitting"
+                [disabled]="selectedCharacters.length !== 4 || isSubmitting || requestSent"
                 (click)="submitRequest()">
                 <span *ngIf="selectedCharacters.length === 4">
-                  Send Team Request
-                  <div class="loading-spinner" *ngIf="isSubmitting">
-                    <div class="spinner"></div>
-                  </div>
+                  <ng-container *ngIf="!requestSent; else sentMessage">
+                    Send Team Request
+                    <div class="loading-spinner" *ngIf="isSubmitting">
+                      <div class="spinner"></div>
+                    </div>
+                  </ng-container>
+                  <ng-template #sentMessage>
+                    Request Sent
+                  </ng-template>
                 </span>
                 <span *ngIf="selectedCharacters.length !== 4">
                   Select {{ 4 - selectedCharacters.length }} more character{{ 4 - selectedCharacters.length === 1 ? '' : 's' }}
