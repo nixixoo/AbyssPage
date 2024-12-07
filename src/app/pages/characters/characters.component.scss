@@ -877,12 +877,22 @@ main {
     background: #ffffff;
     border-top: 1px solid rgba(0, 0, 0, 0.1);
     transition: opacity 0.4s ease-in-out;
+    height: 100px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
 
     h3 {
       margin: 0;
       font-size: 1rem;
       color: var(--color-accent);
       font-weight: bold;
+      width: 100%;
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+      line-height: 1.2;
       transition: opacity 0.4s ease-in-out, transform 0.4s ease-in-out;
     }
 
@@ -1179,7 +1189,7 @@ main {
 
 .characters-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
   gap: 20px;
   padding: 20px;
   width: 100%;

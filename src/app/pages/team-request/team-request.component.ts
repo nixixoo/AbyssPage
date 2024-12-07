@@ -40,6 +40,12 @@ export class TeamRequestComponent implements OnInit {
 
   isSidebarOpen = false;
   selectedRarity: number | null = null;
+  selectedElements: string[] = [];
+  selectedWeapons: string[] = [];
+  selectedRarities: number[] = [];
+
+  // Add this property to store the original list
+  private originalCharacters: Character[] = [];
 
   constructor(
     private authService: AuthService,
@@ -72,13 +78,13 @@ export class TeamRequestComponent implements OnInit {
         next: (userData) => {
           this.targetUser = userData;
           if (this.targetUser) {
-            // Get the list of owned characters
             const ownedCharacterIds = Object.keys(this.targetUser.characters || {})
               .filter(id => this.targetUser?.characters[id]);
             
-            // Filter the character list to only show owned characters
-            this.availableCharacters = characterList
+            // Store in both arrays
+            this.originalCharacters = characterList
               .filter(char => ownedCharacterIds.includes(char.id));
+            this.availableCharacters = [...this.originalCharacters];
           } else {
             this.errorMessage = 'User not found';
           }
@@ -143,42 +149,68 @@ export class TeamRequestComponent implements OnInit {
 
   // Add these methods for filters
   filterByElement(element: string) {
-    this.activeFilters.element = this.activeFilters.element === element ? null : element;
+    const index = this.selectedElements.indexOf(element);
+    if (index === -1) {
+      this.selectedElements.push(element);
+    } else {
+      this.selectedElements.splice(index, 1);
+    }
     this.applyFilters();
   }
 
   filterByWeapon(weapon: string) {
-    this.activeFilters.weapon = this.activeFilters.weapon === weapon ? null : weapon;
+    const index = this.selectedWeapons.indexOf(weapon);
+    if (index === -1) {
+      this.selectedWeapons.push(weapon);
+    } else {
+      this.selectedWeapons.splice(index, 1);
+    }
     this.applyFilters();
   }
 
   filterByRarity(rarity: number) {
-    this.selectedRarity = this.selectedRarity === rarity ? null : rarity;
+    const index = this.selectedRarities.indexOf(rarity);
+    if (index === -1) {
+      this.selectedRarities.push(rarity);
+    } else {
+      this.selectedRarities.splice(index, 1);
+    }
     this.applyFilters();
   }
 
   private applyFilters() {
-    let filteredList = [...this.availableCharacters];
+    // Start with the original list
+    let filteredList = [...this.originalCharacters];
 
-    if (this.activeFilters.element) {
+    // If no filters are selected, restore original list
+    if (this.selectedElements.length === 0 && 
+        this.selectedWeapons.length === 0 && 
+        this.selectedRarities.length === 0) {
+      this.availableCharacters = [...this.originalCharacters];
+      return;
+    }
+
+    // Rest of the filtering logic remains the same
+    if (this.selectedElements.length > 0) {
       filteredList = filteredList.filter(char => {
-        // Special handling for Travelers
         if (char.id === 'aether' || char.id === 'lumine') {
-          // Show Travelers for any element except Cryo
           const travelerElements = ['Anemo', 'Geo', 'Electro', 'Dendro', 'Hydro', 'Pyro'];
-          return travelerElements.includes(this.activeFilters.element!);
+          return this.selectedElements.some(element => travelerElements.includes(element));
         }
-        // Normal filtering for other characters
-        return char.element === this.activeFilters.element;
+        return this.selectedElements.includes(char.element);
       });
     }
 
-    if (this.activeFilters.weapon) {
-      filteredList = filteredList.filter(char => char.weaponType === this.activeFilters.weapon);
+    if (this.selectedWeapons.length > 0) {
+      filteredList = filteredList.filter(char => 
+        this.selectedWeapons.includes(char.weaponType)
+      );
     }
 
-    if (this.selectedRarity) {
-      filteredList = filteredList.filter(char => char.rarity === this.selectedRarity);
+    if (this.selectedRarities.length > 0) {
+      filteredList = filteredList.filter(char => 
+        this.selectedRarities.includes(char.rarity)
+      );
     }
 
     this.availableCharacters = filteredList;
@@ -189,14 +221,14 @@ export class TeamRequestComponent implements OnInit {
   }
 
   isRaritySelected(rarity: number): boolean {
-    return this.selectedRarity === rarity;
+    return this.selectedRarities.includes(rarity);
   }
 
   isWeaponSelected(weapon: string): boolean {
-    return this.activeFilters.weapon === weapon;
+    return this.selectedWeapons.includes(weapon);
   }
 
   isElementSelected(element: string): boolean {
-    return this.activeFilters.element === element;
+    return this.selectedElements.includes(element);
   }
 } 
