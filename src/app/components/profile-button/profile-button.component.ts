@@ -197,13 +197,11 @@ export class ProfileButtonComponent implements AfterViewInit, OnDestroy {
     private firestore: Firestore,
     private uiService: UiService
   ) {
-    console.log('ProfileButton: Initializing...');
     // Subscribe to auth state changes
     this.authService.isAuthenticated$.pipe(
       takeUntil(this.destroy$)
     ).subscribe(
       (isAuthenticated) => {
-        console.log('ProfileButton: Auth state changed:', isAuthenticated);
         this.isLoggedIn = isAuthenticated;
         if (isAuthenticated) {
           this.loadUserAvatar();
@@ -216,7 +214,6 @@ export class ProfileButtonComponent implements AfterViewInit, OnDestroy {
       takeUntil(this.destroy$)
     ).subscribe(
       (isDarkened: boolean) => {
-        console.log('Profile button darkened state:', isDarkened);
         this.isDarkened = isDarkened;
       }
     );
@@ -259,7 +256,6 @@ export class ProfileButtonComponent implements AfterViewInit, OnDestroy {
   }
 
   navigateToProfile() {
-    console.log('ProfileButton: Navigating to profile...');
     this.router.navigate(['profile', 'me']);
   }
 
@@ -288,7 +284,6 @@ export class ProfileButtonComponent implements AfterViewInit, OnDestroy {
       // Update the current avatar immediately
       this.currentAvatar = avatar.url;
 
-      console.log('Avatar updated successfully:', avatar.url);
       this.closeAvatarSelector();
     } catch (error) {
       console.error('Error updating avatar:', error);

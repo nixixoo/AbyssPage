@@ -21,30 +21,23 @@ export class AuthService {
     private firestore: Firestore,
     @Inject(PLATFORM_ID) private platformId: Object
   ) {
-    console.log('AuthService: Initializing...');
-    
     this.firebaseReady = new Promise<boolean>((resolve) => {
       if (isPlatformBrowser(this.platformId)) {
-        console.log('AuthService: Setting up Firebase auth...');
         setPersistence(this.auth, browserLocalPersistence);
         
         onAuthStateChanged(this.auth, async (user) => {
-          console.log('AuthService: Auth state changed:', !!user);
           if (user) {
             const userDoc = await getDoc(doc(this.firestore, 'creators', user.uid));
             if (userDoc.exists()) {
-              console.log('AuthService: User data found, setting authenticated');
               this.currentUserSubject.next(userDoc.data() as Creator);
               this.isAuthenticatedSubject.next(true);
               resolve(true);
             } else {
-              console.log('AuthService: No user data found');
               this.currentUserSubject.next(null);
               this.isAuthenticatedSubject.next(false);
               resolve(false);
             }
           } else {
-            console.log('AuthService: No user, setting not authenticated');
             this.currentUserSubject.next(null);
             this.isAuthenticatedSubject.next(false);
             resolve(false);
@@ -159,9 +152,7 @@ export class AuthService {
   }
 
   async isFirebaseReady() {
-    console.log('AuthService: Waiting for Firebase and auth state...');
     const isAuthenticated = await this.firebaseReady;
-    console.log('AuthService: Firebase ready, authenticated:', isAuthenticated);
     return isAuthenticated;
   }
 }

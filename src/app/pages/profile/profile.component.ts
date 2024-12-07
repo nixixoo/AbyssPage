@@ -49,21 +49,18 @@ export class ProfileComponent implements OnInit, OnDestroy {
 
   ngOnInit() {
     try {
-      console.log('1. Profile Init Started');
       
       // First get the username parameter
       this.route.paramMap.pipe(
         take(1),
         switchMap(params => {
           const username = params.get('username') || 'me';
-          console.log('2. Route username:', username);
 
           // Only check auth for 'me' route
           if (username === 'me') {
             return this.authService.isAuthenticated$.pipe(
               take(1),
               tap(isAuthenticated => {
-                console.log('3. Auth check for "me" route:', isAuthenticated);
                 this.isAuthenticated = isAuthenticated;
               }),
               switchMap(isAuthenticated => {
@@ -87,7 +84,6 @@ export class ProfileComponent implements OnInit, OnDestroy {
       ).subscribe({
         next: async (userData) => {
           if (userData) {
-            console.log('4. User data loaded:', userData);
             this.user = userData;
             this.isOwnProfile = await this.checkIfOwnProfile(userData.uid);
           }

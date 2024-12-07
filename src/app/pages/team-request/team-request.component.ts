@@ -269,7 +269,6 @@ export class TeamRequestComponent implements OnInit {
 
   getCharacterById(id: string): Character | undefined {
     const character = this.availableCharacters.find(char => char.id === id);
-    console.log('Getting character:', id, character);
     return character;
   }
 

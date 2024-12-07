@@ -77,7 +77,6 @@ export class HomeComponent {
         try {
           this.searchResults = await this.creatorService.searchCreators(this.searchQuery);
         } catch (error) {
-          console.error('Error searching creators:', error);
           this.searchResults = [];
         }
       } else {

@@ -855,7 +855,6 @@ export class CharactersComponent implements OnInit, OnDestroy {
         });
 
     } catch (error) {
-      console.error('Error loading user data:', error);
       this.errorMessage = 'Error loading user data';
       this.isLoading = false;
       this.authChecked = true;
@@ -1004,7 +1003,6 @@ export class CharactersComponent implements OnInit, OnDestroy {
         this.isLoading = false;
       },
       error: (error) => {
-        console.error('Error saving changes:', error);
         this.isLoading = false;
       }
     });

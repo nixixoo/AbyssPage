@@ -73,7 +73,6 @@ export class CreatorService {
     return from(updateDoc(creatorDocRef, { ...creator })).pipe(
       map(() => creator),
       catchError(error => {
-        console.error('Error updating creator:', error);
         return throwError(() => new Error('Failed to update creator'));
       })
     );
