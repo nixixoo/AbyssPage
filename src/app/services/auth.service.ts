@@ -107,6 +107,7 @@ export class AuthService {
       const newCreator: Creator = {
         uid: userCredential.user.uid,
         username: username,
+        avatar: 'assets/character_profile/amber_avatar.png',
         characters: {},
         constellations: {},
         socialLinks: {}

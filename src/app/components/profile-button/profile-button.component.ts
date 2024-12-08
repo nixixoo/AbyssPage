@@ -68,7 +68,7 @@ export class ProfileButtonComponent implements AfterViewInit, OnDestroy {
   menuHeight = 0;
   searchQuery: string = '';
   isLoggedIn = false;
-  currentAvatar: string = 'assets/images/default-avatar.png';
+  currentAvatar: string = 'assets/character_profile/amber_avatar.png';
   isDarkened = false;
   avatarLoaded: boolean = false;
   isChangingAvatar: boolean = false;
@@ -240,6 +240,8 @@ export class ProfileButtonComponent implements AfterViewInit, OnDestroy {
     const user = await this.authService.getCurrentUser();
     if (user && user.avatar) {
       this.currentAvatar = user.avatar;
+    } else {
+      this.currentAvatar = 'assets/character_profile/amber_avatar.png';
     }
   }
 
