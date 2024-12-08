@@ -49,6 +49,7 @@ export class HomeComponent {
   isSearchActive: boolean = false;
   searchResults: Creator[] = [];
   searchTimeout: any;
+  private isTransitioning: boolean = false;
 
   constructor(
     private router: Router,
@@ -60,25 +61,19 @@ export class HomeComponent {
   handleClick(event: MouseEvent) {
     const clickedElement = event.target as HTMLElement;
     
-    const isSearchInput = clickedElement.classList.contains('search-input');
-    const isWithinSearchResults = clickedElement.closest('.search-results');
-    const isSearchIcon = clickedElement.closest('.search-icon');
-    
-    if (isSearchInput || isSearchIcon) {
+    if (this.isTransitioning || clickedElement.closest('.search-container')) {
       return;
     }
 
-    const searchContainer = document.querySelector('.search-container');
-    
-    if (this.isSearchActive && 
-        searchContainer && 
-        !searchContainer.contains(event.target as Node) && 
-        !isWithinSearchResults) {
-      this.toggleSearch(false);
-      if (this.searchInput) {
-        this.searchInput.nativeElement.blur();
-      }
+    if (this.isSearchActive) {
+      setTimeout(() => {
+        this.toggleSearch(false);
+      }, 200);
     }
+  }
+
+  onInputFocus() {
+    this.toggleSearch(true);
   }
 
   async onSearch() {
@@ -106,18 +101,17 @@ export class HomeComponent {
 
   toggleSearch(active: boolean) {
     if (active) {
+      this.isTransitioning = true;
       this.isSearchActive = true;
       this.uiService.setDarkened(true);
       setTimeout(() => {
-        this.searchInput?.nativeElement.focus();
-      }, 0);
+        this.isTransitioning = false;
+      }, 600);
     } else {
-      setTimeout(() => {
-        this.isSearchActive = false;
-        this.uiService.setDarkened(false);
-        this.searchQuery = '';
-        this.searchResults = [];
-      }, 100);
+      this.isSearchActive = false;
+      this.uiService.setDarkened(false);
+      this.searchQuery = '';
+      this.searchResults = [];
     }
   }
 }

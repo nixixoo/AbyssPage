@@ -12,6 +12,8 @@
     <h2 [class.darkened]="isSearchActive">Abyss Team Request</h2>
     <p [class.darkened]="isSearchActive">Search your favorite creator and request a team to be played in the Abyss!</p>
 
+    <div class="search-spacer"></div>
+
     <div class="search-container" [class.active]="isSearchActive">
       <div class="search-bar" (click)="$event.stopPropagation()">
         <span class="search-icon">
@@ -25,9 +27,8 @@
           [(ngModel)]="searchQuery" 
           placeholder="Search user..."
           class="search-input"
-          (focus)="toggleSearch(true)"
+          (focus)="onInputFocus()"
           (input)="onSearch()"
-          (click)="$event.stopPropagation()"
           #searchInput
         >
       </div>
