@@ -1,9 +1,21 @@
 <header [ngClass]="{'darkened': darkened}">
+  <div class="mobile-menu-overlay" [class.active]="isMenuOpen" (click)="toggleMenu()"></div>
   <div class="header-container">
     <div class="logo">
       <img src="assets/logo.svg" alt="Logo" class="logo-image" routerLink="/">
     </div>
-    <div class="nav-buttons">
+
+    <button class="hamburger" (click)="toggleMenu()" [class.active]="isMenuOpen">
+      <span></span>
+      <span></span>
+      <span></span>
+    </button>
+
+    <div class="nav-buttons" [class.mobile-menu-open]="isMenuOpen">
+      <button class="close-menu" (click)="toggleMenu()" *ngIf="isMobile">
+        <i class="fas fa-times"></i>
+      </button>
+      
       <ng-container *ngIf="!isLoggedIn">
         <button class="login-btn" (click)="navigateToLogin()">
           <i class="fas fa-sign-in-alt"></i> Login
