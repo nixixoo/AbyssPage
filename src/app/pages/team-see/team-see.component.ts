@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { TeamRequest } from '../../interfaces/team-request.interface';
 import { Character, characterList } from '../../constants/character-list';
@@ -38,7 +38,7 @@ import { trigger, transition, style, animate } from '@angular/animations';
     ])
   ]
 })
-export class TeamSeeComponent implements OnInit {
+export class TeamSeeComponent implements OnInit, OnDestroy {
   pendingRequests: TeamRequest[] = [];
   approvedRequests: TeamRequest[] = [];
   characterList = characterList;
@@ -46,14 +46,34 @@ export class TeamSeeComponent implements OnInit {
   errorMessage: string = '';
   removingRequests: Set<string> = new Set();
   displayContent: boolean = false;
+  isMobile = false;
+  currentFilter: 'pending' | 'approved' = 'pending';
 
   constructor(
     private teamRequestService: TeamRequestService,
     private authService: AuthService
-  ) {}
+  ) {
+    // Check if mobile on init
+    this.checkIfMobile();
+    // Listen for window resize
+    window.addEventListener('resize', () => this.checkIfMobile());
+  }
 
   ngOnInit() {
     this.loadRequests();
+  }
+
+  private checkIfMobile() {
+    this.isMobile = window.innerWidth <= 768;
+  }
+
+  setFilter(filter: 'pending' | 'approved') {
+    this.currentFilter = filter;
+  }
+
+  ngOnDestroy() {
+    // Clean up event listener
+    window.removeEventListener('resize', () => this.checkIfMobile());
   }
 
   loadRequests() {
@@ -98,6 +118,7 @@ export class TeamSeeComponent implements OnInit {
   }
 
   acceptRequest(requestId: string) {
+    event?.stopPropagation();
     this.teamRequestService.updateRequest(requestId, { approved: true }).then(() => {
       const requestToMove = this.pendingRequests.find(req => req.id === requestId);
       if (requestToMove) {
@@ -112,6 +133,7 @@ export class TeamSeeComponent implements OnInit {
   }
 
   rejectRequest(requestId: string) {
+    event?.stopPropagation();
     this.pendingRequests = this.pendingRequests.filter(req => req.id !== requestId);
     
     this.teamRequestService.deleteRequest(requestId).catch(error => {
@@ -122,6 +144,7 @@ export class TeamSeeComponent implements OnInit {
   }
 
   markAsReady(requestId: string) {
+    event?.stopPropagation();
     this.removingRequests.add(requestId);
     
     // Wait for animation

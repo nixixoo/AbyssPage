@@ -16,8 +16,79 @@
     {{ errorMessage }}
   </div>
 
-  <!-- Main Content -->
-  <main [class.visible]="displayContent">
+  <!-- Mobile Filters -->
+  <div class="mobile-filters" *ngIf="isMobile">
+    <div class="filter-tabs">
+      <button 
+        [class.active]="currentFilter === 'pending'"
+        (click)="setFilter('pending')"
+      >
+        <i class="fas fa-clock"></i>
+        Pending ({{ pendingRequests.length }})
+      </button>
+      <button 
+        [class.active]="currentFilter === 'approved'"
+        (click)="setFilter('approved')"
+      >
+        <i class="fas fa-check"></i>
+        Approved ({{ approvedRequests.length }})
+      </button>
+    </div>
+
+    <!-- Show only the selected type of requests on mobile -->
+    <div class="requests-container">
+      @for (request of (currentFilter === 'pending' ? pendingRequests : approvedRequests); track request.id) {
+        <div class="request-card" 
+             @cardAnimation
+             [class.removing]="removingRequests.has(request.id!)">
+          <div class="request-header">
+            <h3>
+              @if (request.isAnonymous) {
+                Anonymous Request
+              } @else {
+                Request from {{ request.fromUsername }}
+              }
+            </h3>
+          </div>
+
+          <div class="characters-preview">
+            @for (charId of request.characters; track charId) {
+              @if (getCharacterDetails(charId); as char) {
+                <div class="character-preview">
+                  <img [src]="char.image" [alt]="char.name">
+                  <div class="character-name">{{ char.name }}</div>
+                </div>
+              }
+            }
+          </div>
+
+          @if (request.message) {
+            <div class="request-message">
+              <p>"{{ request.message }}"</p>
+            </div>
+          }
+
+          <div class="request-actions">
+            @if (currentFilter === 'pending') {
+              <button class="accept-btn" (click)="acceptRequest(request.id!)">
+                Accept
+              </button>
+              <button class="reject-btn" (click)="rejectRequest(request.id!)">
+                Reject
+              </button>
+            } @else {
+              <button class="ready-btn" (click)="markAsReady(request.id!)">
+                Ready
+              </button>
+            }
+          </div>
+        </div>
+      }
+    </div>
+  </div>
+
+  <!-- Desktop Layout (hide on mobile) -->
+  <main [class.visible]="displayContent" [class.hidden-mobile]="isMobile">
     <div class="content-wrapper">
       <h1>Team Requests</h1>
       <h2>View and manage your received team requests</h2>

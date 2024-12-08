@@ -16,7 +16,12 @@
   right: 0;
   bottom: 0;
   background: rgba(0, 0, 0, 0.3);
-  z-index: var(--z-overlay-bg);
+  z-index: 1;
+}
+
+app-header {
+  position: relative;
+  z-index: 3;
 }
 
 main {
@@ -253,7 +258,7 @@ main {
   display: flex;
   align-items: center;
   justify-content: center;
-  z-index: var(--z-loading);
+  z-index: 10;
 
   .spinning-logo {
     width: 80px;
@@ -363,6 +368,99 @@ main {
     .request-actions {
       flex-direction: column;
       gap: 0.5rem;
+    }
+  }
+
+  .hidden-mobile {
+    display: none;
+  }
+}
+
+// Hide mobile filters by default
+.mobile-filters {
+  display: none;  // Hide by default
+  position: relative;
+  z-index: 2;
+}
+
+@media (max-width: 768px) {
+  .mobile-filters {
+    display: block;  // Show only on mobile
+    margin: 1rem 0;
+    padding: 0 1.5rem;
+
+    .filter-tabs {
+      display: flex;
+      gap: 10px;
+      width: 100%;
+
+      button {
+        flex: 1;
+        padding: 12px;
+        border: 2px solid var(--color-accent);
+        background: transparent;
+        color: var(--color-accent);
+        border-radius: 8px;
+        font-size: 1rem;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+        transition: all 0.3s ease;
+
+        i {
+          font-size: 1.1rem;
+        }
+
+        &.active {
+          background: var(--color-accent);
+          color: white;
+        }
+      }
+    }
+
+    .requests-container {
+      margin-top: 1rem;
+      
+      .request-card {
+        background: var(--color-background-light);
+        border-radius: 8px;
+        padding: 1rem;
+        margin-bottom: 1rem;
+        border: 1px solid rgba(255, 255, 255, 0.1);
+
+        .request-actions {
+          display: flex;
+          gap: 10px;
+          margin-top: 1rem;
+
+          button {
+            flex: 1;
+            padding: 12px;
+            border: none;
+            border-radius: 8px;
+            font-size: 1rem;
+            cursor: pointer;
+            pointer-events: auto;  // Ensure buttons are clickable
+            z-index: 2;           // Make sure buttons are above other elements
+
+            &.accept-btn {
+              background: var(--color-accent);
+              color: white;
+            }
+
+            &.reject-btn {
+              background: rgba(255, 68, 68, 0.9);
+              color: white;
+            }
+
+            &.ready-btn {
+              background: var(--color-accent);
+              color: white;
+            }
+          }
+        }
+      }
     }
   }
 }
