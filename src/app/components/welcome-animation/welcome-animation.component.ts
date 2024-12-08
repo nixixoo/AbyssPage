@@ -1,6 +1,7 @@
 import { Component, Input } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { AuthService } from '../../services/auth.service';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-welcome-animation',
@@ -26,7 +27,10 @@ export class WelcomeAnimationComponent {
   wasActive: boolean = false;
   username: string = '';
 
-  constructor(private authService: AuthService) {
+  constructor(
+    private authService: AuthService,
+    private router: Router
+  ) {
     this.loadUsername();
   }
 
@@ -39,6 +43,11 @@ export class WelcomeAnimationComponent {
     if (this.isActive) {
       this.wasActive = true;
       this.loadUsername();
+      
+      setTimeout(() => {
+        this.router.navigate(['/characters']);
+      }, 6800);
+      
     } else if (this.wasActive) {
       setTimeout(() => {
         this.wasActive = false;

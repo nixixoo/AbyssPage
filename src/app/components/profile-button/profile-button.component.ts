@@ -342,10 +342,4 @@ export class ProfileButtonComponent implements AfterViewInit, OnDestroy {
     this.searchQuery = (event.target as HTMLInputElement).value;
   }
 
-  onAvatarLoad(avatarSrc: string) {
-    // Only set avatarLoaded to true if it's not the default Amber avatar
-    if (avatarSrc !== 'assets/character_profile/amber_avatar.png') {
-      this.avatarLoaded = true;
-    }
-  }
 }
