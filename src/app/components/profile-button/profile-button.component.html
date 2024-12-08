@@ -1,6 +1,6 @@
 <div class="profile-button-wrapper" *ngIf="isLoggedIn && avatarLoaded" [@slideIn] [class.darkened]="isDarkened">
   <button class="floating-profile-btn" [class.darkened]="isDarkened">
-    <img [src]="currentAvatar" alt="Profile" (load)="avatarLoaded = true" style="display: none;">
+    <img [src]="currentAvatar" alt="Profile" (load)="onAvatarLoad(currentAvatar)" style="display: none;">
     <img [src]="currentAvatar" alt="Profile">
   </button>
 
@@ -57,9 +57,9 @@
   </div>
 </div>
 
-<!-- Add a hidden preloader -->
+<!-- Fix the preloader too -->
 <img *ngIf="isLoggedIn && !avatarLoaded" 
      [src]="currentAvatar" 
-     (load)="avatarLoaded = true" 
+     (load)="onAvatarLoad(currentAvatar)" 
      style="display: none;"
      alt="Preload profile">
