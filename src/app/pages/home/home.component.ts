@@ -58,8 +58,22 @@ export class HomeComponent {
 
   @HostListener('document:click', ['$event'])
   handleClick(event: MouseEvent) {
+    const clickedElement = event.target as HTMLElement;
+    
+    const isSearchInput = clickedElement.classList.contains('search-input');
+    const isWithinSearchResults = clickedElement.closest('.search-results');
+    const isSearchIcon = clickedElement.closest('.search-icon');
+    
+    if (isSearchInput || isSearchIcon) {
+      return;
+    }
+
     const searchContainer = document.querySelector('.search-container');
-    if (this.isSearchActive && searchContainer && !searchContainer.contains(event.target as Node)) {
+    
+    if (this.isSearchActive && 
+        searchContainer && 
+        !searchContainer.contains(event.target as Node) && 
+        !isWithinSearchResults) {
       this.toggleSearch(false);
       if (this.searchInput) {
         this.searchInput.nativeElement.blur();
@@ -91,13 +105,19 @@ export class HomeComponent {
   }
 
   toggleSearch(active: boolean) {
-    this.isSearchActive = active;
-    this.uiService.setDarkened(active);
-    if (!active) {
+    if (active) {
+      this.isSearchActive = true;
+      this.uiService.setDarkened(true);
       setTimeout(() => {
+        this.searchInput?.nativeElement.focus();
+      }, 0);
+    } else {
+      setTimeout(() => {
+        this.isSearchActive = false;
+        this.uiService.setDarkened(false);
         this.searchQuery = '';
         this.searchResults = [];
-      }, 300);
+      }, 100);
     }
   }
 }

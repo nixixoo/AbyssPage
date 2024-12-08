@@ -43,9 +43,9 @@ export class CharactersComponent implements OnInit, OnDestroy {
   elements = ['Pyro', 'Hydro', 'Anemo', 'Electro', 'Dendro', 'Cryo', 'Geo'];
   weapons = ['Sword', 'Claymore', 'Polearm', 'Bow', 'Catalyst'];
   
-  selectedElements: string[] = [];
-  selectedWeapons: string[] = [];
-  selectedRarities: number[] = [];
+  selectedElement: string | null = null;
+  selectedWeapon: string | null = null;
+  selectedRarity: number | null = null;
 
   isSidebarOpen = false;
 
@@ -169,31 +169,28 @@ export class CharactersComponent implements OnInit, OnDestroy {
   }
 
   filterByElement(element: string) {
-    const index = this.selectedElements.indexOf(element);
-    if (index === -1) {
-      this.selectedElements.push(element);
+    if (this.selectedElement === element) {
+      this.selectedElement = null;
     } else {
-      this.selectedElements.splice(index, 1);
+      this.selectedElement = element;
     }
     this.applyFilters();
   }
 
   filterByWeapon(weapon: string) {
-    const index = this.selectedWeapons.indexOf(weapon);
-    if (index === -1) {
-      this.selectedWeapons.push(weapon);
+    if (this.selectedWeapon === weapon) {
+      this.selectedWeapon = null;
     } else {
-      this.selectedWeapons.splice(index, 1);
+      this.selectedWeapon = weapon;
     }
     this.applyFilters();
   }
 
   filterByRarity(rarity: number) {
-    const index = this.selectedRarities.indexOf(rarity);
-    if (index === -1) {
-      this.selectedRarities.push(rarity);
+    if (this.selectedRarity === rarity) {
+      this.selectedRarity = null;
     } else {
-      this.selectedRarities.splice(index, 1);
+      this.selectedRarity = rarity;
     }
     this.applyFilters();
   }
@@ -201,25 +198,25 @@ export class CharactersComponent implements OnInit, OnDestroy {
   private applyFilters() {
     let filteredList = [...this.characterList];
 
-    if (this.selectedElements.length > 0) {
+    if (this.selectedElement) {
       filteredList = filteredList.filter(char => {
         if (char.id === 'aether' || char.id === 'lumine') {
           const travelerElements = ['Anemo', 'Geo', 'Electro', 'Dendro', 'Hydro', 'Pyro'];
-          return this.selectedElements.some(element => travelerElements.includes(element));
+          return travelerElements.includes(this.selectedElement!);
         }
-        return this.selectedElements.includes(char.element);
+        return char.element === this.selectedElement;
       });
     }
 
-    if (this.selectedWeapons.length > 0) {
+    if (this.selectedWeapon) {
       filteredList = filteredList.filter(char => 
-        this.selectedWeapons.includes(char.weaponType)
+        char.weaponType === this.selectedWeapon
       );
     }
 
-    if (this.selectedRarities.length > 0) {
+    if (this.selectedRarity) {
       filteredList = filteredList.filter(char => 
-        this.selectedRarities.includes(char.rarity)
+        char.rarity === this.selectedRarity
       );
     }
 
@@ -304,15 +301,15 @@ export class CharactersComponent implements OnInit, OnDestroy {
   }
 
   isRaritySelected(rarity: number): boolean {
-    return this.selectedRarities.includes(rarity);
+    return this.selectedRarity === rarity;
   }
 
   isWeaponSelected(weapon: string): boolean {
-    return this.selectedWeapons.includes(weapon);
+    return this.selectedWeapon === weapon;
   }
 
   isElementSelected(element: string): boolean {
-    return this.selectedElements.includes(element);
+    return this.selectedElement === element;
   }
 
   // Add this method to check if there are pending changes

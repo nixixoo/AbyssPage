@@ -56,9 +56,8 @@ export class TeamRequestComponent implements OnInit {
 
   isSidebarOpen = false;
   selectedRarity: number | null = null;
-  selectedElements: string[] = [];
-  selectedWeapons: string[] = [];
-  selectedRarities: number[] = [];
+  selectedElement: string | null = null;
+  selectedWeapon: string | null = null;
 
   // Add this property to store the original list
   private originalCharacters: Character[] = [];
@@ -192,67 +191,62 @@ export class TeamRequestComponent implements OnInit {
 
   // Add these methods for filters
   filterByElement(element: string) {
-    const index = this.selectedElements.indexOf(element);
-    if (index === -1) {
-      this.selectedElements.push(element);
+    if (this.selectedElement === element) {
+      this.selectedElement = null;
     } else {
-      this.selectedElements.splice(index, 1);
+      this.selectedElement = element;
     }
     this.applyFilters();
   }
 
   filterByWeapon(weapon: string) {
-    const index = this.selectedWeapons.indexOf(weapon);
-    if (index === -1) {
-      this.selectedWeapons.push(weapon);
+    if (this.selectedWeapon === weapon) {
+      this.selectedWeapon = null;
     } else {
-      this.selectedWeapons.splice(index, 1);
+      this.selectedWeapon = weapon;
     }
     this.applyFilters();
   }
 
   filterByRarity(rarity: number) {
-    const index = this.selectedRarities.indexOf(rarity);
-    if (index === -1) {
-      this.selectedRarities.push(rarity);
+    if (this.selectedRarity === rarity) {
+      this.selectedRarity = null;
     } else {
-      this.selectedRarities.splice(index, 1);
+      this.selectedRarity = rarity;
     }
     this.applyFilters();
   }
 
   private applyFilters() {
-    const hasActiveFilters = 
-      this.selectedElements.length > 0 || 
-      this.selectedWeapons.length > 0 || 
-      this.selectedRarities.length > 0;
+    let filteredCharacters = [...this.originalCharacters];
 
-    this.availableCharacters.forEach(char => {
-      const element = document.querySelector(`[data-character-id="${char.id}"]`);
-      if (!element) return;
+    // Apply element filter
+    if (this.selectedElement) {
+      filteredCharacters = filteredCharacters.filter(char => {
+        if (char.id === 'aether' || char.id === 'lumine') {
+          const travelerElements = ['Anemo', 'Geo', 'Electro', 'Dendro', 'Hydro', 'Pyro'];
+          return travelerElements.includes(this.selectedElement!);
+        }
+        return char.element === this.selectedElement;
+      });
+    }
 
-      if (!hasActiveFilters) {
-        element.classList.remove('filtered-out');
-        return;
-      }
+    // Apply weapon filter
+    if (this.selectedWeapon) {
+      filteredCharacters = filteredCharacters.filter(char => 
+        char.weaponType === this.selectedWeapon
+      );
+    }
 
-      const matchesElement = this.selectedElements.length === 0 || 
-        (char.id === 'aether' || char.id === 'lumine')
-          ? this.selectedElements.some(element => ['Anemo', 'Geo', 'Electro', 'Dendro', 'Hydro', 'Pyro'].includes(element))
-          : this.selectedElements.includes(char.element);
+    // Apply rarity filter
+    if (this.selectedRarity) {
+      filteredCharacters = filteredCharacters.filter(char => 
+        char.rarity === this.selectedRarity
+      );
+    }
 
-      const matchesWeapon = this.selectedWeapons.length === 0 || 
-        this.selectedWeapons.includes(char.weaponType);
-
-      const matchesRarity = this.selectedRarities.length === 0 || 
-        this.selectedRarities.includes(char.rarity);
-
-      if (matchesElement && matchesWeapon && matchesRarity) {
-        element.classList.remove('filtered-out');
-      } else {
-        element.classList.add('filtered-out');
-      }
-    });
+    // Update the available characters
+    this.availableCharacters = filteredCharacters;
   }
 
   toggleSidebar() {
@@ -260,15 +254,15 @@ export class TeamRequestComponent implements OnInit {
   }
 
   isRaritySelected(rarity: number): boolean {
-    return this.selectedRarities.includes(rarity);
+    return this.selectedRarity === rarity;
   }
 
   isWeaponSelected(weapon: string): boolean {
-    return this.selectedWeapons.includes(weapon);
+    return this.selectedWeapon === weapon;
   }
 
   isElementSelected(element: string): boolean {
-    return this.selectedElements.includes(element);
+    return this.selectedElement === element;
   }
 
   getCharacterById(id: string): Character | undefined {
