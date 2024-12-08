@@ -189,9 +189,11 @@
               <div class="character-info">
                 <h3>{{ character.name }}</h3>
                 <div class="constellation-selector">
+                  <button class="cons-btn c0" (click)="setConsLevel($event, character, 0)">C0</button>
                   <button class="cons-btn minus" (click)="decreaseConsLevel($event, character)">-</button>
                   <span class="cons-level">C{{ getCharacterCons(character.id) || '0' }}</span>
                   <button class="cons-btn plus" (click)="increaseConsLevel($event, character)">+</button>
+                  <button class="cons-btn c6" (click)="setConsLevel($event, character, 6)">C6</button>
                 </div>
               </div>
             </div>

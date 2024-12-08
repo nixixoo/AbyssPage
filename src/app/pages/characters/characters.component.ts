@@ -336,4 +336,12 @@ export class CharactersComponent implements OnInit, OnDestroy {
   public navigateToLogin(): void {
     this.router.navigate(['/login']);
   }
+
+  setConsLevel(event: Event, character: any, level: number) {
+    event.stopPropagation();
+    if (this.pendingChanges.characters.includes(character.id)) {
+      this.pendingChanges.constellations[character.id] = level;
+      this.animateConsNumber(character.id);
+    }
+  }
 }

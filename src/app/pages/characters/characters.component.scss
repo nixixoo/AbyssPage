@@ -906,10 +906,11 @@ main {
       height: 32px;
       background: var(--color-background-light);
       transition: opacity 0.4s ease-in-out, transform 0.4s ease-in-out;
+      gap: 4px;
 
       .cons-btn {
-        width: 28px;
-        height: 28px;
+        width: 32px;
+        height: 32px;
         display: flex;
         align-items: center;
         justify-content: center;
@@ -918,9 +919,10 @@ main {
         background: transparent;
         border-radius: 4px;
         cursor: pointer;
-        font-size: 1.2rem;
         padding: 0;
         transition: all 0.2s;
+        font-size: 0.9rem;
+        font-weight: bold;
 
         &:hover {
           background: var(--color-accent);
@@ -931,12 +933,22 @@ main {
           opacity: 0.5;
           cursor: not-allowed;
         }
+
+        &.c0, &.c6 {
+          font-size: 0.7rem;
+        }
+
+        &.plus, &.minus {
+          font-size: 1.2rem;
+        }
       }
 
       .cons-level {
         color: var(--color-accent);
         font-size: 1rem;
         font-weight: 500;
+        min-width: 30px;
+        text-align: center;
 
         &.bounce {
           animation: bounceNumber 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
