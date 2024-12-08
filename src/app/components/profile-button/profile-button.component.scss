@@ -2,7 +2,7 @@
   position: absolute;
   top: 20px;
   right: 20px;
-  z-index: 1000;
+  z-index: 10000;
   transition: opacity 0.6s cubic-bezier(0.19, 1, 0.22, 1);
   
   &.darkened {
@@ -118,7 +118,7 @@
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
   transform-origin: right center;
   border-radius: 1rem;
-  z-index: 9998;
+  z-index: 9999;
   
   // Initial state (closing animation)
   width: 0;
@@ -441,5 +441,14 @@
       background: rgba(255, 255, 255, 0.15);
       box-shadow: 0 0 15px rgba(var(--color-accent-rgb), 0.1);
     }
+  }
+}
+
+@media (max-width: 768px) {
+  .profile-menu {
+    background: var(--color-background-dark);
+    border: 1px solid rgba(var(--color-accent-rgb), 0.1);
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
+    backdrop-filter: none;
   }
 }
