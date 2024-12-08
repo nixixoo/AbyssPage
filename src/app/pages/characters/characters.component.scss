@@ -994,15 +994,20 @@ main {
 .action-buttons {
   position: fixed;
   bottom: 20px;
-  right: 20px;
+  right: 0;
+  left: 0;
   display: flex;
+  justify-content: center;
   gap: 10px;
+  padding: 0 20px;
   z-index: 100;
 
   button {
-    padding: 12px 30px;
-    font-size: 1.3rem;
-    min-width: 160px;
+    flex: 1;
+    max-width: 200px;
+    font-size: 1rem;
+    padding: 0.8rem;
+    min-width: 0;
     opacity: 0;
     transform: translateY(100%);
     transition: 
@@ -2340,6 +2345,86 @@ main {
       font-size: 1.1rem;
     }
   }
+
+  .action-buttons {
+    position: fixed;
+    bottom: 20px;
+    right: 0;
+    left: 0;
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    padding: 0 20px;
+    
+    button {
+      flex: 1;
+      max-width: 200px;
+      font-size: 1rem;
+      padding: 0.8rem;
+      min-width: 0;
+      opacity: 0;
+      transform: translateY(100%);
+      transition: 
+        opacity 0.3s ease-out, 
+        transform 0.3s ease-out,
+        box-shadow 0.3s ease-out;
+      box-shadow: 0 0 0 rgba(0, 0, 0, 0);
+      border-radius: 8px;
+      
+      &.visible {
+        opacity: 1;
+        transform: translateY(0);
+      }
+
+      &:not(.visible) {
+        opacity: 0;
+        transform: translateY(100%);
+      }
+
+      &.save-btn {
+        background: var(--color-accent);
+        color: white;
+        border: none;
+        transition-delay: 0s;
+        transition: 
+          opacity 0.3s ease-out, 
+          transform 0.3s ease-out,
+          box-shadow 0.3s ease-out;
+
+        &:hover:not(:disabled) {
+          transform: translateY(-2px);
+          box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+        }
+
+        &:not(.visible) {
+          transition-delay: 0s;
+        }
+      }
+
+      &.discard-btn {
+        background: white;
+        color: var(--color-accent);
+        border: 1px solid var(--color-border);
+        transition-delay: 0.1s;
+        transition: 
+          opacity 0.3s ease-out, 
+          transform 0.3s ease-out,
+          background-color 0.3s ease-out,
+          box-shadow 0.3s ease-out;
+        box-shadow: 0 0 0 rgba(0, 0, 0, 0);
+
+        &:hover:not(:disabled) {
+          transform: translateY(-2px);
+          background: #f5f5f5;
+          box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+
+        &:not(.visible) {
+          transition-delay: 0s;
+        }
+      }
+    }
+  }
 }
 
 @media (max-width: 480px) {
@@ -2355,6 +2440,14 @@ main {
 
     p {
       font-size: 1rem;
+    }
+  }
+
+  .action-buttons {
+    padding: 0 10px;
+    
+    button {
+      max-width: 160px;
     }
   }
 }
