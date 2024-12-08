@@ -50,7 +50,8 @@ main {
   background: var(--color-white);
   padding: 2rem;
   border-radius: 20px;
-  width: 100%;
+  width: calc(100% - 40px);
+  margin: 0 20px 2rem;
   max-width: 400px;
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
   animation: fadeInUp 0.8s ease-out 0.3s forwards;

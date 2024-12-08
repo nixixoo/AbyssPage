@@ -302,7 +302,7 @@ header {
     gap: 10px;
     transition: right 0.3s ease;
     box-shadow: -5px 0 15px rgba(0, 0, 0, 0.1);
-    z-index: 10001;
+    z-index: 1001;
 
     &.mobile-menu-open {
       right: 0;
@@ -352,7 +352,7 @@ header {
     right: 0;
     bottom: 0;
     background: rgba(0, 0, 0, 0.5);
-    z-index: 10000;
+    z-index: 1000;
     opacity: 0;
     visibility: hidden;
     transition: all 0.3s ease;
