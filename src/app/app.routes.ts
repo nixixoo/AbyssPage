@@ -9,6 +9,8 @@ import { CharactersComponent } from './pages/characters/characters.component';
 import { ProfileComponent } from './pages/profile/profile.component';
 import { TeamRequestComponent } from './pages/team-request/team-request.component';
 import { TeamSeeComponent } from './pages/team-see/team-see.component';
+import { FeedbackComponent } from './pages/feedback/feedback.component';
+
 export const routes: Routes = [
   { path: '', component: HomeComponent },
   { 
@@ -51,5 +53,9 @@ export const routes: Routes = [
     path: 'team-see',
     component: TeamSeeComponent,
     canActivate: [AuthGuard]
+  },
+  {
+    path: 'feedback',
+    component: FeedbackComponent
   }
 ];

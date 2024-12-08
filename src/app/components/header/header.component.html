@@ -6,10 +6,14 @@
     <div class="nav-buttons">
       <ng-container *ngIf="!isLoggedIn">
         <button class="login-btn" (click)="navigateToLogin()">Login</button>
+        <button class="register-btn" (click)="navigateToRegister()">Register</button>
+        <button class="feedback-btn" (click)="navigateToFeedback()">Feedback</button>
       </ng-container>
       <ng-container *ngIf="isLoggedIn">
         <button class="characters-btn" (click)="navigateToCharacters()">Characters</button>
        <button class="team-requests-btn" (click)="navigateToTeamSee()">Team Requests</button>
+       <button class="feedback-btn" (click)="navigateToFeedback()">Feedback</button>
+        
       </ng-container>
     </div>
   </div>

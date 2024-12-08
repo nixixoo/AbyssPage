@@ -1,0 +1,36 @@
+<div class="feedback-container">
+  <div class="overlay"></div>
+
+  <app-header></app-header>
+
+  <main>
+    <h1>Feedback</h1>
+    <h2>Help to improve :D</h2>
+
+    <div class="form-container">
+      <div class="error-message" *ngIf="errorMessage">{{ errorMessage }}</div>
+      <div class="success-message" *ngIf="successMessage">{{ successMessage }}</div>
+      
+      <textarea 
+        [(ngModel)]="feedback"
+        name="feedback"
+        placeholder="Share your thoughts, suggestions, or report issues..."
+        class="feedback-input"
+        rows="8"
+      ></textarea>
+
+      <button 
+        class="send-btn"
+        (click)="onSendFeedback()"
+        [disabled]="!feedback.trim() || isLoading"
+      >
+        <div class="button-content">
+          {{ isLoading ? 'Sending...' : 'Send Feedback' }}
+          <svg *ngIf="isLoading" class="spinner" viewBox="0 0 50 50">
+            <circle cx="25" cy="25" r="20" fill="none" stroke-width="5"></circle>
+          </svg>
+        </div>
+      </button>
+    </div>
+  </main>
+</div> 
