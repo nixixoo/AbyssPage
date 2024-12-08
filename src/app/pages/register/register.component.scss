@@ -300,3 +300,28 @@ main {
       box-shadow: 0 4px 15px rgba(115, 114, 186, 0.3);
     }
   }
+
+@media (max-width: 768px) {
+  main {
+    h1 {
+      font-size: 2.5rem;
+    }
+
+    h2 {
+      font-size: 2rem;
+    }
+  }
+}
+
+// Even smaller screens
+@media (max-width: 480px) {
+  main {
+    h1 {
+      font-size: 2rem;
+    }
+
+    h2 {
+      font-size: 1.5rem;
+    }
+  }
+}
