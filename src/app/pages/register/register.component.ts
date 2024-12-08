@@ -79,6 +79,10 @@ export class RegisterComponent {
       this.animationService.startAnimation();
       
       
+      setTimeout(() => {
+        this.router.navigate(['/characters']);
+      }, 5000);
+      
     } catch (error: any) {
       this.errorMessage = error.message;
     } finally {

@@ -45,8 +45,9 @@ export class WelcomeAnimationComponent {
       this.loadUsername();
       
       setTimeout(() => {
-        this.router.navigate(['/characters']);
-      }, 6800);
+        window.location.reload();
+      }, 5000);
+      
       
     } else if (this.wasActive) {
       setTimeout(() => {
