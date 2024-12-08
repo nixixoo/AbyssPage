@@ -2194,41 +2194,26 @@ main {
 }
 
 @media (max-width: 768px) {
-  .content-wrapper {
-    padding: 0 10px;
-
-    h1 {
-      font-size: 2.5rem;
-    }
-
-    h2 {
-      font-size: 1.5rem;
-    }
+  main {
+    padding: 1.5rem;
   }
 
-  .characters-grid {
-    grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
-    gap: 10px;
-    padding: 10px;
+  .search-container {
+    padding: 0 1rem;
   }
 
-  .two-column-layout {
-    flex-direction: column;
-    gap: 2rem;
+  .search-results {
+    margin: 1rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .search-container {
+    padding: 0 0.5rem;
   }
 
-  .filter-sidebar {
-    width: 240px;
-    left: -240px;
-
-    &.open {
-      transform: translateX(240px);
-    }
-  }
-
-  .preview-slots {
-    grid-template-columns: repeat(2, 1fr);
-    gap: 10px;
+  .search-results {
+    margin: 0.5rem;
   }
 }
  

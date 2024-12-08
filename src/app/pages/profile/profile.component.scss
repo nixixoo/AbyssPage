@@ -23,11 +23,66 @@ main {
   padding: 2rem;
   max-width: 1200px;
   margin: 0 auto;
+  width: 100%;
   opacity: 0;
   transition: opacity 0.8s ease-in;
 
   &.loaded {
     opacity: 1;
+  }
+}
+
+@media (max-width: 768px) {
+  main {
+    padding: 1.5rem;
+  }
+
+  .content-wrapper {
+    grid-template-columns: 1fr !important;
+    gap: 1rem;
+  }
+
+  .profile-header {
+    .user-info {
+      h1 {
+        font-size: 1.5rem;
+      }
+
+      .profile-avatar {
+        width: 60px;
+        height: 60px;
+      }
+    }
+  }
+
+  .request-team-btn {
+    padding: 1rem;
+    font-size: 1rem;
+  }
+
+  .social-card {
+    h2 {
+      font-size: 1.2rem;
+    }
+  }
+}
+
+@media (max-width: 480px) {
+  main {
+    padding: 1.5rem;
+  }
+
+  .profile-header {
+    .user-info {
+      h1 {
+        font-size: 1.2rem;
+      }
+
+      .profile-avatar {
+        width: 50px;
+        height: 50px;
+      }
+    }
   }
 }
 
