@@ -251,6 +251,7 @@ export class TeamRequestComponent implements OnInit {
 
   toggleSidebar() {
     this.isSidebarOpen = !this.isSidebarOpen;
+    document.documentElement.style.setProperty('--sidebar-open', this.isSidebarOpen ? '1' : '0');
   }
 
   isRaritySelected(rarity: number): boolean {

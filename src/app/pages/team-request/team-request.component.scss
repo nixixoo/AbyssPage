@@ -19,6 +19,100 @@
   z-index: var(--z-overlay-bg);
 }
 
+.page-titles {
+  text-align: center;
+  padding-top: 5vh;
+  position: relative;
+  z-index: var(--z-content);
+
+  h1, h2 {
+    color: var(--color-white);
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+    animation: fadeInUp 0.8s ease-out forwards;
+  }
+
+  h1 {
+    font-size: 4.5rem;
+    margin-bottom: 1rem;
+  }
+
+  h2 {
+    font-size: 4rem;
+    color: var(--color-light);
+    margin-bottom: 2.5rem;
+    font-weight: bold;
+  }
+}
+
+@media (max-width: 768px) {
+  .page-titles {
+    h1 {
+      font-size: 2.5rem;
+    }
+
+    h2 {
+      font-size: 2rem;
+    }
+  }
+
+  .team-request-form {
+    margin: 0 auto;
+    padding: 1rem;
+    width: 100%;
+  }
+
+ 
+
+  .characters-grid {
+    grid-template-columns: repeat(4, 1fr);  // 4 characters per row
+    gap: 10px;
+    padding: 10px 0;
+    margin: 0 auto;
+    width: calc(100% - 20px);
+  }
+
+
+
+  .two-column-layout {
+    display: block;  // Change to block instead of flex
+    
+    .left-column,
+    .right-column {
+      width: 100%;
+      max-width: none;
+      min-width: 0;
+    }
+  }
+
+  .right-column {
+    position: static;  // Make it static instead of relative
+    margin-bottom: 1rem;
+    background: transparent;
+    padding: 0;
+  }
+
+  .selected-preview {
+    margin-bottom: 2rem;  // Add some space between preview and grid
+  }
+}
+
+@media (max-width: 480px) {
+  .page-titles {
+    h1 {
+      font-size: 2rem;
+    }
+
+    h2 {
+      font-size: 1.5rem;
+    }
+  }
+
+  .characters-grid {
+    grid-template-columns: repeat(3, 1fr);  // 3 characters per row on phones
+    width: calc(100% - 10px);
+  }
+}
+
 main {
   position: relative;
   z-index: var(--z-content);
@@ -26,26 +120,8 @@ main {
   flex-direction: column;
   align-items: center;
   text-align: center;
-  padding-top: 5vh;
   opacity: 0;
   animation: fadeInUp 0.8s ease-out forwards;
-
-  h1, h2 {
-    color: var(--color-white);
-    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
-  }
-
-  h1 {
-    font-size: 4rem;
-    margin-bottom: 1rem;
-  }
-
-  h2 {
-    font-size: 2rem;
-    color: var(--color-light);
-    margin-bottom: 2.5rem;
-    font-weight: bold;
-  }
 }
 
 .team-request-form {
@@ -57,7 +133,9 @@ main {
   animation: fadeInUp 0.8s ease-out 0.3s forwards;
   opacity: 0;
   max-width: none;
-  margin-left: 10px;
+  margin-left: 0;
+  position: relative;
+  z-index: 1;
 
   h3 {
     color: var(--color-white);
@@ -1799,12 +1877,19 @@ main {
 // Add this to make content shift when sidebar opens
 .content-wrapper {
   transition: all 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
-  padding: 0 0 0 30px;
   width: 100%;
   
   &.sidebar-open {
     margin-left: 280px;
-    width: calc(100vw - 280px);
+    width: calc(100% - 280px);
+
+    h1, h2 {
+      transform: translateX(-140px);  // Half of sidebar width
+    }
+  }
+
+  h1, h2 {
+    transition: transform 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
   }
 } 
 
@@ -2194,26 +2279,87 @@ main {
 }
 
 @media (max-width: 768px) {
+  .two-column-layout {
+    display: flex;  // Change back to flex
+    flex-direction: column;  // Stack vertically
+    
+    .left-column,
+    .right-column {
+      width: 100%;
+      max-width: none;
+      min-width: 0;
+    }
+
+    // Force right column (preview) to be first
+    .right-column {
+      order: -1;  // This moves it to the top
+      position: static;
+      margin-bottom: 1rem;
+      background: transparent;
+      padding: 0;
+    }
+  }
+
+  .selected-preview {
+    margin-bottom: 2rem;
+  }
+
+  .characters-grid {
+    grid-template-columns: repeat(4, 1fr);
+    gap: 10px;
+    padding: 10px 0;
+    margin: 0 auto;
+    width: calc(100% - 20px);
+  }
+
+  .character-card {
+    .character-image {
+      .rarity {
+        display: none;
+      }
+    }
+
+    .character-info {
+      padding: 8px;
+      height: auto;
+      
+      h3 {
+        font-size: 0.8rem;
+      }
+    }
+  }
+
+  .selected-preview {
+    .preview-slots {
+      grid-template-columns: repeat(2, 1fr);
+      gap: 8px;
+    }
+  }
+
   main {
-    padding: 1.5rem;
-  }
+    h1 {
+      font-size: 2.5rem;
+    }
 
-  .search-container {
-    padding: 0 1rem;
-  }
-
-  .search-results {
-    margin: 1rem;
+    h2 {
+      font-size: 2rem;
+    }
   }
 }
 
 @media (max-width: 480px) {
-  .search-container {
-    padding: 0 0.5rem;
+  .characters-grid {
+    grid-template-columns: repeat(3, 1fr);  // 3 characters per row on phones
   }
 
-  .search-results {
-    margin: 0.5rem;
+  main {
+    h1 {
+      font-size: 2rem;
+    }
+
+    h2 {
+      font-size: 1.5rem;
+    }
   }
 }
  

@@ -1,125 +1,5 @@
 <div class="team-request-container">
   <div class="overlay"></div>
-  <div class="filter-sidebar" [class.open]="isSidebarOpen">
-    <button class="toggle-btn" (click)="toggleSidebar()">
-      <span class="vertical-text">FILTERS</span>
-      <i class="fas" [class.fa-chevron-right]="!isSidebarOpen" [class.fa-chevron-left]="isSidebarOpen"></i>
-    </button>
-
-    <div class="sidebar-content">
-      <div class="filter-section">
-        <!-- Elements -->
-        <div class="filter-group">
-          <div class="filter-title">Element</div>
-          <div class="filter-options">
-            <div class="filter-option" 
-                 *ngFor="let element of elements"
-                 [attr.data-element]="element"
-                 [class.active]="isElementSelected(element)"
-                 (click)="filterByElement(element)">
-              <img [src]="'assets/others/' + element.toLowerCase() + '.webp'" [alt]="element">
-              <span>{{ element }}</span>
-              
-              <ng-container [ngSwitch]="element">
-                <ng-container *ngSwitchCase="'Pyro'">
-                  <div class="particle" *ngFor="let i of [].constructor(20)"></div>
-                </ng-container>
-                <ng-container *ngSwitchCase="'Hydro'">
-                  <div class="particle" *ngFor="let i of [].constructor(20)"></div>
-                </ng-container>
-                <ng-container *ngSwitchCase="'Anemo'">
-                  <div class="particle" *ngFor="let i of [].constructor(40)"></div>
-                </ng-container>
-                <ng-container *ngSwitchCase="'Electro'">
-                  <div class="particle" *ngFor="let i of [].constructor(100)"></div>
-                </ng-container>
-                <ng-container *ngSwitchCase="'Dendro'">
-                  <div class="particle" *ngFor="let i of [].constructor(100)"></div>
-                </ng-container>
-                <ng-container *ngSwitchCase="'Cryo'">
-                  <div class="particle" *ngFor="let i of [].constructor(50)"></div>
-                </ng-container>
-                <ng-container *ngSwitchCase="'Geo'">
-                  <div class="particle-1"></div>
-                  <div class="shard-left-1"></div>
-                  <div class="shard-right-1"></div>
-                  <div class="particle-2"></div>
-                  <div class="shard-left-2"></div>
-                  <div class="shard-right-2"></div>
-                  <div class="particle-3"></div>
-                  <div class="shard-left-3"></div>
-                  <div class="shard-right-3"></div>
-                </ng-container>
-              </ng-container>
-            </div>
-          </div>
-        </div>
-
-        <!-- Weapons -->
-        <div class="filter-group">
-          <div class="filter-title">Weapon</div>
-          <div class="filter-options">
-            <div class="filter-option" 
-                 *ngFor="let weapon of weapons"
-                 [attr.data-weapon]="weapon"
-                 [class.active]="isWeaponSelected(weapon)"
-                 (click)="filterByWeapon(weapon)">
-              <img [src]="'assets/others/' + weapon.toLowerCase() + '.webp'" [alt]="weapon">
-              <span>{{ weapon }}</span>
-              
-              <!-- Sword -->
-              <ng-container *ngIf="weapon === 'Sword'">
-                <div class="slash"></div>
-                <div class="slash"></div>
-              </ng-container>
-
-              <!-- Claymore -->
-              <ng-container *ngIf="weapon === 'Claymore'">
-                <div class="heavy-slash"></div>
-              </ng-container>
-
-              <!-- Polearm -->
-              <ng-container *ngIf="weapon === 'Polearm'">
-                <div class="quick-slash"></div>
-                <div class="quick-slash"></div>
-                <div class="quick-slash"></div>
-              </ng-container>
-
-              <!-- Bow -->
-              <ng-container *ngIf="weapon === 'Bow'">
-                <div class="arrow"></div>
-              </ng-container>
-
-              <!-- Catalyst -->
-              <ng-container *ngIf="weapon === 'Catalyst'">
-                <div class="magic-orb"></div>
-              </ng-container>
-            </div>
-          </div>
-        </div>
-
-        <!-- Rarity -->
-        <div class="filter-group">
-          <div class="filter-title">Rarity</div>
-          <div class="filter-options">
-            <div class="filter-option" 
-                 (click)="filterByRarity(4)" 
-                 [attr.data-rarity]="4" 
-                 [class.active]="isRaritySelected(4)">
-              <div class="rarity-stars four-star">★★★★</div>
-            </div>
-            <div class="filter-option" 
-                 (click)="filterByRarity(5)" 
-                 [attr.data-rarity]="5" 
-                 [class.active]="isRaritySelected(5)">
-              <div class="rarity-stars five-star">★★★★★</div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-
   <app-header></app-header>
 
   <!-- Loading State -->
@@ -129,23 +9,137 @@
     </div>
   </div>
 
-  <!-- Error Message -->
-  <div class="error-message" *ngIf="errorMessage">
-    {{ errorMessage }}
-  </div>
-
-  <!-- Success Message -->
-  <div class="success-message" *ngIf="successMessage">
-    {{ successMessage }}
-  </div>
-
-  <!-- Main Content - Remove authentication check -->
+  <!-- Main Content -->
   <ng-container *ngIf="!isLoading && targetUser">
+    <!-- Page Titles -->
+    <div class="page-titles">
+      <h1>Team Request</h1>
+      <h2 *ngIf="targetUser">Request a team to {{ targetUser.username }}</h2>
+    </div>
+
+    <!-- Sidebar -->
+    <div class="filter-sidebar" [class.open]="isSidebarOpen">
+      <button class="toggle-btn" (click)="toggleSidebar()">
+        <span class="vertical-text">FILTERS</span>
+        <i class="fas" [class.fa-chevron-right]="!isSidebarOpen" [class.fa-chevron-left]="isSidebarOpen"></i>
+      </button>
+
+      <div class="sidebar-content">
+        <div class="filter-section">
+          <!-- Elements -->
+          <div class="filter-group">
+            <div class="filter-title">Element</div>
+            <div class="filter-options">
+              <div class="filter-option" 
+                   *ngFor="let element of elements"
+                   [attr.data-element]="element"
+                   [class.active]="isElementSelected(element)"
+                   (click)="filterByElement(element)">
+                <img [src]="'assets/others/' + element.toLowerCase() + '.webp'" [alt]="element">
+                <span>{{ element }}</span>
+                
+                <ng-container [ngSwitch]="element">
+                  <ng-container *ngSwitchCase="'Pyro'">
+                    <div class="particle" *ngFor="let i of [].constructor(20)"></div>
+                  </ng-container>
+                  <ng-container *ngSwitchCase="'Hydro'">
+                    <div class="particle" *ngFor="let i of [].constructor(20)"></div>
+                  </ng-container>
+                  <ng-container *ngSwitchCase="'Anemo'">
+                    <div class="particle" *ngFor="let i of [].constructor(40)"></div>
+                  </ng-container>
+                  <ng-container *ngSwitchCase="'Electro'">
+                    <div class="particle" *ngFor="let i of [].constructor(100)"></div>
+                  </ng-container>
+                  <ng-container *ngSwitchCase="'Dendro'">
+                    <div class="particle" *ngFor="let i of [].constructor(100)"></div>
+                  </ng-container>
+                  <ng-container *ngSwitchCase="'Cryo'">
+                    <div class="particle" *ngFor="let i of [].constructor(50)"></div>
+                  </ng-container>
+                  <ng-container *ngSwitchCase="'Geo'">
+                    <div class="particle-1"></div>
+                    <div class="shard-left-1"></div>
+                    <div class="shard-right-1"></div>
+                    <div class="particle-2"></div>
+                    <div class="shard-left-2"></div>
+                    <div class="shard-right-2"></div>
+                    <div class="particle-3"></div>
+                    <div class="shard-left-3"></div>
+                    <div class="shard-right-3"></div>
+                  </ng-container>
+                </ng-container>
+              </div>
+            </div>
+          </div>
+
+          <!-- Weapons -->
+          <div class="filter-group">
+            <div class="filter-title">Weapon</div>
+            <div class="filter-options">
+              <div class="filter-option" 
+                   *ngFor="let weapon of weapons"
+                   [attr.data-weapon]="weapon"
+                   [class.active]="isWeaponSelected(weapon)"
+                   (click)="filterByWeapon(weapon)">
+                <img [src]="'assets/others/' + weapon.toLowerCase() + '.webp'" [alt]="weapon">
+                <span>{{ weapon }}</span>
+                
+                <!-- Sword -->
+                <ng-container *ngIf="weapon === 'Sword'">
+                  <div class="slash"></div>
+                  <div class="slash"></div>
+                </ng-container>
+
+                <!-- Claymore -->
+                <ng-container *ngIf="weapon === 'Claymore'">
+                  <div class="heavy-slash"></div>
+                </ng-container>
+
+                <!-- Polearm -->
+                <ng-container *ngIf="weapon === 'Polearm'">
+                  <div class="quick-slash"></div>
+                  <div class="quick-slash"></div>
+                  <div class="quick-slash"></div>
+                </ng-container>
+
+                <!-- Bow -->
+                <ng-container *ngIf="weapon === 'Bow'">
+                  <div class="arrow"></div>
+                </ng-container>
+
+                <!-- Catalyst -->
+                <ng-container *ngIf="weapon === 'Catalyst'">
+                  <div class="magic-orb"></div>
+                </ng-container>
+              </div>
+            </div>
+          </div>
+
+          <!-- Rarity -->
+          <div class="filter-group">
+            <div class="filter-title">Rarity</div>
+            <div class="filter-options">
+              <div class="filter-option" 
+                   (click)="filterByRarity(4)" 
+                   [attr.data-rarity]="4" 
+                   [class.active]="isRaritySelected(4)">
+                <div class="rarity-stars four-star">★★★★</div>
+              </div>
+              <div class="filter-option" 
+                   (click)="filterByRarity(5)" 
+                   [attr.data-rarity]="5" 
+                   [class.active]="isRaritySelected(5)">
+                <div class="rarity-stars five-star">★★★★★</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
     <main>
       <div class="content-wrapper" [class.sidebar-open]="isSidebarOpen">
-        <h1>Team Request</h1>
-        <h2>Request a team to {{ targetUser.username }}</h2>
-
         <div class="team-request-form">
           <div class="two-column-layout">
             <!-- Left Column - Characters -->
@@ -235,4 +229,8 @@
       </div>
     </main>
   </ng-container>
+
+  <!-- States -->
+  <div class="error-message" *ngIf="errorMessage">{{ errorMessage }}</div>
+  <div class="success-message" *ngIf="successMessage">{{ successMessage }}</div>
 </div> 
