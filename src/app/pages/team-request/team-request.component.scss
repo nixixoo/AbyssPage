@@ -2321,10 +2321,19 @@ main {
 
     .character-info {
       padding: 8px;
-      height: auto;
+      height: 45px;  // Force consistent height
+      min-height: 45px;  // Ensure minimum height
+      border-bottom-left-radius: 12px;  // Match card border radius
+      border-bottom-right-radius: 12px;
       
       h3 {
         font-size: 0.8rem;
+        display: -webkit-box;
+        -webkit-line-clamp: 2;  // Force 2 lines always
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+        line-height: 1.2;
+        height: 100%;  // Fill the container
       }
     }
   }
