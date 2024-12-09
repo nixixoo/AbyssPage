@@ -18,14 +18,11 @@
   z-index: var(--z-overlay-bg);
 }
 
-main {
-  position: relative;
-  z-index: var(--z-content);
-  display: flex;
-  flex-direction: column;
-  align-items: center;
+.page-titles {
   text-align: center;
   padding-top: 5vh;
+  position: relative;
+  z-index: var(--z-content);
 
   h1, h2 {
     color: var(--color-white);
@@ -34,16 +31,50 @@ main {
   }
 
   h1 {
-    font-size: 4rem;
+    font-size: 4rem;  // Smaller like team-request
     margin-bottom: 1rem;
   }
 
   h2 {
-    font-size: 2rem;
+    font-size: 2rem;  // Smaller like team-request
     color: var(--color-light);
     margin-bottom: 1.5rem;
     font-weight: bold;
   }
+}
+
+@media (max-width: 768px) {
+  .page-titles {
+    h1 {
+      font-size: 2.5rem;
+    }
+
+    h2 {
+      font-size: 2rem;
+    }
+  }
+}
+
+@media (max-width: 480px) {
+  .page-titles {
+    h1 {
+      font-size: 2rem;
+    }
+
+    h2 {
+      font-size: 1.5rem;
+    }
+  }
+}
+
+main {
+  position: relative;
+  z-index: var(--z-content);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  padding-top: 5vh;
 }
 
 .content-wrapper {

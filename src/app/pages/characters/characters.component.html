@@ -21,6 +21,12 @@
 
   <!-- Show main content if authenticated -->
   <ng-container *ngIf="authChecked && isAuthenticated">
+    <!-- Move titles outside main into page-titles -->
+    <div class="page-titles">
+      <h1>Your Characters</h1>
+      <h2>Select the characters you own</h2>
+    </div>
+
     <!-- Sidebar -->
     <div class="filter-sidebar" [class.open]="isSidebarOpen">
       <button class="toggle-btn" (click)="toggleSidebar()">
@@ -169,9 +175,6 @@
     </div>
 
     <main>
-      <h1>Your Characters</h1>
-      <h2>Select the characters you own</h2>
-
       <div class="content-wrapper" [class.sidebar-open]="isSidebarOpen">
         <div class="characters-section">
           <div class="characters-grid" [class.loading]="isLoading">
