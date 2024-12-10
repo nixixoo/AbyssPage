@@ -69,6 +69,9 @@ export class TeamRequestComponent implements OnInit {
   // Add this property
   successMessage: string = '';
 
+  // Add this property
+  displayName: string = '';
+
   constructor(
     private authService: AuthService,
     private creatorService: CreatorService,
@@ -157,7 +160,8 @@ export class TeamRequestComponent implements OnInit {
         toUserId: this.targetUser!.uid,
         characters: this.selectedCharacters,
         isAnonymous: !currentUser,
-        message: this.message?.trim() || ''
+        message: this.message?.trim() || '',
+        displayName: this.displayName?.trim() || ''
       };
 
       if (currentUser?.username) {
