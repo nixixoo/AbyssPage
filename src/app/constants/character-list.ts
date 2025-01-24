@@ -153,6 +153,14 @@ export const characterList: Character[] = [
     weaponType: 'Claymore'
   },
   {
+    id: 'citlali',
+    name: 'Citlali',
+    element: 'Cryo',
+    rarity: 5,
+    image: 'assets/character_icons/citlali_icon.webp',
+    weaponType: 'Catalyst'
+  },
+  {
     id: 'clorinde',
     name: 'Clorinde',
     element: 'Electro',
@@ -393,6 +401,14 @@ export const characterList: Character[] = [
     weaponType: 'Sword'
   },
   {
+    id: 'lan_yan',
+    name: 'Lan Yan',
+    element: 'Anemo',
+    rarity: 4,
+    image: 'assets/character_icons/lan_yan_icon.webp',
+    weaponType: 'Catalyst'
+  },
+  {
     id: 'layla',
     name: 'Layla',
     element: 'Cryo',
@@ -431,6 +447,14 @@ export const characterList: Character[] = [
     rarity: 4,
     image: 'assets/character_icons/mika_icon.webp',
     weaponType: 'Polearm'
+  },
+  {
+    id: 'mavuika',
+    name: 'Mavuika',
+    element: 'Pyro',
+    rarity: 5,
+    image: 'assets/character_icons/mavuika_icon.webp',
+    weaponType: 'Claymore'
   },
   {
     id: 'mona',
