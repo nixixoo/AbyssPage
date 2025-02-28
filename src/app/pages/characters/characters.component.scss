@@ -82,6 +82,11 @@ main {
   padding: 0 20px;
   transition: all 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
   
+  // Add this line to create space for the action buttons when they are visible
+  &.has-pending-changes {
+    margin-bottom: 80px; // Adjust this value as needed
+  }
+
   &.sidebar-open {
     margin-left: 280px;
     width: calc(100% - 280px);

@@ -4,7 +4,7 @@
   <app-header></app-header>
 
   <!-- Show loading state -->
-  <div class="loading-state" *ngIf="isLoading" @fadeOut>
+  <div class="loading-state" *ngIf="isLoading" @fadeInOut>
     <div class="loading-spinner">
       <img src="assets/logo.png" alt="Loading..." class="spinning-logo">
     </div>
@@ -175,7 +175,7 @@
     </div>
 
     <main>
-      <div class="content-wrapper" [class.sidebar-open]="isSidebarOpen">
+      <div class="content-wrapper" [class.sidebar-open]="isSidebarOpen" [class.has-pending-changes]="hasPendingChanges()">
         <div class="characters-section">
           <div class="characters-grid" [class.loading]="isLoading">
             <div class="character-card" 
@@ -203,19 +203,17 @@
           </div>
         </div>
 
-        <div class="action-buttons">
+        <div class="action-buttons" *ngIf="hasPendingChanges()" @fadeInOut>
           <button 
             class="save-btn" 
-            [class.visible]="!isLoading && hasPendingChanges()"
-            (click)="saveChanges()"
-            *ngIf="true">
+            [class.visible]="!isLoading"
+            (click)="saveChanges()">
             {{ isLoading ? 'Saving...' : 'Apply Changes' }}
           </button>
           <button 
             class="discard-btn" 
-            [class.visible]="!isLoading && hasPendingChanges()"
-            (click)="discardChanges()"
-            *ngIf="true">
+            [class.visible]="!isLoading"
+            (click)="discardChanges()">
             Discard Changes
           </button>
         </div>
