@@ -753,6 +753,14 @@ export const characterList: Character[] = [
     weaponType: 'Bow'
   },
   {
+    id: 'yumemizuki_mizuki',
+    name: 'Yumemizuki Mizuki',
+    element: 'Anemo',
+    rarity: 5,
+    image: 'assets/character_icons/yumemizuki_mizuki_icon.webp',
+    weaponType: 'Catalyst'
+  },
+  {
     id: 'yun_jin',
     name: 'Yun Jin',
     element: 'Geo',
