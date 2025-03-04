@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterOutlet } from '@angular/router';
 import { AnimationService } from './services/animation.service';
@@ -21,15 +21,26 @@ import { AuthService } from './services/auth.service';
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.scss']
 })
-export class AppComponent {
+export class AppComponent implements OnInit {
   title = 'Abyss';
   showAnimation$: Observable<boolean>;
-  get isLoggedIn(): boolean {
-    // Get this from your auth service
-    return true; // Temporary, replace with actual auth check
-  }
+  authStateConfirmed = false;
+  isLoggedIn$: Observable<boolean>;
   
-  constructor(private animationService: AnimationService, private authService: AuthService) {
+  constructor(
+    private animationService: AnimationService, 
+    private authService: AuthService
+  ) {
     this.showAnimation$ = this.animationService.showAnimation$;
+    this.isLoggedIn$ = this.authService.isAuthenticated$;
+  }
+
+  ngOnInit() {
+    this.initializeApp();
+  }
+
+  async initializeApp() {
+    await this.authService.isFirebaseReady();
+    this.authStateConfirmed = true;
   }
 }
