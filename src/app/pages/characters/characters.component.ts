@@ -70,6 +70,34 @@ export class CharactersComponent implements OnInit, OnDestroy {
   }
 
   async ngOnInit() {
+    this.isLoading = true;
+
+    // Subscribe to the authentication state
+    this.authService.isAuthenticated$.pipe(takeUntil(this.destroy$)).subscribe(isAuthenticated => {
+      if (isAuthenticated) {
+        // Fetch the creator data when the user is authenticated
+        this.creatorService.fetchCreator();
+      } else {
+        // Handle the case when the user is not authenticated
+        this.isLoading = false;
+        this.creator = null; // Reset creator data
+        this.pendingChanges.characters = [];
+        this.characterConstellations = {};
+        // Optionally, redirect to login or show a message
+      }
+    });
+
+    // Subscribe to the creator data
+    this.creatorService.creator$.pipe(takeUntil(this.destroy$)).subscribe(creator => {
+      this.creator = creator;
+      if (creator) {
+        this.pendingChanges.characters = creator.characters ? Object.keys(creator.characters) : [];
+        this.characterConstellations = { ...creator.constellations };
+        this.displayedCharacters = this.characterList; // Update displayed characters if needed
+      }
+      this.isLoading = false;
+    });
+
     try {
       this.isLoading = true;
       this.displayedCharacters = [];
@@ -116,9 +144,9 @@ export class CharactersComponent implements OnInit, OnDestroy {
             if (isAuthenticated) {
               setTimeout(() => {
                 this.displayedCharacters = this.characterList;
-              }, 300);
+              });
             }
-          }, 100); // Small delay before changing authChecked
+          }); // Small delay before changing authChecked
         });
 
     } catch (error) {

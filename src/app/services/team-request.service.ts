@@ -14,9 +14,13 @@ export class TeamRequestService {
 
   // Create a new team request
   async createTeamRequest(request: TeamRequest): Promise<string> {
-    const requestsRef = collection(this.firestore, 'teamRequests');
-    const docRef = await addDoc(requestsRef, request);
-    return docRef.id;
+    try {
+      const requestsRef = collection(this.firestore, 'teamRequests');
+      const docRef = await addDoc(requestsRef, request);
+      return docRef.id;
+    } catch (error) {
+      throw new Error('Failed to create team request. Please try again later.');
+    }
   }
 
   // Get requests sent to a specific user

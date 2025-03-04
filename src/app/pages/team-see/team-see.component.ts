@@ -19,7 +19,7 @@ import { trigger, transition, style, animate } from '@angular/animations';
     trigger('fadeOut', [
       transition(':leave', [
         style({ opacity: 1 }),
-        animate('0.5s ease-out', style({ 
+        animate('0.4s ease-out', style({ 
           opacity: 0
         }))
       ])

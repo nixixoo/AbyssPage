@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Firestore, collection, doc, setDoc, getDoc, query, where, getDocs, updateDoc } from '@angular/fire/firestore';
-import { Observable, from, throwError } from 'rxjs';
+import { Observable, from, throwError, BehaviorSubject } from 'rxjs';
 import { map, catchError } from 'rxjs/operators';
 import { Creator } from '../interfaces/creator.interface';
 import { Auth } from '@angular/fire/auth';
@@ -9,6 +9,9 @@ import { Auth } from '@angular/fire/auth';
   providedIn: 'root'
 })
 export class CreatorService {
+  private creatorSubject = new BehaviorSubject<Creator | null>(null);
+  creator$ = this.creatorSubject.asObservable();
+
   constructor(
     private firestore: Firestore,
     private auth: Auth
@@ -100,5 +103,36 @@ export class CreatorService {
       ...doc.data(), 
       uid: doc.id 
     } as Creator));
+  }
+
+  updateCreatorData(updatedCreator: Creator) {
+    // Update the creator in the database
+    // After successful update, emit the new creator data
+    this.creatorSubject.next(updatedCreator);
+  }
+
+  // Method to fetch creator data from the database
+  fetchCreator() {
+    const user = this.auth.currentUser;
+    if (!user) {
+      throw new Error('No authenticated user');
+    }
+
+    const creatorRef = doc(this.firestore, 'creators', user.uid);
+    return from(getDoc(creatorRef)).pipe(
+      map(doc => {
+        if (doc.exists()) {
+          const fetchedCreator: Creator = { ...doc.data(), uid: doc.id } as Creator;
+          this.creatorSubject.next(fetchedCreator); // Emit the fetched creator data
+          return fetchedCreator;
+        } else {
+          this.creatorSubject.next(null); // Emit null if no creator found
+          return null;
+        }
+      }),
+      catchError(error => {
+        return throwError(() => new Error('Failed to fetch creator'));
+      })
+    ).subscribe(); // Subscribe to execute the observable
   }
 }
