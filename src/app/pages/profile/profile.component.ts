@@ -37,7 +37,8 @@ export class ProfileComponent implements OnInit, OnDestroy {
     { id: 'youtube', name: 'YouTube', icon: 'fab fa-youtube' },
     { id: 'twitch', name: 'Twitch', icon: 'fab fa-twitch' },
     { id: 'twitter', name: 'Twitter', icon: 'fab fa-twitter' },
-    { id: 'instagram', name: 'Instagram', icon: 'fab fa-instagram' }
+    { id: 'instagram', name: 'Instagram', icon: 'fab fa-instagram' },
+    { id: 'tiktok', name: 'TikTok', icon: 'fab fa-tiktok'}
   ];
 
   constructor(

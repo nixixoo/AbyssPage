@@ -293,6 +293,13 @@ main {
           background: rgba(225, 48, 108, 0.4);
         }
       }
+
+      &.tiktok {
+        background: rgba(11, 80, 126, 0.2);
+        &:hover { 
+          background: rgba(225, 48, 108, 0.4);
+        }
+      }
     }
   }
 }
@@ -623,6 +630,30 @@ main {
         background: #1DA1F2;
       }
 
+      &:has(.fa-tiktok) {
+        position: relative;
+        z-index: 1;
+
+        &::before {
+          content: '';
+          position: absolute;
+          inset: 0;
+          background: linear-gradient(45deg, #27e2dc 0%, #a1203a 100%);
+          opacity: 0;
+          transition: opacity 0.2s ease;
+          z-index: -1;
+        }
+
+        &:hover::before {
+          opacity: 1;
+        }
+
+        i, span {
+          position: relative;
+          z-index: 2;
+        }
+      }
+
       &:has(.fa-instagram) {
         position: relative;
         z-index: 1;
@@ -718,6 +749,30 @@ main {
 
       &:has(.fa-twitter):hover {
         background: #1DA1F2;
+      }
+
+      &:has(.fa-tiktok) {
+        position: relative;
+        z-index: 1;
+
+        &::before {
+          content: '';
+          position: absolute;
+          inset: 0;
+          background: linear-gradient(45deg, #27e2dc 0%, #a1203a 100%);
+          opacity: 0;
+          transition: opacity 0.2s ease;
+          z-index: -1;
+        }
+
+        &:hover::before {
+          opacity: 1;
+        }
+
+        i, span {
+          position: relative;
+          z-index: 2;
+        }
       }
 
       &:has(.fa-instagram) {

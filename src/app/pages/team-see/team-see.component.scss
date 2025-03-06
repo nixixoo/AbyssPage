@@ -9,23 +9,29 @@
 
 .team-see-container {
   min-height: 100vh;
-  width: 100vw;
-  background-image: url('../../assets/images/background.png');
-  background-size: cover;
-  background-position: center;
-  background-repeat: no-repeat;
-  background-attachment: fixed;
   position: relative;
+
+  &::before {
+    content: none !important;
+  }
 }
 
-.overlay {
-  position: absolute;
+.team-see-container::after {
+  content: '';
+  position: fixed;
   top: 0;
   left: 0;
   right: 0;
   bottom: 0;
-  background: rgba(0, 0, 0, 0.3);
-  z-index: var(--z-overlay-bg);
+  background-image: url('../../assets/images/background.png');
+  background-size: cover;
+  background-position: center;
+  z-index: -3; // Below overlay but above global background
+}
+
+.overlay {
+  position: fixed;
+  z-index: -2; // Above background but below content
 }
 
 app-header {
