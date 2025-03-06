@@ -1,4 +1,4 @@
-import { Component, ElementRef, ViewChild, AfterViewInit, OnDestroy } from '@angular/core';
+import { Component, ElementRef, ViewChild, AfterViewInit, OnDestroy, HostListener } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
 import { AuthService } from '../../services/auth.service';
@@ -63,9 +63,11 @@ interface AvatarOption {
 })
 export class ProfileButtonComponent implements AfterViewInit, OnDestroy {
   @ViewChild('menuContent') menuContent!: ElementRef;
+  @ViewChild('menu') menuElement!: ElementRef;
   private destroy$ = new Subject<void>();
   showAvatarSelector = false;
   menuHeight = 0;
+  isMenuOpen = false;
   searchQuery: string = '';
   isLoggedIn = false;
   currentAvatar: string = 'assets/character_profile/amber_avatar.png';
@@ -209,36 +211,114 @@ export class ProfileButtonComponent implements AfterViewInit, OnDestroy {
   ];
 
   constructor(
+    private elementRef: ElementRef,
     private router: Router,
     private authService: AuthService,
     private firestore: Firestore,
     private uiService: UiService
   ) {
-    // Subscribe to auth state changes
-    this.authService.isAuthenticated$.pipe(
-      takeUntil(this.destroy$)
-    ).subscribe(
-      (isAuthenticated) => {
-        this.isLoggedIn = isAuthenticated;
-        if (isAuthenticated) {
-          this.loadUserAvatar();
-        }
-      }
-    );
+    this.authService.isAuthenticated$.pipe(takeUntil(this.destroy$)).subscribe(isAuthenticated => {
+      this.isLoggedIn = isAuthenticated;
+      if (isAuthenticated) this.loadUserAvatar();
+    });
 
-    // Subscribe to darkened state
-    this.uiService.isDarkened$.pipe(
-      takeUntil(this.destroy$)
-    ).subscribe(
-      (isDarkened: boolean) => {
-        this.isDarkened = isDarkened;
+    this.uiService.isDarkened$.pipe(takeUntil(this.destroy$)).subscribe(isDarkened => {
+      this.isDarkened = isDarkened;
+    });
+  }
+
+  @HostListener('document:click', ['$event'])
+  handleDocumentClick(event: MouseEvent) {
+    const menu = this.menuElement?.nativeElement;
+    const button = this.elementRef.nativeElement.querySelector('.floating-profile-btn');
+    
+    if (menu && !menu.contains(event.target) && (!button || !button.contains(event.target))) {
+      this.closeMenuWithAnimation();
+    }
+  }
+
+  toggleMenu() {
+    this.isMenuOpen = !this.isMenuOpen;
+    if (this.isMenuOpen) this.forceReflow();
+  }
+
+  calculateMenuHeight() {
+    if (this.menuContent) {
+      const menuItems = this.menuContent.nativeElement.querySelectorAll('.menu-item');
+      let totalHeight = 0;
+      
+      menuItems.forEach((item: HTMLElement) => {
+        totalHeight += item.offsetHeight;
+      });
+
+      totalHeight += 32; // 16px padding top + 16px padding bottom
+      this.menuHeight = totalHeight;
+      
+      const menu = this.menuContent.nativeElement;
+      menu.style.setProperty('--menu-height', `${this.menuHeight}px`);
+    }
+  }
+
+  private forceReflow() {
+    if (this.menuElement) {
+      this.menuElement.nativeElement.clientWidth;
+    }
+  }
+
+  private closeMenuWithAnimation() {
+    this.isMenuOpen = false;
+    this.forceReflow();
+  }
+
+  navigateToProfile() {
+    this.closeMenuWithAnimation();
+    setTimeout(() => {
+      this.router.navigate(['profile', 'me']);
+    }, 500);
+  }
+
+  openAvatarSelector() {
+    this.closeMenuWithAnimation();
+    setTimeout(() => {
+      this.showAvatarSelector = true;
+    }, 300);
+  }
+
+  async logout() {
+    this.closeMenuWithAnimation();
+    setTimeout(async () => {
+      try {
+        await this.authService.logout();
+        this.router.navigate(['/']);
+      } catch (error) {
+        console.error('Error logging out:', error);
       }
+    }, 500);
+  }
+
+  // Add a getter for sorted avatars
+  get sortedAvatarOptions(): AvatarOption[] {
+    return [...this.avatarOptions].sort((a, b) => {
+      // First sort by type (characters first)
+      if (a.type !== b.type) {
+        return a.type === 'character' ? -1 : 1;
+      }
+      // Then sort by name within each type
+      return a.name.localeCompare(b.name);
+    });
+  }
+
+  get filteredAvatars(): AvatarOption[] {
+    const query = this.searchQuery.toLowerCase().trim();
+    if (!query) return this.sortedAvatarOptions;
+
+    return this.sortedAvatarOptions.filter(avatar => 
+      avatar.name.toLowerCase().includes(query)
     );
   }
 
-  ngOnDestroy() {
-    this.destroy$.next();
-    this.destroy$.complete();
+  onSearch(event: Event) {
+    this.searchQuery = (event.target as HTMLInputElement).value;
   }
 
   private async loadUserAvatar() {
@@ -254,32 +334,9 @@ export class ProfileButtonComponent implements AfterViewInit, OnDestroy {
     this.calculateMenuHeight();
   }
 
-  calculateMenuHeight() {
-    if (this.menuContent) {
-      const menuItems = this.menuContent.nativeElement.querySelectorAll('.menu-item');
-      let totalHeight = 0;
-      
-      menuItems.forEach((item: HTMLElement) => {
-        totalHeight += item.offsetHeight;
-      });
-
-      // Añadir padding y márgenes
-      totalHeight += 32; // 16px padding top + 16px padding bottom
-      
-      this.menuHeight = totalHeight;
-      
-      // Aplicar altura calculada
-      const menu = this.menuContent.nativeElement;
-      menu.style.setProperty('--menu-height', `${this.menuHeight}px`);
-    }
-  }
-
-  navigateToProfile() {
-    this.router.navigate(['profile', 'me']);
-  }
-
-  openAvatarSelector() {
-    this.showAvatarSelector = true;
+    ngOnDestroy() {
+    this.destroy$.next();
+    this.destroy$.complete();
   }
 
   closeAvatarSelector() {
@@ -311,40 +368,6 @@ export class ProfileButtonComponent implements AfterViewInit, OnDestroy {
     } finally {
       this.isChangingAvatar = false;
     }
-  }
-
-  async logout() {
-    try {
-      await this.authService.logout();
-      this.router.navigate(['/']);
-    } catch (error) {
-      console.error('Error logging out:', error);
-    }
-  }
-
-  // Add a getter for sorted avatars
-  get sortedAvatarOptions(): AvatarOption[] {
-    return [...this.avatarOptions].sort((a, b) => {
-      // First sort by type (characters first)
-      if (a.type !== b.type) {
-        return a.type === 'character' ? -1 : 1;
-      }
-      // Then sort by name within each type
-      return a.name.localeCompare(b.name);
-    });
-  }
-
-  get filteredAvatars(): AvatarOption[] {
-    const query = this.searchQuery.toLowerCase().trim();
-    if (!query) return this.sortedAvatarOptions;
-
-    return this.sortedAvatarOptions.filter(avatar => 
-      avatar.name.toLowerCase().includes(query)
-    );
-  }
-
-  onSearch(event: Event) {
-    this.searchQuery = (event.target as HTMLInputElement).value;
   }
 
 }

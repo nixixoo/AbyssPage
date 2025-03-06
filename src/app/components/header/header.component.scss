@@ -341,18 +341,18 @@ header {
       display: block;
       position: absolute;
       top: 15px;
-      right: -23vh;
+      left: 75%;
       background: none;
       border: none;
       color: var(--color-dark);
       font-size: 24px;
       cursor: pointer;
       padding: 8px;
-      transition: all 0.3s ease;
+      transition: transform 0.2s ease, color 0.2s ease;
       
       &:hover {
         color: var(--color-accent);
-        transform: rotate(90deg);
+        transform: scale(1.1); // Simple scale instead of rotation
       }
     }
   }

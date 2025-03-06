@@ -1,10 +1,10 @@
 <div class="profile-button-wrapper" *ngIf="isLoggedIn && avatarLoaded" [@slideIn] [class.darkened]="isDarkened">
-  <button class="floating-profile-btn" [class.darkened]="isDarkened">
+  <button class="floating-profile-btn" [class.darkened]="isDarkened" (click)="toggleMenu()">
     <img [src]="currentAvatar" alt="Profile" (load)="avatarLoaded = true" style="display: none;">
     <img [src]="currentAvatar" alt="Profile">
   </button>
 
-  <div class="profile-menu" [class.darkened]="isDarkened">
+  <div class="profile-menu" #menu [class.darkened]="isDarkened" [class.show-menu]="isMenuOpen" (click)="$event.stopPropagation()">
     <div class="menu-item" (click)="navigateToProfile()">
       <i class="fas fa-user"></i>
       Profile
