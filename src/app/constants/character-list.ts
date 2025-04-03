@@ -297,6 +297,14 @@ export const characterList: Character[] = [
     weaponType: 'Polearm'
   },
   {
+    id: 'iansan',
+    name: 'Iansan',
+    element: 'Electro',
+    rarity: 4,
+    image: 'assets/character_icons/iansan_icon.webp',
+    weaponType: 'Polearm'
+  },
+  {
     id: 'jean',
     name: 'Jean',
     element: 'Anemo',
@@ -639,6 +647,14 @@ export const characterList: Character[] = [
     rarity: 5,
     image: 'assets/character_icons/tighnari_icon.webp',
     weaponType: 'Bow'
+  },
+  {
+    id: 'varesa',
+    name: 'Varesa',
+    element: 'Electro',
+    rarity: 5,
+    image: 'assets/character_icons/varesa_icon.webp',
+    weaponType: 'Catalyst'
   },
   {
     id: 'venti',

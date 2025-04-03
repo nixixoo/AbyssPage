@@ -201,11 +201,13 @@ export class ProfileButtonComponent implements AfterViewInit, OnDestroy {
     { url: 'assets/character_profile/Monsieur_Os_Avatar.webp', name: 'Monsieur Os', type: 'special' },
     { url: 'assets/character_profile/Mother_of_the_Jinn_Avatar.webp', name: 'Mother of the Jinn', type: 'special' },
     { url: 'assets/character_profile/Nice_to_Meet_You_Avatar.webp', name: 'Nice to Meet You', type: 'special' },
+    { url: 'assets/character_profile/Silent_Reverie_Across_Time.webp', name: 'Silent Reverie Across Time', type: 'special' },
     { url: 'assets/character_profile/Pahsiv_Avatar.webp', name: 'Pahsiv', type: 'special' },
     { url: 'assets/character_profile/Provisional_Head_Priestess_of_the_Asase_Shrine_Avatar.webp', name: 'Provisional Head Priestess', type: 'special' },
     { url: 'assets/character_profile/Rainjade_Oblation_Avatar.webp', name: 'Rainjade Oblation', type: 'special' },
     { url: 'assets/character_profile/The_Formless_Society_Avatar.webp', name: 'The Formless Society', type: 'special' },
     { url: 'assets/character_profile/The_Thunderbird_and_the_Boy_Avatar.webp', name: 'The Thunderbird and the Boy', type: 'special' },
+    { url: 'assets/character_profile/Till_We_Meet_Again_Avatar.webp', name: 'Till We Meet Again', type: 'special' },
     { url: 'assets/character_profile/Your_Saurian_companion_Avatar.webp', name: 'Your Saurian Companion', type: 'special' },
     { url: 'assets/character_profile/Zhiqiongs_Signature_Avatar.webp', name: 'Zhiqiong\'s Signature', type: 'special' }
   ];
