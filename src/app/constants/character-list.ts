@@ -25,6 +25,14 @@ export const characterList: Character[] = [
     weaponType: 'Sword'
   },
   {
+    id: 'aino',
+    name: 'Aino',
+    element: 'Hydro',
+    rarity: 4,
+    image: 'assets/character_icons/aino_icon.webp',
+    weaponType: 'Claymore'
+  },
+  {
     id: 'albedo',
     name: 'Albedo',
     element: 'Geo',
@@ -185,6 +193,14 @@ export const characterList: Character[] = [
     weaponType: 'Polearm'
   },
   {
+    id: 'dahlia',
+    name: 'Dahlia',
+    element: 'Hydro',
+    rarity: 4,
+    image: 'assets/character_icons/dahlia_icon.webp',
+    weaponType: 'Sword'
+  },
+  {
     id: 'dehya',
     name: 'Dehya',
     element: 'Pyro',
@@ -225,6 +241,14 @@ export const characterList: Character[] = [
     weaponType: 'Polearm'
   },
   {
+    id: 'escoffier',
+    name: 'Escoffier',
+    element: 'Cryo',
+    rarity: 5,
+    image: 'assets/character_icons/escoffier_icon.webp',
+    weaponType: 'Polearm'
+  },
+  {
     id: 'eula',
     name: 'Eula',
     element: 'Cryo',
@@ -247,6 +271,14 @@ export const characterList: Character[] = [
     rarity: 4,
     image: 'assets/character_icons/fischl_icon.webp',
     weaponType: 'Bow'
+  },
+  {
+    id: 'flins',
+    name: 'Flins',
+    element: 'Electro',
+    rarity: 5,
+    image: 'assets/character_icons/flins_icon.webp',
+    weaponType: 'Polearm'
   },
   {
     id: 'freminet',
@@ -302,6 +334,22 @@ export const characterList: Character[] = [
     element: 'Electro',
     rarity: 4,
     image: 'assets/character_icons/iansan_icon.webp',
+    weaponType: 'Polearm'
+  },
+  {
+    id: 'ifa',
+    name: 'Ifa',
+    element: 'Anemo',
+    rarity: 4,
+    image: 'assets/character_icons/ifa_icon.webp',
+    weaponType: 'Catalyst'
+  },
+  {
+    id: 'ineffa',
+    name: 'Ineffa',
+    element: 'Electro',
+    rarity: 5,
+    image: 'assets/character_icons/ineffa_icon.webp',
     weaponType: 'Polearm'
   },
   {
@@ -414,6 +462,14 @@ export const characterList: Character[] = [
     element: 'Anemo',
     rarity: 4,
     image: 'assets/character_icons/lan_yan_icon.webp',
+    weaponType: 'Catalyst'
+  },
+  {
+    id: 'lauma',
+    name: 'Lauma',
+    element: 'Dendro',
+    rarity: 5,
+    image: 'assets/character_icons/lauma_icon.webp',
     weaponType: 'Catalyst'
   },
   {
@@ -617,6 +673,14 @@ export const characterList: Character[] = [
     weaponType: 'Bow'
   },
   {
+    id: 'skirk',
+    name: 'Skirk',
+    element: 'Cryo',
+    rarity: 5,
+    image: 'assets/character_icons/skirk_icon.webp',
+    weaponType: 'Sword'
+  },
+  {
     id: 'sucrose',
     name: 'Sucrose',
     element: 'Anemo',
@@ -633,6 +697,14 @@ export const characterList: Character[] = [
     weaponType: 'Bow'
   },
   {
+    id: 'varesa',
+    name: 'Varesa',
+    element: 'Electro',
+    rarity: 5,
+    image: 'assets/character_icons/varesa_icon.webp',
+    weaponType: 'Catalyst'
+  },
+  {
     id: 'thoma',
     name: 'Thoma',
     element: 'Pyro',
@@ -647,14 +719,6 @@ export const characterList: Character[] = [
     rarity: 5,
     image: 'assets/character_icons/tighnari_icon.webp',
     weaponType: 'Bow'
-  },
-  {
-    id: 'varesa',
-    name: 'Varesa',
-    element: 'Electro',
-    rarity: 5,
-    image: 'assets/character_icons/varesa_icon.webp',
-    weaponType: 'Catalyst'
   },
   {
     id: 'venti',

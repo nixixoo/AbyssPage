@@ -8,6 +8,7 @@ import { trigger, transition, style, animate, state } from '@angular/animations'
 import { Firestore, doc, updateDoc } from '@angular/fire/firestore';
 import { UiService } from '../../services/ui.service';
 import { Subject } from 'rxjs';
+import { url } from 'node:inspector';
 
 interface AvatarOption {
   url: string;
@@ -76,6 +77,7 @@ export class ProfileButtonComponent implements AfterViewInit, OnDestroy {
   isChangingAvatar: boolean = false;
   
   avatarOptions: AvatarOption[] = [
+    { url: 'assets/character_profile/aino_avatar.png', name: 'Aino', type: 'character' },
     { url: 'assets/character_profile/albedo_avatar.png', name: 'Albedo', type: 'character' },
     { url: 'assets/character_profile/alhaitham_avatar.png', name: 'Alhaitham', type: 'character' },
     { url: 'assets/character_profile/aloy_avatar.png', name: 'Aloy', type: 'character' },
@@ -88,6 +90,7 @@ export class ProfileButtonComponent implements AfterViewInit, OnDestroy {
     { url: 'assets/character_profile/barbara_summer.webp', name: 'Barbara • Summer Skin', type: 'character' },
     { url: 'assets/character_profile/beidou_avatar.png', name: 'Beidou', type: 'character' },
     { url: 'assets/character_profile/bennett_avatar.png', name: 'Bennett', type: 'character' },
+    { url: 'assets/character_profile/bennett_adventures_in_blazing_hue_avatar.webp', name: 'Bennett • Adventures in Blazing Hue', type: 'character' },
     { url: 'assets/character_profile/candace_avatar.png', name: 'Candace', type: 'character' },
     { url: 'assets/character_profile/charlotte_avatar.png', name: 'Charlotte', type: 'character' },
     { url: 'assets/character_profile/chasca_avatar.png', name: 'Chasca', type: 'character' },
@@ -98,16 +101,19 @@ export class ProfileButtonComponent implements AfterViewInit, OnDestroy {
     { url: 'assets/character_profile/clorinde_avatar.png', name: 'Clorinde', type: 'character' },
     { url: 'assets/character_profile/collei_avatar.png', name: 'Collei', type: 'character' },
     { url: 'assets/character_profile/cyno_avatar.png', name: 'Cyno', type: 'character' },
+    { url: 'assets/character_profile/dahlia_avatar.webp', name: 'Dahlia', type: 'character' },
     { url: 'assets/character_profile/dehya_avatar.png', name: 'Dehya', type: 'character' },
     { url: 'assets/character_profile/diluc_avatar.png', name: 'Diluc', type: 'character' },
     { url: 'assets/character_profile/diluc_red.webp', name: 'Diluc • Red Dead of Night', type: 'character' },
     { url: 'assets/character_profile/diona_avatar.png', name: 'Diona', type: 'character' },
     { url: 'assets/character_profile/dori_avatar.png', name: 'Dori', type: 'character' },
     { url: 'assets/character_profile/emilie_avatar.png', name: 'Emilie', type: 'character' },
+    { url: 'assets/character_profile/escoffier_avatar.webp', name: 'Escoffier', type: 'character' },
     { url: 'assets/character_profile/eula_avatar.png', name: 'Eula', type: 'character' },
     { url: 'assets/character_profile/faruzan_avatar.png', name: 'Faruzan', type: 'character' },
     { url: 'assets/character_profile/fischl_avatar.png', name: 'Fischl', type: 'character' },
     { url: 'assets/character_profile/fischl_ein.webp', name: 'Fischl • Ein Immernachtstraum', type: 'character' },
+    { url: 'assets/character_profile/flins_avatar.png', name: 'Flins', type: 'character' },
     { url: 'assets/character_profile/freminet_avatar.png', name: 'Freminet', type: 'character' },
     { url: 'assets/character_profile/furina_avatar.png', name: 'Furina', type: 'character' },
     { url: 'assets/character_profile/gaming_avatar.png', name: 'Gaming', type: 'character' },
@@ -115,6 +121,10 @@ export class ProfileButtonComponent implements AfterViewInit, OnDestroy {
     { url: 'assets/character_profile/ganyu_twilight.webp', name: 'Ganyu • Twilight Blossom', type: 'character' },
     { url: 'assets/character_profile/gorou_avatar.png', name: 'Gorou', type: 'character' },
     { url: 'assets/character_profile/hu_tao_avatar.png', name: 'Hu Tao', type: 'character' },
+    { url: 'assets/character_profile/hu_tao_cherries_snow-laden_avatar.webp', name: 'Hu Tao • Cherries Snow-Laden', type: 'character' },
+    { url: 'assets/character_profile/iansan_avatar.webp', name: 'Iansan', type: 'character' },
+    { url: 'assets/character_profile/ifa_avatar.webp', name: 'Ifa', type: 'character' },
+    { url: 'assets/character_profile/ineffa_avatar.webp', name: 'Ineffa', type: 'character' },
     { url: 'assets/character_profile/jean_avatar.png', name: 'Jean', type: 'character' },
     { url: 'assets/character_profile/jean_summer.webp', name: 'Jean • Sea Breeze Dandelion', type: 'character' },
     { url: 'assets/character_profile/kachina_avatar.png', name: 'Kachina', type: 'character' },
@@ -135,6 +145,7 @@ export class ProfileButtonComponent implements AfterViewInit, OnDestroy {
     { url: 'assets/character_profile/kujou_sara_avatar.png', name: 'Kujou Sara', type: 'character' },
     { url: 'assets/character_profile/kuki_shinobu_avatar.png', name: 'Kuki Shinobu', type: 'character' },
     { url: 'assets/character_profile/lan_yan_avatar.png', name: 'Lan Yan', type: 'character' },
+    { url: 'assets/character_profile/lauma_avatar.png', name: 'Lauma', type: 'character' },
     { url: 'assets/character_profile/layla_avatar.png', name: 'Layla', type: 'character' },
     { url: 'assets/character_profile/lisa_avatar.png', name: 'Lisa', type: 'character' },
     { url: 'assets/character_profile/lisa_sobriquet.webp', name: 'Lisa • A Sobriquet Under Shade', type: 'character' },
@@ -166,8 +177,10 @@ export class ProfileButtonComponent implements AfterViewInit, OnDestroy {
     { url: 'assets/character_profile/shenhe_frostflower.webp', name: 'Shenhe • Frostflower Dew', type: 'character' },
     { url: 'assets/character_profile/shikanoin_heizou_avatar.png', name: 'Shikanoin Heizou', type: 'character' },
     { url: 'assets/character_profile/sigewinne_avatar.png', name: 'Sigewinne', type: 'character' },
+    { url: 'assets/character_profile/skirk_avatar.webp', name: 'Skirk', type: 'character' },
     { url: 'assets/character_profile/sucrose_avatar.png', name: 'Sucrose', type: 'character' },
     { url: 'assets/character_profile/tartaglia_avatar.png', name: 'Tartaglia', type: 'character' },
+    { url: 'assets/character_profile/varesa_avatar.webp', name: 'Varesa', type: 'character' },
     { url: 'assets/character_profile/thoma_avatar.png', name: 'Thoma', type: 'character' },
     { url: 'assets/character_profile/tighnari_avatar.png', name: 'Tighnari', type: 'character' },
     { url: 'assets/character_profile/venti_avatar.png', name: 'Venti', type: 'character' },
@@ -185,8 +198,9 @@ export class ProfileButtonComponent implements AfterViewInit, OnDestroy {
     { url: 'assets/character_profile/yanfei_avatar.png', name: 'Yanfei', type: 'character' },
     { url: 'assets/character_profile/yaoyao_avatar.png', name: 'Yaoyao', type: 'character' },
     { url: 'assets/character_profile/yelan_avatar.png', name: 'Yelan', type: 'character' },
+    { url: 'assets/character_profile/yelan_tranquil_banquet_avatar.webp', name: 'Yelan • Tranquil Banquet', type: 'character' },
     { url: 'assets/character_profile/yoimiya_avatar.png', name: 'Yoimiya', type: 'character' },
-    { url: 'assets/character_profile/yumemizuki_mizuki_avatar.png', name: 'Yumemizuki Mizuki', type: 'character' },
+    { url: 'assets/character_profile/yumemizuki_mizuki_avatar.webp', name: 'Yumemizuki Mizuki', type: 'character' },
     { url: 'assets/character_profile/yun_jin_avatar.png', name: 'Yun Jin', type: 'character' },
     { url: 'assets/character_profile/zhongli_avatar.png', name: 'Zhongli', type: 'character' },
     { url: 'assets/character_profile/Ann_Mary-Ann_Avatar.webp', name: 'Mary-Ann', type: 'special' },
@@ -209,7 +223,10 @@ export class ProfileButtonComponent implements AfterViewInit, OnDestroy {
     { url: 'assets/character_profile/The_Thunderbird_and_the_Boy_Avatar.webp', name: 'The Thunderbird and the Boy', type: 'special' },
     { url: 'assets/character_profile/Till_We_Meet_Again_Avatar.webp', name: 'Till We Meet Again', type: 'special' },
     { url: 'assets/character_profile/Your_Saurian_companion_Avatar.webp', name: 'Your Saurian Companion', type: 'special' },
-    { url: 'assets/character_profile/Zhiqiongs_Signature_Avatar.webp', name: 'Zhiqiong\'s Signature', type: 'special' }
+    { url: 'assets/character_profile/Zhiqiongs_Signature_Avatar.webp', name: 'Zhiqiong\'s Signature', type: 'special' },
+    { url: 'assets/character_profile/The_Scholar_Who_Crossed_the_Mare_Jivari_Avatar.webp', name: 'The Scholar Who Crossed the Mare Jivari', type: 'special' },
+    { url: 'assets/character_profile/Vigorous_Yapping_Avatar.webp', name: 'Vigorous Yapping', type: 'special' },
+    
   ];
 
   constructor(
