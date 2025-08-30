@@ -1,0 +1,13 @@
+# Angular cache - Vercel builds from scratch
+.angular/cache
+
+# Git files - no needed for deployment
+.git
+
+# Development files
+*.md
+CLAUDE.md
+
+# Local env files - use Vercel environment variables
+.env
+.env.local

@@ -6,9 +6,9 @@
 /out-tsc
 /bazel-out
 
-# Environment files
-/src/environments/environment.ts
-/src/environments/environment.prod.ts
+# Environment files - keep environment.ts for Angular build
+# /src/environments/environment.ts
+# /src/environments/environment.prod.ts
 
 # Node
 /node_modules
