@@ -1,11 +1,11 @@
-// @ts-ignore
-const processEnv = typeof process !== 'undefined' ? process.env : {};
-
+// Development environment - uses fake values for local development
 export const firebaseConfig = {
-  apiKey: processEnv['FIREBASE_API_KEY'] || '',
-  authDomain: processEnv['FIREBASE_AUTH_DOMAIN'] || '',
-  projectId: processEnv['FIREBASE_PROJECT_ID'] || '',
-  storageBucket: processEnv['FIREBASE_STORAGE_BUCKET'] || '',
-  messagingSenderId: processEnv['FIREBASE_MESSAGING_SENDER_ID'] || '',
-  appId: processEnv['FIREBASE_APP_ID'] || ''
+  apiKey: "fake-api-key-for-development",
+  authDomain: "fake-domain.firebaseapp.com", 
+  projectId: "fake-project-id",
+  storageBucket: "fake-bucket.appspot.com",
+  messagingSenderId: "123456789",
+  appId: "1:123:web:fake"
 };
+
+export const production = false;
