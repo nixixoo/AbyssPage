@@ -6,9 +6,9 @@
 /out-tsc
 /bazel-out
 
-# Environment files
-/src/environments/environment.ts
-/src/environments/environment.prod.ts
+# Environment files (commented out to allow custom environment)
+# /src/environments/environment.ts
+# /src/environments/environment.prod.ts
 
 # Node
 /node_modules
@@ -51,7 +51,7 @@ claude.md
 .DS_Store
 Thumbs.db
 
-# Environment files
-/src/environments/environment.ts
-/src/environments/environment.prod.ts
+# Environment files (commented out to allow custom environment)
+# /src/environments/environment.ts
+# /src/environments/environment.prod.ts
 .vercel
