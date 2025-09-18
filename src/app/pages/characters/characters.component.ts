@@ -7,7 +7,7 @@ import { AuthService } from '../../services/auth.service';
 import { Router } from '@angular/router';
 import { Subject, takeUntil, firstValueFrom, first } from 'rxjs';
 import { trigger, transition, style, animate } from '@angular/animations';
-import { characterList } from '../../constants/character-list';
+import { getCharacterList, Character } from '../../constants/character-list';
 
 @Component({
   selector: 'app-characters',
@@ -30,8 +30,8 @@ import { characterList } from '../../constants/character-list';
 export class CharactersComponent implements OnInit, OnDestroy {
   private destroy$ = new Subject<void>();
   creator: Creator | null = null;
-  characterList = characterList;
-  displayedCharacters: typeof this.characterList = [];
+  characterList: Character[] = [];
+  displayedCharacters: Character[] = [];
   isLoading: boolean = true;
   errorMessage: string = '';
   characterConstellations: { [key: string]: number } = {};
@@ -59,18 +59,25 @@ export class CharactersComponent implements OnInit, OnDestroy {
     private creatorService: CreatorService,
     private authService: AuthService,
     public router: Router
-  ) {
-    this.characterList = characterList.sort((a, b) => {
-      if (b.rarity !== a.rarity) {
-        return b.rarity - a.rarity;
-      }
-      return a.name.localeCompare(b.name);
-    });
-    this.displayedCharacters = this.characterList;
-  }
+  ) {}
 
   async ngOnInit() {
     this.isLoading = true;
+
+    // Load characters from API first
+    try {
+      this.characterList = await getCharacterList();
+      this.characterList = this.characterList.sort((a, b) => {
+        if (b.rarity !== a.rarity) {
+          return b.rarity - a.rarity;
+        }
+        return a.name.localeCompare(b.name);
+      });
+      this.displayedCharacters = this.characterList;
+    } catch (error) {
+      console.error('Error loading characters:', error);
+      this.errorMessage = 'Error loading characters';
+    }
 
     // Subscribe to the authentication state
     this.authService.isAuthenticated$.pipe(takeUntil(this.destroy$)).subscribe(isAuthenticated => {
