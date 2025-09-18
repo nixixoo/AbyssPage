@@ -1,7 +1,8 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { TeamRequest } from '../../interfaces/team-request.interface';
-import { Character, characterList } from '../../constants/character-list';
+import { Character } from '../../constants/character-list';
+import { CharacterCacheService } from '../../services/character-cache.service';
 import { TeamRequestService } from '../../services/team-request.service';
 import {AuthService } from '../../services/auth.service';
 import { HeaderComponent } from '../../components/header/header.component';
@@ -41,8 +42,9 @@ import { trigger, transition, style, animate } from '@angular/animations';
 export class TeamSeeComponent implements OnInit, OnDestroy {
   pendingRequests: TeamRequest[] = [];
   approvedRequests: TeamRequest[] = [];
-  characterList = characterList;
+  characterList: Character[] = [];
   isLoading: boolean = true;
+  loadingProgress: number = 0;
   errorMessage: string = '';
   removingRequests: Set<string> = new Set();
   displayContent: boolean = false;
@@ -51,6 +53,7 @@ export class TeamSeeComponent implements OnInit, OnDestroy {
 
   constructor(
     private teamRequestService: TeamRequestService,
+    private characterCacheService: CharacterCacheService,
     private authService: AuthService
   ) {
     // Check if mobile on init
@@ -59,7 +62,16 @@ export class TeamSeeComponent implements OnInit, OnDestroy {
     window.addEventListener('resize', () => this.checkIfMobile());
   }
 
-  ngOnInit() {
+  async ngOnInit() {
+    // Load character list first with real progress
+    this.characterCacheService.progress$.subscribe(progress => {
+      if (progress.total > 0) {
+        this.loadingProgress = (progress.current / progress.total) * 100;
+      }
+    });
+    
+    this.characterList = await this.characterCacheService.getCharacters();
+    this.loadingProgress = 100;
     this.loadRequests();
   }
 
@@ -159,6 +171,7 @@ export class TeamSeeComponent implements OnInit, OnDestroy {
       });
     }, 300); // Match animation duration
   }
+
 }
 
 

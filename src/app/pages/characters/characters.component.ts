@@ -7,7 +7,8 @@ import { AuthService } from '../../services/auth.service';
 import { Router } from '@angular/router';
 import { Subject, takeUntil, firstValueFrom, first } from 'rxjs';
 import { trigger, transition, style, animate } from '@angular/animations';
-import { getCharacterList, Character } from '../../constants/character-list';
+import { Character } from '../../constants/character-list';
+import { CharacterCacheService } from '../../services/character-cache.service';
 
 @Component({
   selector: 'app-characters',
@@ -33,6 +34,7 @@ export class CharactersComponent implements OnInit, OnDestroy {
   characterList: Character[] = [];
   displayedCharacters: Character[] = [];
   isLoading: boolean = true;
+  loadingProgress: number = 0;
   errorMessage: string = '';
   characterConstellations: { [key: string]: number } = {};
   pendingChanges: {
@@ -58,22 +60,25 @@ export class CharactersComponent implements OnInit, OnDestroy {
   constructor(
     private creatorService: CreatorService,
     private authService: AuthService,
+    private characterCacheService: CharacterCacheService,
     public router: Router
   ) {}
 
   async ngOnInit() {
     this.isLoading = true;
 
-    // Load characters from API first
+    // Load characters from cache service with real progress
     try {
-      this.characterList = await getCharacterList();
-      this.characterList = this.characterList.sort((a, b) => {
-        if (b.rarity !== a.rarity) {
-          return b.rarity - a.rarity;
+      // Subscribe to progress updates
+      this.characterCacheService.progress$.pipe(takeUntil(this.destroy$)).subscribe(progress => {
+        if (progress.total > 0) {
+          this.loadingProgress = (progress.current / progress.total) * 100;
         }
-        return a.name.localeCompare(b.name);
       });
+      
+      this.characterList = await this.characterCacheService.getCharacters();
       this.displayedCharacters = this.characterList;
+      this.loadingProgress = 100;
     } catch (error) {
       console.error('Error loading characters:', error);
       this.errorMessage = 'Error loading characters';
@@ -379,4 +384,6 @@ export class CharactersComponent implements OnInit, OnDestroy {
       this.animateConsNumber(character.id);
     }
   }
+
+
 }

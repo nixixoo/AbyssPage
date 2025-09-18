@@ -6,6 +6,11 @@
   <div class="loading-state" *ngIf="isLoading" @fadeOut>
     <div class="loading-spinner">
       <img src="assets/logo.png" alt="Loading..." class="spinning-logo">
+      <div class="loading-progress">
+        <div class="progress-bar">
+          <div class="progress-fill" [style.width.%]="loadingProgress"></div>
+        </div>
+      </div>
     </div>
   </div>
 

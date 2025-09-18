@@ -7,7 +7,8 @@ import { Creator } from '../../interfaces/creator.interface';
 import { CreatorService } from '../../services/creator.service';
 import { FormsModule } from '@angular/forms';
 import { firstValueFrom } from 'rxjs';
-import { characterList, Character } from '../../constants/character-list';
+import { Character } from '../../constants/character-list';
+import { CharacterCacheService } from '../../services/character-cache.service';
 import { TeamRequest } from '../../interfaces/team-request.interface';
 import { TeamRequestService } from '../../services/team-request.service';
 import { trigger, transition, style, animate } from '@angular/animations';
@@ -36,6 +37,7 @@ import { trigger, transition, style, animate } from '@angular/animations';
 })
 export class TeamRequestComponent implements OnInit {
   isLoading: boolean = true;
+  loadingProgress: number = 0;
   isAuthenticated: boolean = false;
   authChecked: boolean = false;
   targetUser: Creator | null = null;
@@ -75,12 +77,13 @@ export class TeamRequestComponent implements OnInit {
   constructor(
     private authService: AuthService,
     private creatorService: CreatorService,
+    private characterCacheService: CharacterCacheService,
     private teamRequestService: TeamRequestService,
     private router: Router,
     private route: ActivatedRoute
   ) {}
 
-  ngOnInit() {
+  async ngOnInit() {
     // Get target user ID from route
     const targetUserId = this.route.snapshot.params['userId'];
     
@@ -97,6 +100,16 @@ export class TeamRequestComponent implements OnInit {
       }
     );
 
+    // Load character list first with real progress
+    this.characterCacheService.progress$.subscribe(progress => {
+      if (progress.total > 0) {
+        this.loadingProgress = (progress.current / progress.total) * 100;
+      }
+    });
+    
+    const allCharacters = await this.characterCacheService.getCharacters();
+    this.loadingProgress = 100;
+
     // Load target user data
     this.creatorService.getCreator(targetUserId)
       .subscribe({
@@ -107,7 +120,7 @@ export class TeamRequestComponent implements OnInit {
               .filter(id => this.targetUser?.characters[id]);
             
             // Store in both arrays with sorting
-            this.originalCharacters = characterList
+            this.originalCharacters = allCharacters
               .filter(char => ownedCharacterIds.includes(char.id))
               .sort((a, b) => {
                 // First sort by rarity (descending)
@@ -284,4 +297,5 @@ export class TeamRequestComponent implements OnInit {
   handleImageError(event: any) {
     event.target.src = 'assets/default-character.png';
   }
+
 } 

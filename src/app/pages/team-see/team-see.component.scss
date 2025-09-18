@@ -269,17 +269,55 @@ main {
 
 .loading-state {
   position: fixed;
-  inset: 0;
+  top: 80px; /* Debajo del header */
+  left: 0;
+  right: 0;
+  bottom: 0;
   display: flex;
   align-items: center;
   justify-content: center;
-  z-index: var(--z-overlay);
+  z-index: 500;
+  pointer-events: none; /* Permite clicks a través del loading */
 
-  .spinning-logo {
-    width: 80px;
-    height: 80px;
-    animation: spin 2s linear infinite;
-    filter: brightness(0) invert(1);
+  .loading-spinner {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+
+    .spinning-logo {
+      width: 80px;
+      height: 80px;
+      animation: spin 2s linear infinite;
+      filter: brightness(0) invert(1);
+    }
+  }
+}
+
+.loading-progress {
+  margin-top: 30px;
+  text-align: center;
+  color: white;
+  
+  .progress-text {
+    font-size: 16px;
+    margin-bottom: 15px;
+    min-height: 24px;
+  }
+  
+  .progress-bar {
+    width: 300px;
+    height: 8px;
+    background-color: rgba(255, 255, 255, 0.2);
+    border-radius: 4px;
+    overflow: hidden;
+    margin: 0 auto;
+    
+    .progress-fill {
+      height: 100%;
+      background: var(--color-purple);
+      transition: width 0.1s ease-out;
+    }
   }
 }
 
